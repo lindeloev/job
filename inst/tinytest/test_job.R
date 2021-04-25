@@ -1,19 +1,21 @@
 if (rstudioapi::isAvailable()) {
+  # Explicit libraries for manual testing
   library(rstudioapi)
   library(tinytest)
+  library(job)
 
   # Helpers. Save in one obj to better control what's in the environment
   job_helpers = list(
     cleanup = function() {
       suppressWarnings(rm(list = c("a", "b", "default", "with_args", "returned",  "blank", "attached_start"), envir = parent.frame()))
-      options(width = job_helpers$opt_width)
+      options(warning.length = job_helpers$opt_warning.length)
     },
     equal_sets = function(x, y) {
       all(x %in% y) & all(y %in% x)
     },
     vars = c("job_helpers", "importnames__"),
     packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base"),
-    opt_width = options("width")[[1]],
+    opt_warning.length = options("warning.length")[[1]],
     opt_timeout = options("timeout")[[1]]
   )
 
@@ -27,7 +29,7 @@ if (rstudioapi::isAvailable()) {
   #########################
   # TEST DEFAULT BEHAVIOR #
   #########################
-  options(width = 81)
+  options(warning.length = 999)
   job::job(default = {
     vars = ls()
     pkgs = .packages()
@@ -45,17 +47,17 @@ if (rstudioapi::isAvailable()) {
   expect_identical(default$b_copy, b)
   expect_true(default$attached_rstudioapi)
   expect_true(job_helpers$equal_sets(names(default), c("vars", "pkgs", "a_copy", "b_copy", "attached_rstudioapi", "opts", ".call")))
-  expect_true(default$opts$width == 81 & default$opts$device == options("device"))
+  expect_true(default$opts$warning.length == 999 & default$opts$device == options("device"))
 
   # Cleanup
   rm(default)
-  options(width = job_helpers$opt_width)
+  options(warning.length = job_helpers$opt_warning.length)
 
 
   #############
   # TEST ARGS #
   #############
-  options(width = 81)
+  options(warning.length = 999)
   returned = job::job(with_args = {
     vars = ls()
     pkgs = .packages()
@@ -72,12 +74,12 @@ if (rstudioapi::isAvailable()) {
   expect_identical(with_args$b_copy, b)
   expect_true(with_args$attached_rstudioapi == FALSE)
   expect_true(job_helpers$equal_sets(names(with_args), c("vars", "pkgs", "b_copy", "attached_rstudioapi", "opts", ".call")))
-  expect_true(with_args$opts$width == job_helpers$opt_width & with_args$opts$timeout == 59)
+  expect_true(with_args$opts$warning.length == job_helpers$opt_warning.length & with_args$opts$timeout == 59)
 
   # Cleanup
   rm(returned)
   rm(with_args)
-  options(width = job_helpers$opt_width)
+  options(warning.length = job_helpers$opt_warning.length)
 
 
   ##############
@@ -93,7 +95,7 @@ if (rstudioapi::isAvailable()) {
   expect_true(job_helpers$equal_sets(blank$vars, c("importnames__")))
   expect_true(job_helpers$equal_sets(blank$pkgs, job_helpers$packages))
   expect_true(job_helpers$equal_sets(names(blank), c("vars", "pkgs", "opts", ".call")))
-  expect_true(blank$opts$width == job_helpers$opt_width & blank$opts$timeout == job_helpers$opt_timeout)
+  expect_true(blank$opts$warning.length == job_helpers$opt_warning.length & blank$opts$timeout == job_helpers$opt_timeout)
   rm(blank)
 
 
