@@ -25,7 +25,8 @@ job::job(brm_result = {
   the_test = hypothesis(fit, "hp > 0")
 })
 
-cat("I'm free now! Thank you.\nSincerely, Console.")
+cat("I'm free now! Thank you.
+    Sincerely, Console.")
 ```
 
 Now you can follow the progress in the jobs pane and your console is free. When the job completes, it saves `brm_result` to your environment. `brm_result` is itself an `r environment()` and behaves much like a `r list()`:
@@ -34,6 +35,12 @@ Now you can follow the progress in the jobs pane and your console is free. When 
 brm_result$fit
 brm_result$the_test
 ```
+
+## Turn RStudio's Jobs into a record
+
+Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio's jobs history can be used as a nice record. Make sure to print informative results within the job and give your jobs an appropriate `title`, e.g., (`r job::job({<code here>}, title = "Unit test: first attempt at feature X")`.
+
+![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
 
 ## Finer control
 
@@ -56,9 +63,4 @@ RStudio jobs spin up a new session, i.e., a new environment. By default, `r job:
 -   Model training, cross validation, or hyperparameter tuning: train multiple models simultaneously, each in their own job. If one fails, the others continue.
 -   Heavy I/O tasks, like processing large files. Save the results to disk and return nothing.
 -   Run unit tests and other code in an empty environment. By default, `r devtools::test()` runs in the current environment, including manually defined variables (e.g., from the last test-run) and attached packages. Call `r job::job({devtools::test()}, import = NULL, packages = NULL, opts = NULL)` to run the test in complete isolation.
-
-## Turn RStudio's Jobs into a record
-
-Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio's jobs history can be used as a nice record. Make sure to print informative results within the job and give your jobs an appropriate `title`, e.g., (`r job::job({}, title = "Unit test: first attempt at feature X")`.
-
-![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
+-   Upgrading packages
