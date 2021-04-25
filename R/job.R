@@ -89,7 +89,7 @@ job = function(..., import = ls(), packages = .packages(), opts = options(), tit
 
   # To R code
   code_str = paste0(as.character(substitute(code)), collapse = "\n")
-  if (substr(code_str, 1, 2) != "{\n")
+  if (substr(code_str, 1, 1) != "{")
     stop("invalid code input. Did you remember to put the code in {curly brackets}?")
   code_str = substr(code_str, 3, nchar(code_str))
 
