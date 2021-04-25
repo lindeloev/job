@@ -26,6 +26,8 @@
 #'   effect by writing `library(my_package)` in the code block.
 #' @param title The job title. If `NULL` (default), use the name of `...` if set
 #'   or `"(untitled)"` if `...` is unnamed.
+#' @param opts List of options to overwrite in the job. See `options()`. Use `NULL`
+#'   to use defaults.
 #' @return NULL but an environment is assigned if the code block is named. This
 #'   environment will include everything defined in the code block but excluding - not
 #'   "untouched" imports. See `...`.
@@ -66,15 +68,15 @@
 #'   # later
 #'   result2$names
 #' }
-job = function(..., import = ls(), packages = .packages(), title = NULL) {
+job = function(..., import = ls(), packages = .packages(), opts = options(), title = NULL) {
   if (rstudioapi::isAvailable() == FALSE)
     stop("Jobs can only be created if job::job() is called in RStudio.")
 
-  ############################
-  # GET CODE AND RETURN NAME #
-  ############################
+  ########################
+  # CODE AND RETURN-NAME #
+  ########################
   args = match.call()[-1]  # args, not function name
-  result_varname = names(args)[names(args) %in% c("import", "packages", "export", "title") == FALSE]
+  result_varname = names(args)[names(args) %in% c("import", "packages", "export", "title", "opts") == FALSE]
   if (length(args) == 0 | length(result_varname) > 1)
     stop("Must have exactly one code block.")
   if (length(result_varname) == 0) {
@@ -92,9 +94,9 @@ job = function(..., import = ls(), packages = .packages(), title = NULL) {
 
 
 
-  #############
-  # JOB TITLE #
-  #############
+  #########
+  # TITLE #
+  #########
   # Set job title
   if (is.null(title) == FALSE && is.atomic(title) == FALSE)
     stop("title must be NULL or length 1")
@@ -105,9 +107,9 @@ job = function(..., import = ls(), packages = .packages(), title = NULL) {
   }
 
 
-  ###################
-  # ATTACH PACKAGES #
-  ###################
+  ############
+  # PACKAGES #
+  ############
   # List currently attached Then write "library(x)" code
   if (is.character(packages) || length(packages) == 0) {
     packages_str = paste0("library(", packages, ")", collapse = "\n")
@@ -116,9 +118,9 @@ job = function(..., import = ls(), packages = .packages(), title = NULL) {
   }
 
 
-  #############################
-  # IMPORT TO JOB ENVIRONMENT #
-  #############################
+  ##########
+  # IMPORT #
+  ##########
   # Save to CSV. Then write code that imports it to the job.
   import_varnames = as.character(substitute(import))
   if (length(import_varnames) == 0) {
@@ -131,16 +133,14 @@ job = function(..., import = ls(), packages = .packages(), title = NULL) {
     stop("`import` must be a character vector or have length 0.")
   }
 
-  import_list = lapply(import_varnames, get)
-  names(import_list) = import_varnames
-  import_list$wd__ = getwd()  # Set to current working directory
+  import__ = lapply(import_varnames, get)
+  names(import__) = import_varnames
 
-  import_bytes = utils::object.size(import_list)
+  import_bytes = utils::object.size(import__)
   if (import_bytes > 400 * 10^6)  # Message if large
     message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `as_job(..., import = c(fewer, or, smaller, vars)` to speed up.")
 
   import_file = gsub("\\\\", "/", tempfile())
-  saveRDS(import_list, import_file)
   import_startcode = paste0("
 # Set list elements as variables in this environment
 import__ = readRDS('", import_file, "')
@@ -151,12 +151,36 @@ rm(importname__)
 rm(import__)
 file.remove('", import_file, "')
 
-setwd(wd__)  # From import__. Set to calling wd.")
+setwd(wd__)  # From import__. Set to calling wd.
+rm(wd__)")
 
-  import_endcode = "
-# Clean up
-rm(list = importnames__)
-rm(importnames__)"
+
+  ###########
+  # OPTIONS #
+  ###########
+  # TO DO: what if NULL or c()?
+  if (is.null(opts))
+    opts = list()
+  if (is.list(opts) == FALSE)
+    stop("`opts` must be a list (e.g., `options()`) or NULL.")
+
+  options_code = "
+# Set options
+invisible(do.call(options, opts__))  # invisible if is.null(opts__)
+rm(opts__)
+"
+
+
+
+  ####################
+  # SAVE IMPORT DATA #
+  ####################
+  # Add further info
+  import__$opts__ = opts
+  import__$wd__ = getwd()  # Set to current working directory
+
+  # Save
+  suppressWarnings(saveRDS(import__, import_file))  # Suppress warnings that [package] may not be available when readRDS.
 
 
   ########################
@@ -166,12 +190,16 @@ rm(importnames__)"
     "message(Sys.time(), ': Job started.')\n\n",
     packages_str, "\n\n",
     import_startcode, "\n\n",
+    options_code, "\n\n",
 
     "# Run code\n",
     code_str, "\n",
 
-    import_endcode, "\n",
-    "message(Sys.time(), ': Job finished.')\n"
+    "# Clean up
+    suppressWarnings(rm(list = importnames__))
+    rm(importnames__)
+    message(Sys.time(), ': Job finished.')
+    options(warn = -1)\n"  # Suppress warnings that [package] may not be available when readRDS.
   )
 
   # Add .call

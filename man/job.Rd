@@ -2,9 +2,9 @@
 % Please edit documentation in R/job.R
 \name{job}
 \alias{job}
-\title{Conveniently run R code as an RStudio job}
+\title{Run Code as an RStudio Job}
 \usage{
-job(..., import = ls(), packages = .packages(), title = NULL)
+job(..., import = ls(), packages = .packages(), opts = options(), title = NULL)
 }
 \arguments{
 \item{...}{A named or unnamed code block. Named code blocks will have the result
@@ -18,6 +18,9 @@ will not return anything. See examples.}
 all loaded packages in the calling environment. You can achieve the same
 effect by writing \code{library(my_package)} in the code block.}
 
+\item{opts}{List of options to overwrite in the job. See \code{options()}. Use \code{NULL}
+to use defaults.}
+
 \item{title}{The job title. If \code{NULL} (default), use the name of \code{...} if set
 or \code{"(untitled)"} if \code{...} is unnamed.}
 }
@@ -27,7 +30,7 @@ environment will include everything defined in the code block but excluding - no
 "untouched" imports. See \code{...}.
 }
 \description{
-Conveniently run R code as an RStudio job
+See examples for an introduction. See details for some warnings.
 }
 \details{
 This is a wrapper around \code{rstudioapi::jobRunScript}.
@@ -38,8 +41,8 @@ sets \code{importEnv = FALSE} and passes data through a temporary .rds file.
 Re exporting, I recommend saving large objects to an .rds file and \code{rm()} it
 from the job so it isn't returned.
 
-\strong{Deletes import-names:} Upon completion, it calls \code{rm()}s all imports. So
-avoid assigning variable names that are imported.
+\strong{Deletes import-names:} Upon completion, all variables with names in \code{import}
+are deleted to speed up return. Avoid assigning variable names that are imported.
 }
 \examples{
 if (rstudioapi::isAvailable()) {
