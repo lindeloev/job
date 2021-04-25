@@ -26,12 +26,13 @@
 #'   effect by writing `library(my_package)` in the code block.
 #' @param title The job title. If `NULL` (default), use the name of `...` if set
 #'   or `"(untitled)"` if `...` is unnamed.
-#' @param opts List of options to overwrite in the job. See `options()`. Use `NULL`
-#'   to use defaults.
-#' @return NULL but an environment is assigned if the code block is named. This
-#'   environment will include everything defined in the code block but excluding - not
-#'   "untouched" imports. See `...`.
-#' @author Jonas Kristoffer Lindeløv
+#' @param opts List of options to overwrite in the job. Defaults to `options()`,
+#'   i.e., copy all options to the job. `NULL` uses defaults.
+#' @return `NULL`. But an environment is assigned if the code block argument is named.
+#'   The returned environment will include everything defined in the code block
+#'   but excluding - not "untouched" imports. See `...`.
+#' @seealso \code{\link[rstudioapi]{jobRunScript}}
+#' @author Jonas Kristoffer Lindeløv \email{jonas@@lindeloev.dk}
 #' @examples
 #' if (rstudioapi::isAvailable()) {
 #'   # From globalenv
@@ -63,7 +64,7 @@
 #'       print("ignore_var is not set here")
 #'
 #'     names = rep(my_df$names, global_var)
-#'   }, import = c(global_var, my_df), packages = c())
+#'   }, import = c(global_var, my_df), packages = NULL)
 #'
 #'   # later
 #'   result2$names

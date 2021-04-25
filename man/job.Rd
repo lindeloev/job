@@ -18,16 +18,16 @@ will not return anything. See examples.}
 all loaded packages in the calling environment. You can achieve the same
 effect by writing \code{library(my_package)} in the code block.}
 
-\item{opts}{List of options to overwrite in the job. See \code{options()}. Use \code{NULL}
-to use defaults.}
+\item{opts}{List of options to overwrite in the job. Defaults to \code{options()},
+i.e., copy all options to the job. \code{NULL} uses defaults.}
 
 \item{title}{The job title. If \code{NULL} (default), use the name of \code{...} if set
 or \code{"(untitled)"} if \code{...} is unnamed.}
 }
 \value{
-NULL but an environment is assigned if the code block is named. This
-environment will include everything defined in the code block but excluding - not
-"untouched" imports. See \code{...}.
+\code{NULL}. But an environment is assigned if the code block argument is named.
+The returned environment will include everything defined in the code block
+but excluding - not "untouched" imports. See \code{...}.
 }
 \description{
 See examples for an introduction. See details for some warnings.
@@ -75,12 +75,15 @@ if (rstudioapi::isAvailable()) {
       print("ignore_var is not set here")
 
     names = rep(my_df$names, global_var)
-  }, import = c(global_var, my_df), packages = c())
+  }, import = c(global_var, my_df), packages = NULL)
 
   # later
   result2$names
 }
 }
+\seealso{
+\code{\link[rstudioapi]{jobRunScript}}
+}
 \author{
-Jonas Kristoffer Lindeløv
+Jonas Kristoffer Lindeløv \email{jonas@lindeloev.dk}
 }
