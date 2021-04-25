@@ -1,80 +1,100 @@
 if (rstudioapi::isAvailable()) {
   library(rstudioapi)
+  library(tinytest)
+
+  # Helpers. Save in one obj to better control what's in the environment
+  job_helpers = list(
+    cleanup = function() {
+      suppressWarnings(rm(list = c("a", "b", "default", "with_args", "returned",  "blank", "attached_start"), envir = parent.frame()))
+      options(width = job_helpers$opt_width)
+    },
+    equal_sets = function(x, y) {
+      all(x %in% y) & all(y %in% x)
+    },
+    vars = c("job_helpers", "importnames__"),
+    packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base"),
+    opt_width = options("width")[[1]],
+    opt_timeout = options("timeout")[[1]]
+  )
+
+  # For good measure
+  job_helpers$cleanup()
+
   a = 123
   b = list(a = a, goat = "baah")
-
-  # Helpers to be called inside the jobs
-  in_job = list()
-  in_job$equal_sets = function(x, y) {
-    all(x %in% y) & all(y %in% x)
-  }
-  in_job$vars = c("in_job", "importnames__", "wd__")
-  in_job$packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base")
-
 
 
   #########################
   # TEST DEFAULT BEHAVIOR #
   #########################
-  job::job(default_result = {
+  options(width = 81)
+  job::job(default = {
     vars = ls()
     pkgs = .packages()
     a_copy = a
     b_copy = b
     attached_rstudioapi = exists("isAvailable")
+    opts = options()
   })
-
-  # Result is not returned immediately
-  expect_true(exists("default_result") == FALSE)
 
   # Check result
   Sys.sleep(10)  # First is slower
-  expect_true(in_job$equal_sets(default_result$vars, c("a", "b", in_job$vars)))
-  expect_true(in_job$equal_sets(default_result$pkgs, c("job", "rstudioapi", "tinytest", in_job$packages)))
-  expect_identical(default_result$a_copy, a)
-  expect_identical(default_result$b_copy, b)
-  expect_true(default_result$attached_rstudioapi)
-  expect_true(in_job$equal_sets(names(default_result), c(".call", "vars", "pkgs", "a_copy", "b_copy", "attached_rstudioapi")))
-  rm(default_result)
+  expect_true(job_helpers$equal_sets(default$vars, c("a", "b", job_helpers$vars)))
+  expect_true(job_helpers$equal_sets(default$pkgs, c("job", "rstudioapi", "tinytest", job_helpers$packages)))
+  expect_identical(default$a_copy, a)
+  expect_identical(default$b_copy, b)
+  expect_true(default$attached_rstudioapi)
+  expect_true(job_helpers$equal_sets(names(default), c("vars", "pkgs", "a_copy", "b_copy", "attached_rstudioapi", "opts", ".call")))
+  expect_true(default$opts$width == 81 & default$opts$device == options("device"))
+
+  # Cleanup
+  rm(default)
+  options(width = job_helpers$opt_width)
+
 
   #############
   # TEST ARGS #
   #############
+  options(width = 81)
   returned = job::job(with_args = {
     vars = ls()
     pkgs = .packages()
     b_copy = b
     attached_rstudioapi = exists("isAvailable")
-  }, import = c(b, in_job), packages = c("job"), title = "something weird: #/(¤")
-
-
-  # Result is not returned immediately
-  expect_true(exists("with_args") == FALSE)
+    opts = options()
+  }, import = c(b, job_helpers), packages = c("job"), title = "something weird: #/(¤", opts = list(timeout = 59))
 
   # Check result
   Sys.sleep(3)
   expect_null(returned)
-  expect_true(in_job$equal_sets(with_args$vars, c("b", in_job$vars)))
-  expect_true(in_job$equal_sets(with_args$pkgs, c("job", in_job$packages)))
+  expect_true(job_helpers$equal_sets(with_args$vars, c("b", job_helpers$vars)))
+  expect_true(job_helpers$equal_sets(with_args$pkgs, c("job", job_helpers$packages)))
   expect_identical(with_args$b_copy, b)
   expect_true(with_args$attached_rstudioapi == FALSE)
-  expect_true(in_job$equal_sets(names(with_args), c(".call", "vars", "pkgs", "b_copy", "attached_rstudioapi")))
+  expect_true(job_helpers$equal_sets(names(with_args), c("vars", "pkgs", "b_copy", "attached_rstudioapi", "opts", ".call")))
+  expect_true(with_args$opts$width == job_helpers$opt_width & with_args$opts$timeout == 59)
+
+  # Cleanup
   rm(returned)
   rm(with_args)
+  options(width = job_helpers$opt_width)
 
 
-  ################
+  ##############
   # TEST BLANK #
-  ################
-  job::job(blank_slate = {
+  ##############
+  job::job(blank = {
     vars = ls()
     pkgs = .packages()
+    opts = options()
   }, import = NULL, packages = NULL)
 
   Sys.sleep(3)
-  expect_true(in_job$equal_sets(blank_slate$vars, c("importnames__", "wd__")))
-  expect_true(in_job$equal_sets(blank_slate$pkgs, in_job$packages))
-  rm(blank_slate)
+  expect_true(job_helpers$equal_sets(blank$vars, c("importnames__")))
+  expect_true(job_helpers$equal_sets(blank$pkgs, job_helpers$packages))
+  expect_true(job_helpers$equal_sets(names(blank), c("vars", "pkgs", "opts", ".call")))
+  expect_true(blank$opts$width == job_helpers$opt_width & blank$opts$timeout == job_helpers$opt_timeout)
+  rm(blank)
 
 
   ##################
@@ -87,14 +107,15 @@ if (rstudioapi::isAvailable()) {
     a = 1
   }, import = NULL, packages = NULL)  # for speed
 
-  expect_true(in_job$equal_sets(c(attached_start, "attached_start"), ls()))
+  expect_true(job_helpers$equal_sets(c(attached_start, "attached_start"), ls()))
   rm(attached_start)
 
 
   ############
   # CLEAN UP #
   ############
-  rm(list = c("a", "b", "in_job"))
+  job_helpers$cleanup()
+  rm(job_helpers)
 } else {
   expect_error(job::job({a = 1}), pattern = "Jobs can only be created if job")
 }
