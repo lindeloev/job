@@ -1,0 +1,21 @@
+Package: job
+Title: Run Code as an RStudio Job - Free Your Console
+Version: 0.1
+Authors@R: 
+    person(given = "Jonas Kristoffer",
+           family = "Lindeløv",
+           role = c("aut", "cre"),
+           email = "jonas@lindeloev.dk",
+           comment = c(ORCID = "0000-0003-4565-0595"))
+Description: Call `job::job({<code here>})` to run the code as an RStudio job and keep your console free in the meantime. This is useful for testing long-running chunks of code or to test code in an empty environment.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Language: en-US
+Depends: R (>= 3.5.0)
+Imports:
+  rstudioapi (>= 0.13)
+Suggests: 
+    tinytest (>= 1.2.4.5)
