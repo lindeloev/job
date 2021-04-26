@@ -166,7 +166,7 @@ rm(wd__)")
 
   # Prevent error if running from RMarkdown notebook.
   # See https://github.com/lindeloev/job/issues/4
-  if (is.language(chunk_opts$error)) {
+  if (is.language(opts$error)) {
     opts$error = NULL
     opts$dplyr.tibble.print = NULL
     opts$old$rstudio.notebook.executing = FALSE
