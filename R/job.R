@@ -165,6 +165,11 @@ rm(wd__)")
   if (is.list(opts) == FALSE)
     stop("`opts` must be a list (e.g., `options()`) or NULL.")
 
+  # Prevent error if running from RMarkdown notebook.
+  # See https://github.com/lindeloev/job/issues/4
+  if (is.function(opts$error))
+    opts$error = NULL
+
   options_code = "
 # Set options
 invisible(do.call(options, opts__))  # invisible if is.null(opts__)

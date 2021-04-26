@@ -1,6 +1,6 @@
 # job: free your RStudio console
 
-Use `job::job()` to run chunks of R code in an RStudio job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.
+Use `job::job()` to run chunks of R code in an [RStudio](https://www.rstudio.com/) job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.
 
 Install:
 
@@ -36,11 +36,13 @@ brm_result$fit
 brm_result$the_test
 ```
 
+
 ## Turn RStudio's Jobs into a record
 
 Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio's jobs history can be used as a nice record. Make sure to print informative results within the job and give your jobs an appropriate `title`, e.g., (`job::job({<code here>}, title = "Unit test: first attempt at feature X")`.
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
+
 
 ## Finer control
 
@@ -57,6 +59,7 @@ RStudio jobs spin up a new session, i.e., a new environment. By default, `job::j
     1.  your main result is a text output or a file on the disk, or
 
     2.  when the return is a very large object. The underlying `rstudioapi::jobRunScript()` is slow in the back-transfer so it's faster to `saveRDS(obj, filename)` them in the job and `readRDS(filename)` into your current session.
+
 
 ## Some use cases
 
