@@ -164,18 +164,9 @@ rm(wd__)")
   if (is.list(opts) == FALSE)
     stop("`opts` must be a list (e.g., `options()`) or NULL.")
 
-  # Prevent error if running from RMarkdown notebook.
-  # See https://github.com/lindeloev/job/issues/4
-  if (is.language(opts$error)) {
-    opts$error = NULL
-    opts$dplyr.tibble.print = NULL
-    opts$old$rstudio.notebook.executing = FALSE
-    opts$device = "RStudioGD"
-  }
-
   options_code = "
 # Set options
-invisible(do.call(options, opts__))  # invisible if is.null(opts__)
+options(opts__)
 rm(opts__)
 "
 
@@ -215,7 +206,7 @@ rm(opts__)
   output = paste0(
     output, "\n# Save code to environment for future reference\n",
     ".call = \"# Called on ", Sys.time(), "\n", gsub("\"", "\\\\\"", code_str), "\"\n",
-    "class(.call) = 'jobcode'\n"
+    "class(.call) = c('jobcode', 'character')\n"
   )
 
 
