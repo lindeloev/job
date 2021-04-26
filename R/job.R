@@ -159,7 +159,6 @@ rm(wd__)")
   ###########
   # OPTIONS #
   ###########
-  # TO DO: what if NULL or c()?
   if (is.null(opts))
     opts = list()
   if (is.list(opts) == FALSE)
@@ -167,8 +166,12 @@ rm(wd__)")
 
   # Prevent error if running from RMarkdown notebook.
   # See https://github.com/lindeloev/job/issues/4
-  if (is.function(opts$error))
+  if (is.language(chunk_opts$error)) {
     opts$error = NULL
+    opts$dplyr.tibble.print = NULL
+    opts$old$rstudio.notebook.executing = FALSE
+    opts$device = "RStudioGD"
+  }
 
   options_code = "
 # Set options
