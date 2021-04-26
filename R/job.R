@@ -5,15 +5,15 @@
 #' @aliases job
 #' @export
 #' @details
-#' This is a wrapper around `rstudioapi::jobRunScript`.
+#' This is a wrapper around `rstudioapi::jobRunScript`. Some tips:
 #'
-#' **Large objects:**`jobRunScript` is very
+#'  - **Large objects:**`jobRunScript` is very
 #' slow at importing and exporting large objects. Re importing, `as_job` does
 #' sets `importEnv = FALSE` and passes data through a temporary .rds file.
 #' Re exporting, I recommend saving large objects to an .rds file and `rm()` it
 #' from the job so it isn't returned.
 #'
-#' **Deletes import-names:** Upon completion, all variables with names in `import`
+#'  - **Deletes import-names:** Upon completion, all variables with names in `import`
 #' are deleted to speed up return. Avoid assigning variable names that are imported.
 #'
 #' @param ... A named or unnamed code block. Named code blocks will have the result
@@ -32,12 +32,13 @@
 #'   The returned environment will include everything defined in the code block
 #'   but excluding - not "untouched" imports. See `...`.
 #' @seealso \code{\link[rstudioapi]{jobRunScript}}
-#' @author Jonas Kristoffer Lindeløv \email{jonas@@lindeloev.dk}
+#' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
+#' @encoding UTF-8
 #' @examples
 #' if (rstudioapi::isAvailable()) {
 #'   # From globalenv
 #'   global_var = 5
-#'   job(result = {
+#'   job::job(result = {
 #'     x = rnorm(global_var)
 #'     print("This text goes to the job console")
 #'     m = mean(x)
@@ -45,29 +46,28 @@
 #'
 #'   # later:
 #'   print(as.list(result))
-#'   result$m
 #'
 #'
 #'   # Run without assigning anything to the calling environment
-#'   job({
-#'     result = rbind(mtcars, mtcars)
-#'     print(mean(result$mpg))
-#'     # saveRDS(result, "job_result.rds")
+#'   job::job({
+#'     some_cars = mtcars[mtcars$cyl > 4, ]
+#'     print(mean(some_cars$mpg))
+#'     # saveRDS(some_cars, "job_result.rds")
 #'   })
 #'
 #'
 #'   # Specify imports and (no) packages
 #'   my_df = data.frame(names = c("alice", "bob"))
 #'   ignore_var = 15
-#'   job(result2 = {
-#'     if (file.exists("ignore_var") == FALSE)
+#'   job::job(result2 = {
+#'     if (exists("ignore_var") == FALSE)
 #'       print("ignore_var is not set here")
 #'
 #'     names = rep(my_df$names, global_var)
 #'   }, import = c(global_var, my_df), packages = NULL)
 #'
 #'   # later
-#'   result2$names
+#'   print(result2$names)
 #' }
 job = function(..., import = ls(), packages = .packages(), opts = options(), title = NULL) {
   if (rstudioapi::isAvailable() == FALSE)

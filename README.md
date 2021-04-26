@@ -10,7 +10,21 @@ remotes::install_github("lindeloev/job")
 
 ## Typical usage
 
-We all love `brms` but compilation and sampling takes time. Let's run it as a job!
+Write your script as usual. Then wrap parts of it using `job::job({<your code>})` to run that chunk as a job:
+
+```r
+job::job(my_result = {
+  foo = 10
+  bar = rnorm(5)
+})
+```
+
+When the job completes, it silently saves `my_result` (or whatever you called it) to your environment. `my_result` is itself an `environment()` and behaves much like a `list()`:
+
+![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
+
+
+Here is a real-world use case: We all love `brms` but compilation and sampling takes time. Let's run it as a job!
 
 ```r
 library(brms)
@@ -20,7 +34,7 @@ model = mpg ~ hp * wt
 # Send long-running code to a job
 job::job(brm_result = {
   fit = brm(model, data)
-  fit = add_loo(fit)
+  fit = add_criterion(fit, "loo")
   print(summary(fit))  # Show a summary in the job
   the_test = hypothesis(fit, "hp > 0")
 })
@@ -29,12 +43,7 @@ cat("I'm free now! Thank you.
     Sincerely, Console.")
 ```
 
-Now you can follow the progress in the jobs pane and your console is free. When the job completes, it saves `brm_result` to your environment. `brm_result` is itself an `environment()` and behaves much like a `list()`:
-
-```r
-brm_result$fit
-brm_result$the_test
-```
+Now you can follow the progress in the jobs pane and your console is free. `brm_result` will eventually be returned.
 
 
 ## Turn RStudio's Jobs into a record
@@ -67,3 +76,11 @@ RStudio jobs spin up a new session, i.e., a new environment. By default, `job::j
 -   Heavy I/O tasks, like processing large files. Save the results to disk and return nothing.
 -   Run unit tests and other code in an empty environment. By default, `devtools::test()` runs in the current environment, including manually defined variables (e.g., from the last test-run) and attached packages. Call `job::job({devtools::test()}, import = NULL, packages = NULL, opts = NULL)` to run the test in complete isolation.
 -   Upgrading packages
+
+
+## See also
+`job::job()` is aimed at easing interactive development within RStudio. For larger problems, production code, and solutions that work outside of RStudio, check out:
+
+ * The [`future` package](https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html)'s `%<-` operator combined with `plan(multisession)`.
+ 
+ * The [`callr` package](https://callr.r-lib.org/) is a general tool to run code in new R sessions.
