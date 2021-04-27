@@ -65,15 +65,15 @@ RStudio jobs spin up a new session, i.e., a new environment. By default, `job::j
 
 -   `import`: by default, all objects are loaded into the job. Control this using `job::job({}, import = c(model, data))`, e.g., if you have a big global environment. Set `import = NULL` to import nothing.
 
--   `packages`: by default, all attached packages are attached in the job. Control this using `job::job({}, packages = c("brms"))` or set `packages = NULL` to load nothing. If `brms` is not loaded in your current session, adding `library("brms")` to the job code may be more readable than attaching via the `packages` argument.
+-   `packages`: by default, all attached packages are attached in the job. Control this using `job::job({}, packages = c("brms"))` or set `packages = NULL` to load nothing. If `brms` is not loaded in your current session, adding `library("brms")` to the job code may be more readable.
 
--   `options`: by default, all options are overwritten/inserted to the job. Control this using, e.g., `job::job({}, opts = list(mc.cores = 2)` or set `opts = NULL` to use default options. If you want to set job-specific options, adding `options(mc.cores = 2)` to the job code may be more readable than setting via the `opts` argument.
+-   `options`: by default, all options are overwritten/inserted to the job. Control this using, e.g., `job::job({}, opts = list(mc.cores = 2)` or set `opts = NULL` to use default options. If you want to set job-specific options, adding `options(mc.cores = 2)` to the job code may be more readable.
 
--   `export`: in the example above, we assigned the job environment to `brm_result` upon completion. Naturally, you can choose any name, e.g., `job::job(fancy_name = {a = 5})`. To return nothing, simply omit the name (`job::job({a = 5})`. Returning nothing is useful when
+-   `export`: in the example above, we assigned the job environment to `brm_result` upon completion. Naturally, you can choose any name, e.g., `job::job(fancy_name = {a = 5})`. To return nothing, use an unnamed code chunk (insert results to `globalenv()` and remove everything before return: (`job::job({a = 5; rm(list=ls())})`. Returning nothing is useful when
 
     1.  your main result is a text output or a file on the disk, or
 
-    2.  when the return is a very large object. The underlying `rstudioapi::jobRunScript()` is slow in the back-transfer so it's faster to `saveRDS(obj, filename)` them in the job and `readRDS(filename)` into your current session.
+    2.  when the return is a very large object. The underlying `rstudioapi::jobRunScript()` is slow in the back-transfer so it's usually faster to `saveRDS(obj, filename)` them in the job and `readRDS(filename)` into your current session.
 
 
 ## Some use cases

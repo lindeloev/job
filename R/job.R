@@ -55,7 +55,7 @@
 #'   job::job(my_result = {
 #'     y = rnorm(global_var)
 #'     sigma = sd(y)
-#'   }, title = "This is my title: {code}")
+#'   }, title = "Title with code: {code}")
 #'
 #'   # later:
 #'   print(as.list(my_result))
@@ -81,7 +81,7 @@
 #'       print("ignore_var is not set here")
 #'
 #'     names = rep(my_df$names, global_var)
-#'   }, import = c(global_var, my_df), packages = NULL, options = list(mc.cores = 3))
+#'   }, import = c(global_var, my_df), packages = NULL, opts = list(mc.cores = 3))
 #'
 #'   # later
 #'   print(result2$names)
