@@ -1,0 +1,9 @@
+Name: Run selection as job
+Description: Run the selected code in a *replica session*. Results are returned to `globalenv()` upon completion.
+Binding: jobaddin_selection
+Interactive: false
+
+Name: Run selection as job in empty session
+Description: The code will run in an *empty* default session. Results are returned to `globalenv()` upon completion.
+Binding: jobaddin_selection_empty
+Interactive: false
