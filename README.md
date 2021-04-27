@@ -13,18 +13,16 @@ remotes::install_github("lindeloev/job")
 Write your script as usual. Then wrap parts of it using `job::job({<your code>})` to run that chunk as a job:
 
 ```r
-job::job(my_result = {
+job::job({
   foo = 10
   bar = rnorm(5)
 })
 ```
 
-When the job completes, it silently saves `my_result` (or whatever you called it) to your environment. `my_result` is itself an `environment()` and behaves much like a `list()`:
-
-![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
+When the job completes, it silently saves `foo` and `bar` to your global environment.
 
 
-Here is a real-world use case: We all love `brms` but compilation and sampling takes time. Let's run it as a job!
+Another use case: We all love `brms` but compilation and sampling takes time. Let's run it as a job!
 
 ```r
 library(brms)
@@ -43,7 +41,15 @@ cat("I'm free now! Thank you.
     Sincerely, Console.")
 ```
 
-Now you can follow the progress in the jobs pane and your console is free. `brm_result` will eventually be returned.
+Now you can follow the progress in the jobs pane and your console is free. Notice that because we named the code block `brm_result`, it will return the contents as an `environment()` called `brm_result` (or whatever you called it).`brm_result` behaves much like a `list()`:
+
+![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
+
+
+## Addins
+If you run `library(job)`, two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) become available. Select some code code in your editor and click an Addin to run it as a job.
+
+![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png)
 
 
 ## Turn RStudio's Jobs into a record

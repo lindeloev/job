@@ -8,55 +8,72 @@
 #' This is a wrapper around `rstudioapi::jobRunScript`. Some tips:
 #'
 #'  - **Large objects:**`jobRunScript` is very
-#' slow at importing and exporting large objects. Re importing, `as_job` does
-#' sets `importEnv = FALSE` and passes data through a temporary .rds file.
-#' Re exporting, I recommend saving large objects to an .rds file and `rm()` it
-#' from the job so it isn't returned.
+#' slow at importing and exporting large objects. For exporting back into
+#' `globalenv()`, it may be faster to `saveRDS()` results within the job and
+#' `readRDS()` them in your environment.
 #'
 #'  - **Deletes import-names:** Upon completion, all variables with names in `import`
 #' are deleted to speed up return. Avoid assigning variable names that are imported.
 #'
-#' @param ... A named or unnamed code block. Named code blocks will have the result
-#'   assigned to that name in `globalenv()` upon completion. Unnamed code blocks
-#'   will not return anything. See examples.
+#' @param ... A named or unnamed code block enclosed in curly brackets, `{}`.
+#'   Unnamed code blocks will assign job variables directly to `globalenv()`
+#'   upon completion. This means that if you add `rm(list = ls())` to as the
+#'   last line of code, nothing is returned.
+#'
+#'   Named code blocks will assign the that name in `globalenv()`.
 #' @param import A vector of un-quoted variables to import into the job. E.g.,
 #'   `c(var1, var2)`. `ls()` (default) means "all" and `c()` is "nothing".
 #' @param packages Character vector of packages to load in the job. Defaults to
 #'   all loaded packages in the calling environment. You can achieve the same
 #'   effect by writing `library(my_package)` in the code block.
-#' @param title The job title. If `NULL` (default), use the name of `...` if set
-#'   or `"(untitled)"` if `...` is unnamed.
+#' @param title The job title. You can write e.g., `"Cross-Validation: {code}"` to
+#'   show some code in the title. If `title = NULL` (default), the name of the
+#'   code chunk is used. If `...` unnamed, code is shown.
 #' @param opts List of options to overwrite in the job. Defaults to `options()`,
 #'   i.e., copy all options to the job. `NULL` uses defaults.
-#' @return `NULL`. But an environment is assigned if the code block argument is named.
-#'   The returned environment will include everything defined in the code block
-#'   but excluding - not "untouched" imports. See `...`.
+#' @return Invisibly returns the job id on which you can call other `rstudioapi::job*`
+#'   functions, e.g., `rstudioapi::rstudioapi::jobRemove(job_id)`.
 #' @seealso \code{\link[rstudioapi]{jobRunScript}}
 #' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
 #' @encoding UTF-8
 #' @examples
 #' if (rstudioapi::isAvailable()) {
-#'   # From globalenv
+#'   # Unnamed code chunks returns to globalenv()
 #'   global_var = 5
-#'   job::job(result = {
+#'   job::job({
 #'     x = rnorm(global_var)
 #'     print("This text goes to the job console")
 #'     m = mean(x)
 #'   })
 #'
 #'   # later:
-#'   print(as.list(result))
+#'   print(x)
+#'   print(m)
 #'
 #'
-#'   # Run without assigning anything to the calling environment
+#'   # Named code chunks assign job environment to that name
+#'   job::job(my_result = {
+#'     y = rnorm(global_var)
+#'     sigma = sd(y)
+#'   }, title = "This is my title: {code}")
+#'
+#'   # later:
+#'   print(as.list(my_result))
+#'
+#'
+#'   # Delete everything in the job environment to return nothing.
+#'   # Useful if text output + file output is primary
 #'   job::job({
 #'     some_cars = mtcars[mtcars$cyl > 4, ]
 #'     print(mean(some_cars$mpg))
+#'     print(summary(some_cars))
 #'     # saveRDS(some_cars, "job_result.rds")
+#'
+#'     rm(list = ls())  # remove everything
 #'   })
 #'
 #'
-#'   # Specify imports and (no) packages
+#'   # Control imports from calling environment (variables, packages, options)
 #'   my_df = data.frame(names = c("alice", "bob"))
 #'   ignore_var = 15
 #'   job::job(result2 = {
@@ -64,24 +81,27 @@
 #'       print("ignore_var is not set here")
 #'
 #'     names = rep(my_df$names, global_var)
-#'   }, import = c(global_var, my_df), packages = NULL)
+#'   }, import = c(global_var, my_df), packages = NULL, options = list(mc.cores = 3))
 #'
 #'   # later
 #'   print(result2$names)
 #' }
 job = function(..., import = ls(), packages = .packages(), opts = options(), title = NULL) {
   if (rstudioapi::isAvailable() == FALSE)
-    stop("Jobs can only be created if job::job() is called in RStudio.")
+    stop("job::job() must be called from within RStudio.")
 
   ########################
   # CODE AND RETURN-NAME #
   ########################
   args = match.call()[-1]  # args, not function name
   result_varname = names(args)[names(args) %in% c("import", "packages", "export", "title", "opts") == FALSE]
-  if (length(args) == 0 | length(result_varname) > 1)
+  if (length(args) == 0)
     stop("Must have exactly one code block.")
-  if (length(result_varname) == 0) {
-    result_varname = ""
+  if (length(result_varname) > 1)
+    stop("Only one code block allowed. Did you misspell an argument?")
+
+  if (is.null(result_varname) || result_varname == "") {
+    result_varname = "R_GlobalEnv"  # signals to rstudiapi::jobRunScript() that it should return everything
     code = args[[1]]
   } else {
     code = args[[which(names(args) == result_varname)]]
@@ -99,12 +119,13 @@ job = function(..., import = ls(), packages = .packages(), opts = options(), tit
   # TITLE #
   #########
   # Set job title
-  if (is.null(title) == FALSE && is.atomic(title) == FALSE)
-    stop("title must be NULL or length 1")
+  title_code = substr(code_str, 1, 80)
   if (is.null(title)) {
-    job_title = ifelse(result_varname == "", "(untitled)", result_varname)
+    job_title = ifelse(result_varname == "R_GlobalEnv", title_code, result_varname)
+  } else if (is.atomic(title) & is.character(title)) {
+    job_title = gsub("{code}", title_code, title, fixed = TRUE)
   } else {
-    job_title = as.character(title)
+    stop("`title` must be atomic character or NULL")
   }
 
 
@@ -139,7 +160,7 @@ job = function(..., import = ls(), packages = .packages(), opts = options(), tit
 
   import_bytes = utils::object.size(import__)
   if (import_bytes > 400 * 10^6)  # Message if large
-    message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `as_job(..., import = c(fewer, or, smaller, vars)` to speed up.")
+    message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `job::job(..., import = c(fewer, or, smaller, vars)` to speed up.")
 
   import_file = gsub("\\\\", "/", tempfile())
   import_startcode = paste0("
@@ -159,10 +180,18 @@ rm(wd__)")
   ###########
   # OPTIONS #
   ###########
-  if (is.null(opts))
+  if (is.null(opts)) {
     opts = list()
-  if (is.list(opts) == FALSE)
+  } else if (is.list(opts) == FALSE) {
     stop("`opts` must be a list (e.g., `options()`) or NULL.")
+  } else {
+    # Options set by RStudio
+    opts$buildtools.check = NULL
+    opts$buildtools.with = NULL
+
+    # Options set by RMarkdown notebooks
+    opts$error = NULL
+  }
 
   options_code = "
 # Set options
@@ -196,16 +225,17 @@ rm(opts__)
     code_str, "\n",
 
     "# Clean up
-    suppressWarnings(rm(list = importnames__))
-    rm(importnames__)
-    message(Sys.time(), ': Job finished.')
-    options(warn = -1)\n"  # Suppress warnings that [package] may not be available when readRDS.
+    if (exists('importnames__')) {
+      suppressWarnings(rm(list = importnames__))
+      rm(importnames__)
+    }
+    message(Sys.time(), ': Job finished.')\n"
   )
 
   # Add .call
   output = paste0(
     output, "\n# Save code to environment for future reference\n",
-    ".call = \"# Called on ", Sys.time(), "\n", gsub("\"", "\\\\\"", code_str), "\"\n",
+    ".call = paste0(\"# Job started: ", Sys.time(), "\n\n", gsub("\"", "\\\\\"", code_str), "\n\n# Job completed: \", Sys.time())\n",
     "class(.call) = c('jobcode', 'character')\n"
   )
 
@@ -216,8 +246,8 @@ rm(opts__)
   # Write R code to file and execute it as a job
   script_file = tempfile()
   write(output, file = script_file)
-  rstudioapi::jobRunScript(script_file, job_title, importEnv = FALSE, exportEnv = result_varname)  # "" means "no export"
+  job_id = rstudioapi::jobRunScript(script_file, job_title, importEnv = FALSE, exportEnv = result_varname)
 
   # Return nothing
-  invisible(NULL)
+  invisible(job_id)
 }

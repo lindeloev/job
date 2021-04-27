@@ -8,9 +8,12 @@
 job(..., import = ls(), packages = .packages(), opts = options(), title = NULL)
 }
 \arguments{
-\item{...}{A named or unnamed code block. Named code blocks will have the result
-assigned to that name in \code{globalenv()} upon completion. Unnamed code blocks
-will not return anything. See examples.}
+\item{...}{A named or unnamed code block enclosed in curly brackets, \code{{}}.
+Unnamed code blocks will assign job variables directly to \code{globalenv()}
+upon completion. This means that if you add \code{rm(list = ls())} to as the
+last line of code, nothing is returned.
+
+Named code blocks will assign the that name in \code{globalenv()}.}
 
 \item{import}{A vector of un-quoted variables to import into the job. E.g.,
 \code{c(var1, var2)}. \code{ls()} (default) means "all" and \code{c()} is "nothing".}
@@ -22,13 +25,13 @@ effect by writing \code{library(my_package)} in the code block.}
 \item{opts}{List of options to overwrite in the job. Defaults to \code{options()},
 i.e., copy all options to the job. \code{NULL} uses defaults.}
 
-\item{title}{The job title. If \code{NULL} (default), use the name of \code{...} if set
-or \code{"(untitled)"} if \code{...} is unnamed.}
+\item{title}{The job title. You can write e.g., \code{"Cross-Validation: {code}"} to
+show some code in the title. If \code{title = NULL} (default), the name of the
+code chunk is used. If \code{...} unnamed, code is shown.}
 }
 \value{
-\code{NULL}. But an environment is assigned if the code block argument is named.
-The returned environment will include everything defined in the code block
-but excluding - not "untouched" imports. See \code{...}.
+Silently returns the job id on which you can call
+\verb{rstudioapi::rstudioapi::jobRemove(job_id)} etc.
 }
 \description{
 See examples for an introduction. See details for some warnings.
@@ -37,37 +40,51 @@ See examples for an introduction. See details for some warnings.
 This is a wrapper around \code{rstudioapi::jobRunScript}. Some tips:
 \itemize{
 \item \strong{Large objects:}\code{jobRunScript} is very
-slow at importing and exporting large objects. Re importing, \code{as_job} does
-sets \code{importEnv = FALSE} and passes data through a temporary .rds file.
-Re exporting, I recommend saving large objects to an .rds file and \code{rm()} it
-from the job so it isn't returned.
+slow at importing and exporting large objects. For exporting back into
+\code{globalenv()}, it may be faster to \code{saveRDS()} results within the job and
+\code{readRDS()} them in your environment.
 \item \strong{Deletes import-names:} Upon completion, all variables with names in \code{import}
 are deleted to speed up return. Avoid assigning variable names that are imported.
 }
 }
 \examples{
 if (rstudioapi::isAvailable()) {
-  # From globalenv
+  # Unnamed code chunks returns to globalenv()
   global_var = 5
-  job::job(result = {
+  job::job({
     x = rnorm(global_var)
     print("This text goes to the job console")
     m = mean(x)
   })
 
   # later:
-  print(as.list(result))
+  print(x)
+  print(m)
 
 
-  # Run without assigning anything to the calling environment
+  # Named code chunks assign job environment to that name
+  job::job(my_result = {
+    y = rnorm(global_var)
+    sigma = sd(y)
+  }, title = "This is my title: {code}")
+
+  # later:
+  print(as.list(my_result))
+
+
+  # Delete everything in the job environment to return nothing.
+  # Useful if text output + file output is primary
   job::job({
     some_cars = mtcars[mtcars$cyl > 4, ]
     print(mean(some_cars$mpg))
+    print(summary(some_cars))
     # saveRDS(some_cars, "job_result.rds")
+
+    rm(list = ls())  # remove everything
   })
 
 
-  # Specify imports and (no) packages
+  # Control imports from calling environment (variables, packages, options)
   my_df = data.frame(names = c("alice", "bob"))
   ignore_var = 15
   job::job(result2 = {
@@ -75,7 +92,7 @@ if (rstudioapi::isAvailable()) {
       print("ignore_var is not set here")
 
     names = rep(my_df$names, global_var)
-  }, import = c(global_var, my_df), packages = NULL)
+  }, import = c(global_var, my_df), packages = NULL, options = list(mc.cores = 3))
 
   # later
   print(result2$names)

@@ -68,7 +68,7 @@ if (rstudioapi::isAvailable()) {
 
   # Check result
   Sys.sleep(3)
-  expect_null(returned)
+  expect_true(is.character(returned))
   expect_true(job_helpers$equal_sets(with_args$vars, c("b", job_helpers$vars)))
   expect_true(job_helpers$equal_sets(with_args$pkgs, c("job", job_helpers$packages)))
   expect_identical(with_args$b_copy, b)
@@ -99,18 +99,25 @@ if (rstudioapi::isAvailable()) {
   rm(blank)
 
 
-  ##################
-  # TEST NO RETURN #
-  ##################
+  #########################
+  # TEST RETURN TO GLOBAL #
+  #########################
 
   attached_start = ls()
 
   job::job({
-    a = 1
-  }, import = NULL, packages = NULL)  # for speed
+    a = 10  # Try assigning new value
+    newvar1 = 1
+    newvar5 = 5 * 3
+  }, packages = NULL)  # for speed
 
-  expect_true(job_helpers$equal_sets(c(attached_start, "attached_start"), ls()))
+  Sys.sleep(3)
+  expect_true(a == 123)  # No overwrite of imported
+  expect_true(newvar1 == 1 & newvar5 == 15)
+  expect_true(job_helpers$equal_sets(c(attached_start, "attached_start", "newvar1", "newvar5"), ls()))
   rm(attached_start)
+  rm(newvar1)
+  rm(newvar5)
 
 
   ############
@@ -119,5 +126,5 @@ if (rstudioapi::isAvailable()) {
   job_helpers$cleanup()
   rm(job_helpers)
 } else {
-  expect_error(job::job({a = 1}), pattern = "Jobs can only be created if job")
+  expect_error(job::job({a = 1}), pattern = "must be called from within RStudio.")
 }
