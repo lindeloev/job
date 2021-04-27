@@ -8,6 +8,17 @@ Install:
 remotes::install_github("lindeloev/job")
 ```
 
+## Addins
+Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed with `job`. Simply select some code code in your editor and click one of the Addins to run it as a job. The results are returned once the job completes.
+
+![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png)
+
+Import and export differently:
+
+ * "Run selection as job" imports everything from your environment, so it feels like home. It will only return variables names that are not already in your environment upon submitting the job, so assign to novel names if you want them to return.
+ * "Run selection as job in empty session" imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned, and overwritten if they already exist in your environment.
+
+
 ## Typical usage
 
 Write your script as usual. Then wrap parts of it using `job::job({<your code>})` to run that chunk as a job:
@@ -41,15 +52,9 @@ cat("I'm free now! Thank you.
     Sincerely, Console.")
 ```
 
-Now you can follow the progress in the jobs pane and your console is free. Notice that because we named the code block `brm_result`, it will return the contents as an `environment()` called `brm_result` (or whatever you called it).`brm_result` behaves much like a `list()`:
+Now you can follow the progress in the jobs pane and your console is free. Because we named the code block `brm_result`, it will return the contents as an `environment()` called `brm_result` (or whatever you called it).`brm_result` behaves much like a `list()`:
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
-
-
-## Addins
-If you run `library(job)`, two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) become available. Select some code code in your editor and click an Addin to run it as a job.
-
-![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png)
 
 
 ## Turn RStudio's Jobs into a record
