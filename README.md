@@ -13,10 +13,8 @@ Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed wit
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png)
 
-Import and export differently:
-
- * "Run selection as job" imports everything from your environment, so it feels like home. It will only return variables names that are not already in your environment upon submitting the job, so assign to novel names if you want them to return.
- * "Run selection as job in empty session" imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned, and overwritten if they already exist in your environment.
+ * *"Run selection as job"* imports everything from your environment, so it feels like home. It will only return variables names that are not already in your environment upon submitting the job, so assign to novel names if you want them to return.
+ * *"Run selection as job in empty session"* imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned, and overwritten if they already exist in your environment.
 
 
 ## Typical usage
