@@ -8,7 +8,7 @@
 #' This is a wrapper around `rstudioapi::jobRunScript`. Some tips:
 #'
 #'  - **Large objects:**`jobRunScript` is very
-#' slow at importing and exporting large objects. Re importing, `as_job` does
+#' slow at importing and exporting large objects. Re importing, `job` does
 #' sets `importEnv = FALSE` and passes data through a temporary .rds file.
 #' Re exporting, I recommend saving large objects to an .rds file and `rm()` it
 #' from the job so it isn't returned.
@@ -139,7 +139,7 @@ job = function(..., import = ls(), packages = .packages(), opts = options(), tit
 
   import_bytes = utils::object.size(import__)
   if (import_bytes > 400 * 10^6)  # Message if large
-    message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `as_job(..., import = c(fewer, or, smaller, vars)` to speed up.")
+    message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `job(..., import = c(fewer, or, smaller, vars)` to speed up.")
 
   import_file = gsub("\\\\", "/", tempfile())
   import_startcode = paste0("
