@@ -13,7 +13,6 @@ if (rstudioapi::isAvailable()) {
     equal_sets = function(x, y) {
       all(x %in% y) & all(y %in% x)
     },
-    vars = c("job_helpers", "importnames__"),
     packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base"),
     opt_warning.length = options("warning.length")[[1]],
     opt_timeout = options("timeout")[[1]]
@@ -41,7 +40,7 @@ if (rstudioapi::isAvailable()) {
 
   # Check result
   Sys.sleep(10)  # First is slower
-  expect_true(job_helpers$equal_sets(default$vars, c("a", "b", job_helpers$vars)))
+  expect_true(job_helpers$equal_sets(default$vars, c("a", "b", "importnames__")))
   expect_true(job_helpers$equal_sets(default$pkgs, c("job", "rstudioapi", "tinytest", job_helpers$packages)))
   expect_identical(default$a_copy, a)
   expect_identical(default$b_copy, b)
@@ -69,7 +68,7 @@ if (rstudioapi::isAvailable()) {
   # Check result
   Sys.sleep(3)
   expect_true(is.character(returned))
-  expect_true(job_helpers$equal_sets(with_args$vars, c("b", job_helpers$vars)))
+  expect_true(job_helpers$equal_sets(with_args$vars, c("b", "job_helpers", "importnames__")))
   expect_true(job_helpers$equal_sets(with_args$pkgs, c("job", job_helpers$packages)))
   expect_identical(with_args$b_copy, b)
   expect_true(with_args$attached_rstudioapi == FALSE)

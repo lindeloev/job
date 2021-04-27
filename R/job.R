@@ -21,8 +21,12 @@
 #'   last line of code, nothing is returned.
 #'
 #'   Named code blocks will assign the that name in `globalenv()`.
-#' @param import A vector of un-quoted variables to import into the job. E.g.,
-#'   `c(var1, var2)`. `ls()` (default) means "all" and `c()` is "nothing".
+#' @param import Which objects to import into the job.
+#'  * `"auto"` (default): Detect which objects are used in the code and import
+#'    those.
+#'  * `"all"`: Import all objects.
+#'  * `c(foo, bar, ...)`: A vector of un-quoted variables to import into the job.
+#'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
 #'   all loaded packages in the calling environment. You can achieve the same
 #'   effect by writing `library(my_package)` in the code block.
@@ -86,7 +90,7 @@
 #'   # later
 #'   print(result2$names)
 #' }
-job = function(..., import = ls(), packages = .packages(), opts = options(), title = NULL) {
+job = function(..., import = "auto", packages = .packages(), opts = options(), title = NULL) {
   if (rstudioapi::isAvailable() == FALSE)
     stop("job::job() must be called from within RStudio.")
 
@@ -143,16 +147,20 @@ job = function(..., import = ls(), packages = .packages(), opts = options(), tit
   ##########
   # IMPORT #
   ##########
-  # Save to CSV. Then write code that imports it to the job.
+
+  # Save to RDS Then write code that imports it to the job.
   import_varnames = as.character(substitute(import))
   if (length(import_varnames) == 0) {
-
-  } else if (length(import_varnames) == 1 && import_varnames == "ls") {
+    # stay NULL
+  } else if (length(import_varnames) == 1 && import_varnames == "auto") {
+    ls_varnames = ls(envir = parent.frame())
+    import_varnames = ls_varnames[ls_varnames %in% all.names(parse(text = code_str))]
+  } else if (length(import_varnames) == 1 && import_varnames == "all") {
     import_varnames = ls(envir = parent.frame())
   } else if (import_varnames[1] == "c") {
     import_varnames = import_varnames[-1]
   } else {
-    stop("`import` must be a character vector or have length 0.")
+    stop("`import` must be one of 'auto', 'all', NULL, or a c(vector, of, variables).")
   }
 
   import__ = lapply(import_varnames, get)
@@ -160,7 +168,7 @@ job = function(..., import = ls(), packages = .packages(), opts = options(), tit
 
   import_bytes = utils::object.size(import__)
   if (import_bytes > 400 * 10^6)  # Message if large
-    message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `job::job(..., import = c(fewer, or, smaller, vars)` to speed up.")
+    message(Sys.time(), ": Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `job::job(..., import = c(fewer, or, smaller, vars)` if that narrows in.")
 
   import_file = gsub("\\\\", "/", tempfile())
   import_startcode = paste0("
@@ -236,7 +244,8 @@ rm(opts__)
   output = paste0(
     output, "\n# Save code to environment for future reference\n",
     ".call = paste0(\"# Job started: ", Sys.time(), "\n\n", gsub("\"", "\\\\\"", code_str), "\n\n# Job completed: \", Sys.time())\n",
-    "class(.call) = c('jobcode', 'character')\n"
+    "class(.call) = c('jobcode', 'character')\n
+    options(warn = -1)"
   )
 
 

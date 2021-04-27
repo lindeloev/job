@@ -68,7 +68,7 @@ Often, the results of the long-running chunks are the most interesting. But they
 
 RStudio jobs spin up a new session, i.e., a new environment. By default, `job::job()` will make this environment identical to your current one. But you can fine control this:
 
--   `import`: by default, all objects are loaded into the job. Control this using `job::job({}, import = c(model, data))`, e.g., if you have a big global environment. Set `import = NULL` to import nothing.
+-   `import`: the default "auto" setting imports all objects that are referenced by the code into the job. Control this using `job::job({}, import = c(model, data))`. You can also import everything (`import = "all"`) or nothing (`import = NULL`).
 
 -   `packages`: by default, all attached packages are attached in the job. Control this using `job::job({}, packages = c("brms"))` or set `packages = NULL` to load nothing. If `brms` is not loaded in your current session, adding `library("brms")` to the job code may be more readable.
 
