@@ -18,4 +18,4 @@ Depends: R (>= 3.5.0)
 Imports:
   rstudioapi (>= 0.13)
 Suggests: 
-  tinytest (>= 1.2.4.5)
+  tinytest (>= 1.2.4)

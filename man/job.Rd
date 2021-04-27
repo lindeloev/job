@@ -5,7 +5,13 @@
 \alias{job}
 \title{Run Code as an RStudio Job}
 \usage{
-job(..., import = ls(), packages = .packages(), opts = options(), title = NULL)
+job(
+  ...,
+  import = "auto",
+  packages = .packages(),
+  opts = options(),
+  title = NULL
+)
 }
 \arguments{
 \item{...}{A named or unnamed code block enclosed in curly brackets, \code{{}}.
@@ -15,8 +21,14 @@ last line of code, nothing is returned.
 
 Named code blocks will assign the that name in \code{globalenv()}.}
 
-\item{import}{A vector of un-quoted variables to import into the job. E.g.,
-\code{c(var1, var2)}. \code{ls()} (default) means "all" and \code{c()} is "nothing".}
+\item{import}{Which objects to import into the job.
+\itemize{
+\item \code{"auto"} (default): Detect which objects are used in the code and import
+those.
+\item \code{"all"}: Import all objects.
+\item \code{c(foo, bar, ...)}: A vector of un-quoted variables to import into the job.
+\item \code{NULL}: import nothing.
+}}
 
 \item{packages}{Character vector of packages to load in the job. Defaults to
 all loaded packages in the calling environment. You can achieve the same
@@ -30,8 +42,8 @@ show some code in the title. If \code{title = NULL} (default), the name of the
 code chunk is used. If \code{...} unnamed, code is shown.}
 }
 \value{
-Silently returns the job id on which you can call
-\verb{rstudioapi::rstudioapi::jobRemove(job_id)} etc.
+Invisibly returns the job id on which you can call other \verb{rstudioapi::job*}
+functions, e.g., \verb{rstudioapi::rstudioapi::jobRemove(job_id)}.
 }
 \description{
 See examples for an introduction. See details for some warnings.
@@ -66,7 +78,7 @@ if (rstudioapi::isAvailable()) {
   job::job(my_result = {
     y = rnorm(global_var)
     sigma = sd(y)
-  }, title = "This is my title: {code}")
+  }, title = "Title with code: {code}")
 
   # later:
   print(as.list(my_result))
@@ -92,7 +104,7 @@ if (rstudioapi::isAvailable()) {
       print("ignore_var is not set here")
 
     names = rep(my_df$names, global_var)
-  }, import = c(global_var, my_df), packages = NULL, options = list(mc.cores = 3))
+  }, import = c(global_var, my_df), packages = NULL, opts = list(mc.cores = 3))
 
   # later
   print(result2$names)
