@@ -1,3 +1,5 @@
 ^job\.Rproj$
 ^\.Rproj\.user$
-^LICENSE\.md$
+^\.github$
+^TO DO\.md$
+^cran-comments\.md$
