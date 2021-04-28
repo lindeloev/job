@@ -123,7 +123,7 @@ job = function(..., import = "auto", packages = .packages(), opts = options(), t
   # TITLE #
   #########
   # Set job title
-  title_code = substr(code_str, 1, 80)
+  title_code = paste0("{", substr(code_str, 1, 80), "}")
   if (is.null(title)) {
     job_title = ifelse(result_varname == "R_GlobalEnv", title_code, result_varname)
   } else if (is.atomic(title) & is.character(title)) {
@@ -149,21 +149,22 @@ job = function(..., import = "auto", packages = .packages(), opts = options(), t
   ##########
 
   # Save to RDS Then write code that imports it to the job.
+  call_env = parent.frame()
   import_varnames = as.character(substitute(import))
   if (length(import_varnames) == 0) {
     # stay NULL
   } else if (length(import_varnames) == 1 && import_varnames == "auto") {
-    ls_varnames = ls(envir = parent.frame())
+    ls_varnames = ls(envir = call_env)
     import_varnames = ls_varnames[ls_varnames %in% all.names(parse(text = code_str))]
   } else if (length(import_varnames) == 1 && import_varnames == "all") {
-    import_varnames = ls(envir = parent.frame())
+    import_varnames = ls(envir = call_env)
   } else if (import_varnames[1] == "c") {
     import_varnames = import_varnames[-1]
   } else {
     stop("`import` must be one of 'auto', 'all', NULL, or a c(vector, of, variables).")
   }
 
-  import__ = lapply(import_varnames, get)
+  import__ = lapply(import_varnames, get, envir = call_env)  # lapply runs get() in an environment
   names(import__) = import_varnames
 
   import_bytes = utils::object.size(import__)
