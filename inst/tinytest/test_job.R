@@ -20,7 +20,12 @@ if (rstudioapi::isAvailable()) {
     import = c(".__js__", ".Random.seed"),
     packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base"),
     opt_warning.length = options("warning.length")[[1]],
-    opt_timeout = options("timeout")[[1]]
+    opt_timeout = options("timeout")[[1]],
+    test_addin = function(code, func) {
+      rstudioapi::selectionSet(code);
+      rstudioapi:::setSelectionRanges(rstudioapi::document_range(c(0, 0), c(10000, 10000)));
+      func()
+    }
   )
 
   # For good measure
@@ -46,7 +51,7 @@ if (rstudioapi::isAvailable()) {
   })
 
   # Check result
-  Sys.sleep(10)  # First is slower
+  Sys.sleep(5)  # First is slower
   expect_true(helpers$equal_sets(default$vars, c("a", "b", "helpers", helpers$import)))
   expect_true(helpers$equal_sets(default$pkgs, c("rstudioapi", "tinytest", helpers$packages)))
   expect_identical(default$a_copy, a)
@@ -158,6 +163,25 @@ if (rstudioapi::isAvailable()) {
   rm(attached_start)
   rm(newvar1)
   rm(newvar5)
+
+
+
+  ###############
+  # TEST ADDINS #
+  ###############
+  # Run these in the console
+  helpers$test_addin("qqq = a * 3; sss = c(1,3,5)", job:::jobaddin_selection)
+  expect_identical(qqq, a * 3)
+  expect_identical(sss, c(1, 3, 5))
+  rm(qqq)
+  rm(sss)
+
+  helpers$test_addin("a_exists = exists('a')", job:::jobaddin_selection_empty)
+  expect_false(a_exists)
+  expect_identical(a, 123)  # Quick check that it kept it's value, even though overwritten
+  expect_true(helpers$equal_sets(ls(all.names = TRUE), c("a", "a_exists", "b", "helpers", "sss")))
+  rm(a_exists)
+
 
 
   ############
