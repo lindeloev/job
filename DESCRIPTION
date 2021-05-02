@@ -16,6 +16,7 @@ RoxygenNote: 7.1.1
 Language: en-US
 Depends: R (>= 3.5.0)
 Imports:
-  rstudioapi (>= 0.13)
+  rstudioapi (>= 0.13),
+  digest (>= 0.6.27)
 Suggests: 
   tinytest (>= 1.2.4)

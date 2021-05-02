@@ -7,7 +7,7 @@
 \usage{
 job(
   ...,
-  import = "auto",
+  import = "all",
   packages = .packages(),
   opts = options(),
   title = NULL

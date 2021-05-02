@@ -1,14 +1,3 @@
-#' Nice print .call
-#'
-#' @aliases print.jobcode
-#' @export
-#' @param x Text to print
-#' @param ... Currently unused
-print.jobcode = function(x, ...) {
-  cat(x)
-}
-
-# Addin functions
 jobaddin_run = function(pattern) {
   j__ <<- list()  # Don't know why it has to be in global...
   j__$selection = rstudioapi::selectionGet()$value

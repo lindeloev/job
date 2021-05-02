@@ -1,3 +1,7 @@
+[![CRAN status](https://www.r-pkg.org/badges/version/job)](https://cran.r-project.org/package=job)
+[![R-CMD-check](https://github.com/lindeloev/job/workflows/R-CMD-check/badge.svg)](https://github.com/lindeloev/job/actions)
+<!-- [![job CRAN downloads](https://cranlogs.r-pkg.org/badges/job)](https://cran.r-project.org/package=job) -->
+
 # job: free your RStudio console
 
 Use `job::job()` to run chunks of R code in an [RStudio](https://www.rstudio.com/) job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.
