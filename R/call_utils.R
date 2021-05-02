@@ -59,11 +59,11 @@ save_env = function(import_varnames, env, code_str) {
   # Warn about large file sizes, i.e., slow import
   tryCatch({
     obj_bytes = sapply(import_varnames, function(x) utils::object.size(deep_list(get(x, envir = env))))
-    import_bytes = sum(obj_bytes)
+    import_bytes = sum(as.numeric(obj_bytes))
     if (import_bytes > 400 * 10^6)  # Message if large
       message("Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `import = 'auto' or `import = c(fewer, smaller, vars)`` to import relevant variables only.")
 
-  }, error = function(e) message("Could not evaluate size of import due to recursion. Continuing..."))
+  }, error = function(e) message("Could not evaluate size of import due to infinite recursion Continuing..."))
 
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())
