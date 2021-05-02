@@ -23,21 +23,21 @@ hash_env = function(env) {
 #' @aliases export
 #' @export
 #' @param value What to return. One of:
-#'  * `NULL`: return nothing. This is particularly useful for unnamed code chunks.
-#'  * `"changed"` (default): return all variables that are not identical to import.
-#'  * `"new"`: return only new variable names.
-#'  * `c(var1, var2, ...)`: return these variable names.
+#'  * `"all"`: Return everything, including imports
+#'  * `"changed"` (default): Return all variables that are not identical to import.
+#'  * `"new"`: Return only new variable names.
+#'  * `c(var1, var2, ...)`: Return these variable names.
+#'  * `NULL` or `"none"`: Return nothing. This is particularly useful for unnamed code chunks.
 #' @return `NULL`
 export = function(value = "changed") {
   if (is.null(options("is.job")[[1]]))
     stop("job::return() can only be called from inside job::job({}).")
 
-  .__js__ = NULL  # make R CMD Check happy
+  if (FALSE) .__js__ = NULL  # make R CMD Check happy
   call_env = parent.frame()
   env_varnames = ls(envir = call_env, all.names = TRUE)
   init_hashes = get(".__js__", envir = call_env)$init_hashes
   value = substitute(value)
-
 
   # Remove c(selected, via, vector)
   if (length(value) > 1) {
@@ -48,21 +48,25 @@ export = function(value = "changed") {
     remove_vars = env_varnames[env_varnames %in% value[-1] == FALSE]
     rm(list = remove_vars, envir = call_env)
 
-    # Remove everything
-  } else if (is.null(value)) {
+  # Remove everything
+  } else if (is.null(value) || value == "none") {
     rm(list = env_varnames, envir = call_env)
 
-    # Remove unchanged
+  # Remove unchanged
   } else if (value == "changed"){
     post_hashes = hash_env(call_env)
     unchanged_vars = sapply(names(post_hashes), function(x) ifelse(x %in% names(init_hashes) == TRUE, identical(init_hashes[[x]], post_hashes[[x]]), FALSE))
     rm(list = names(post_hashes)[unchanged_vars], envir = call_env)
     rm(".__js__", envir = call_env)
 
-    # Remove those with imported varnames
+  # Remove those with imported varnames
   } else if (value == "new") {
     new_vars = env_varnames[env_varnames %in% names(.__js__$init_hashes)]
     rm(list = new_vars, envir = call_env)
+    rm(".__js__", envir = call_env)
+
+  # Don't remove anything
+  } else if (value == "all") {
     rm(".__js__", envir = call_env)
   } else {
     stop("Invalid `value` argument.")
