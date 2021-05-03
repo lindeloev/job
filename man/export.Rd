@@ -9,10 +9,11 @@ export(value = "changed")
 \arguments{
 \item{value}{What to return. One of:
 \itemize{
-\item \code{NULL}: return nothing. This is particularly useful for unnamed code chunks.
-\item \code{"changed"} (default): return all variables that are not identical to import.
-\item \code{"new"}: return only new variable names.
-\item \code{c(var1, var2, ...)}: return these variable names.
+\item \code{"all"}: Return everything, including imports
+\item \code{"changed"} (default): Return all variables that are not identical to import.
+\item \code{"new"}: Return only new variable names.
+\item \code{c(var1, var2, ...)}: Return these variable names.
+\item \code{NULL} or \code{"none"}: Return nothing. This is particularly useful for unnamed code chunks.
 }}
 }
 \value{
