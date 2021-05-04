@@ -3,7 +3,6 @@
 \encoding{UTF-8}
 \name{job}
 \alias{job}
-\alias{job_empty}
 \title{Run Code as an RStudio Job}
 \usage{
 job(
@@ -13,8 +12,6 @@ job(
   opts = options(),
   title = NULL
 )
-
-job_empty(..., import = NULL, packages = NULL, opts = NULL, title = NULL)
 }
 \arguments{
 \item{...}{A named or unnamed code block enclosed in curly brackets, \code{{}}.
@@ -53,7 +50,7 @@ See examples for an introduction. See details for some warnings.
 }
 \details{
 This is a wrapper around \code{rstudioapi::jobRunScript}. To control what gets
-returned, see \code{job::export()}. By default, all objects that \emph{changed} during
+returned, see \code{\link[job]{export}}. By default, all objects that \emph{changed} during
 the job are returned, i.e., \code{job::export("changed")}.
 \itemize{
 \item \strong{Returning large objects:}\code{jobRunScript} is very
@@ -62,11 +59,6 @@ slow at importing and exporting large objects. For exporting back into
 \code{readRDS()} them in your environment.
 }
 }
-\section{Functions}{
-\itemize{
-\item \code{job_empty}: Defaults to an empty session
-}}
-
 \examples{
 if (rstudioapi::isAvailable()) {
   # Unnamed code chunks returns to globalenv()
@@ -119,7 +111,7 @@ if (rstudioapi::isAvailable()) {
 }
 }
 \seealso{
-\code{export()}, \code{\link[rstudioapi]{jobRunScript}}
+\code{\link[job]{export}}, \code{\link[rstudioapi]{jobRunScript}}
 }
 \author{
 Jonas Kristoffer Lindeløv, \email{jonas@lindeloev.dk}

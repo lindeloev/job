@@ -29,12 +29,14 @@ Because \code{job::job()} returns everything at the end of the script, this defi
 what is returned.
 }
 \examples{
-a = 55
-b = 77
-d = 88
-job::job({n = 11; a = 55; export("all")})  # a, b, d, n
-job::job({b = 77; a = 55; export("changed")})  # b, n
-job::job({n = 11; a = 11; export("new")})  # n
-job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
-job::job({n = 11; a = 55; export("none")})  # nothing
+if (rstudioapi::isAvailable()) {
+  a = 55
+  b = 77
+  d = 88
+  job::job({n = 11; a = 55; export("all")})  # a, b, d, n
+  job::job({b = 77; a = 55; export("changed")})  # b, n
+  job::job({n = 11; a = 11; export("new")})  # n
+  job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
+  job::job({n = 11; a = 55; export("none")})  # nothing
+}
 }

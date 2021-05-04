@@ -59,9 +59,9 @@ Now you can follow the progress in the jobs pane and your console is free. Becau
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
 
 
-## Turn RStudio's Jobs into a record
+## Turn RStudio's Jobs into high-level history
 
-Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio's jobs history can be used as a nice record. Make sure to print informative results within the job and give your jobs an appropriate `title`, e.g., (`job::job({<code here>}, title = "Unit test: first attempt at feature X")`.
+Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio's jobs history can be used as a nice overview. Make sure to print informative results within the job and give your jobs an appropriate `title`, e.g., (`job::job({<code here>}, title = "Unit test: first attempt at feature X")`.
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
 

@@ -250,10 +250,3 @@ options(warn = -1)")
 }
 
 
-
-#' @aliases job_empty
-#' @export
-#' @describeIn job Defaults to an empty session
-job_empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
-  job(..., import = import, packages = packages, opts = opts, title = title)
-}

@@ -30,20 +30,23 @@ hash_env = function(env) {
 #'  * `NULL` or `"none"`: Return nothing. This is particularly useful for unnamed code chunks.
 #' @return `NULL` invisibly.
 #' @examples
-#' a = 55
-#' b = 77
-#' d = 88
-#' job::job({n = 11; a = 55; export("all")})  # a, b, d, n
-#' job::job({b = 77; a = 55; export("changed")})  # b, n
-#' job::job({n = 11; a = 11; export("new")})  # n
-#' job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
-#' job::job({n = 11; a = 55; export("none")})  # nothing
+#' if (rstudioapi::isAvailable()) {
+#'   a = 55
+#'   b = 77
+#'   d = 88
+#'   job::job({n = 11; a = 55; export("all")})  # a, b, d, n
+#'   job::job({b = 77; a = 55; export("changed")})  # b, n
+#'   job::job({n = 11; a = 11; export("new")})  # n
+#'   job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
+#'   job::job({n = 11; a = 55; export("none")})  # nothing
+#' }
 export = function(value = "changed") {
   # Do nothing if this is not a job
   if (is.null(options("is.job")[[1]]))
     return(invisible(NULL))
 
   if (FALSE) .__js__ = NULL  # make R CMD Check happy
+
   call_env = parent.frame()
   env_varnames = ls(envir = call_env, all.names = TRUE)
   init_hashes = get(".__js__", envir = call_env)$init_hashes

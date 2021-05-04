@@ -207,5 +207,5 @@ if (rstudioapi::isAvailable()) {
   helpers$cleanup()
   rm(helpers)
 } else {
-  expect_error(job::job({a = 1}), pattern = "must be called from within RStudio.")
+  expect_error(job::job({a = 1}), pattern = "You must run this from the RStudio main session.")
 }
