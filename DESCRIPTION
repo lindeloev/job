@@ -19,4 +19,5 @@ Imports:
   rstudioapi (>= 0.13),
   digest (>= 0.6.27)
 Suggests: 
-  tinytest (>= 1.2.4)
+  testthat (>= 3.0.0)
+Config/testthat/edition: 3
