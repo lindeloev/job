@@ -17,11 +17,24 @@ export(value = "changed")
 }}
 }
 \value{
-\code{NULL}
+\code{NULL} invisibly.
 }
 \description{
-Call this function as the last line in \code{job::job()}. An error is raised if
-it is called in another environment. Under the hood, this function merely
-\code{rm()} variables that does not match \code{value}. Because \code{job::job()} returns
-everything at the end of the script, this defines what is returned.
+Call this function as the last line in \code{job::job()} to select what is exported
+back into \code{globalenv()}. \code{export()} does nothing if called in any other context.
+}
+\details{
+Under the hood, this function merely \code{rm()} variables that does not match \code{value}.
+Because \code{job::job()} returns everything at the end of the script, this defines
+what is returned.
+}
+\examples{
+a = 55
+b = 77
+d = 88
+job::job({n = 11; a = 55; export("all")})  # a, b, d, n
+job::job({b = 77; a = 55; export("changed")})  # b, n
+job::job({n = 11; a = 11; export("new")})  # n
+job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
+job::job({n = 11; a = 55; export("none")})  # nothing
 }

@@ -123,7 +123,7 @@ if (rstudioapi::isAvailable()) {
   })
 
   helpers$wait_for_job("ex_all")
-  expect_true(ex_all$q == 555)
+  expect_identical(ex_all$q, 555)
   expect_identical(names(ex_all), c(".call", "a", "b", "helpers", "q"))
   rm(ex_all, envir = globalenv())
 
@@ -133,7 +133,7 @@ if (rstudioapi::isAvailable()) {
   })
 
   helpers$wait_for_job("ex_none")
-  expect_true(names(ex_none) == ".call")
+  expect_identical(names(ex_none), ".call")
   rm(ex_none, envir = globalenv())
 
 
@@ -161,9 +161,9 @@ if (rstudioapi::isAvailable()) {
 
   helpers$wait_for_job("ex_unnamed")
   expect_identical(ex_unnamed$vars, c(".__js__", "a"))
-  expect_identical(ex_unnamed$pkgs, c("rstudioapi"), helpers$pkgs)
+  expect_identical(ex_unnamed$pkgs, c("rstudioapi", helpers$pkgs))
   expect_null(ex_unnamed$opts$job.mainsession)
-  expect_identical(ex_unnamed$opts$job.newopt == 59)
+  expect_identical(ex_unnamed$opts$job.newopt, 59)
   rm(ex_unnamed, envir = globalenv())
 
 
@@ -178,7 +178,7 @@ if (rstudioapi::isAvailable()) {
   expect_identical(ex_onenamed$vars, c(".__js__", "a"))
   expect_identical(ex_onenamed$pkgs, c("rstudioapi", helpers$pkgs))
   expect_null(ex_onenamed$opts$job.mainsession)
-  expect_identical(ex_onenamed$opts$job.newopt == 59)
+  expect_identical(ex_onenamed$opts$job.newopt, 59)
   rm(ex_onenamed, envir = globalenv())
 
 
@@ -192,7 +192,7 @@ if (rstudioapi::isAvailable()) {
   }, packages = NULL)  # for speed
 
   helpers$wait_for_job("newvar1")
-  expect_true(get("a", envir = globalenv()) == 10)
+  expect_identical(get("a", envir = globalenv()), 10)
   expect_true(newvar1 == 1 & newvar5 == 15)
   expect_identical(ls(envir = globalenv()), c("a", "newvar1", "newvar5"))  # b and helpers are in local env.
 

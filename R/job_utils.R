@@ -1,5 +1,3 @@
-
-
 # Returns a named vector of hashed variables in the calling environment
 hash_env = function(env) {
   varnames = ls(envir = env, all.names = TRUE)

@@ -76,7 +76,8 @@ save_env = function(vars, env, code_str) {
 }
 
 
-# Saves options() and working directory
+# Saves options() and working directory to a temporary file.
+# Returns the filename.
 # - opts: named list of options or NULL
 save_settings = function(opts) {
   # Preprocess opts

@@ -3,6 +3,7 @@
 \encoding{UTF-8}
 \name{job}
 \alias{job}
+\alias{job_empty}
 \title{Run Code as an RStudio Job}
 \usage{
 job(
@@ -12,6 +13,8 @@ job(
   opts = options(),
   title = NULL
 )
+
+job_empty(..., import = NULL, packages = NULL, opts = NULL, title = NULL)
 }
 \arguments{
 \item{...}{A named or unnamed code block enclosed in curly brackets, \code{{}}.
@@ -23,9 +26,9 @@ Named code blocks will assign the that name in \code{globalenv()}.}
 
 \item{import}{Which objects to import into the job.
 \itemize{
+\item \code{"all"}: Import all objects.
 \item \code{"auto"} (default): Detect which objects are used in the code and import
 those.
-\item \code{"all"}: Import all objects.
 \item \code{c(foo, bar, ...)}: A vector of un-quoted variables to import into the job.
 \item \code{NULL}: import nothing.
 }}
@@ -49,16 +52,21 @@ functions, e.g., \verb{rstudioapi::rstudioapi::jobRemove(job_id)}.
 See examples for an introduction. See details for some warnings.
 }
 \details{
-This is a wrapper around \code{rstudioapi::jobRunScript}. Some tips:
+This is a wrapper around \code{rstudioapi::jobRunScript}. To control what gets
+returned, see \code{job::export()}. By default, all objects that \emph{changed} during
+the job are returned, i.e., \code{job::export("changed")}.
 \itemize{
-\item \strong{Large objects:}\code{jobRunScript} is very
+\item \strong{Returning large objects:}\code{jobRunScript} is very
 slow at importing and exporting large objects. For exporting back into
 \code{globalenv()}, it may be faster to \code{saveRDS()} results within the job and
 \code{readRDS()} them in your environment.
-\item \strong{Deletes import-names:} Upon completion, all variables with names in \code{import}
-are deleted to speed up return. Avoid assigning variable names that are imported.
 }
 }
+\section{Functions}{
+\itemize{
+\item \code{job_empty}: Defaults to an empty session
+}}
+
 \examples{
 if (rstudioapi::isAvailable()) {
   # Unnamed code chunks returns to globalenv()
@@ -92,7 +100,7 @@ if (rstudioapi::isAvailable()) {
     print(summary(some_cars))
     # saveRDS(some_cars, "job_result.rds")
 
-    rm(list = ls())  # remove everything
+    job::export("none")  # return nothing
   })
 
 
@@ -111,7 +119,7 @@ if (rstudioapi::isAvailable()) {
 }
 }
 \seealso{
-\code{\link[rstudioapi]{jobRunScript}}
+\code{export()}, \code{\link[rstudioapi]{jobRunScript}}
 }
 \author{
 Jonas Kristoffer Lindeløv, \email{jonas@lindeloev.dk}
