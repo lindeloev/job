@@ -13,12 +13,12 @@ remotes::install_github("lindeloev/job")
 ```
 
 ## Addins
-Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed with `job`. Simply select some code code in your editor and click one of the Addins to run it as a job. The results are returned once the job completes.
+Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed with `job`. Simply select some code code in your editor and click one of the Addins to run it as a job. The results are returned to the global environment once the job completes.
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png)
 
- * *"Run selection as job"* imports everything from your environment, so it feels like home. It will only return variables names that are not already in your environment upon submitting the job, so assign to novel names if you want them to return.
- * *"Run selection as job in empty session"* imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned, and overwritten if they already exist in your environment.
+ * *"Run selection as job"* imports everything from your environment, so it feels like home. It returns all variables that have been created or changed value during the job.
+ * *"Run selection as job in empty session"* imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned.
 
 
 ## Typical usage
@@ -70,13 +70,15 @@ Often, the results of the long-running chunks are the most interesting. But they
 
 RStudio jobs spin up a new session, i.e., a new environment. By default, `job::job()` will make this environment identical to your current one. But you can fine control this:
 
--   `import`: the default "auto" setting imports all objects that are referenced by the code into the job. Control this using `job::job({}, import = c(model, data))`. You can also import everything (`import = "all"`) or nothing (`import = NULL`).
+-   `import`: By default, everything is imported to the job (`import = "all")`. Use `import = "auto"` to only imports objects that are mentioned in the code chunk. Do specific imports with `job::job({}, import = c(model, data))`. Import nothing using `import = NULL`.
 
--   `packages`: by default, all attached packages are attached in the job. Control this using `job::job({}, packages = c("brms"))` or set `packages = NULL` to load nothing. If `brms` is not loaded in your current session, adding `library("brms")` to the job code may be more readable.
+-   `packages`: By default, all attached packages are attached in the job. Control this using `job::job({}, packages = c("brms"))` or set `packages = NULL` to load nothing. If `brms` is not loaded in your current session, adding `library("brms")` to the job code may be more readable.
 
--   `options`: by default, all options are overwritten/inserted to the job. Control this using, e.g., `job::job({}, opts = list(mc.cores = 2)` or set `opts = NULL` to use default options. If you want to set job-specific options, adding `options(mc.cores = 2)` to the job code may be more readable.
+-   `options`: By default, all options are overwritten/inserted to the job. Control this using, e.g., `job::job({}, opts = list(mc.cores = 2)` or set `opts = NULL` to use default options. If you want to set job-specific options, adding `options(mc.cores = 2)` to the job code may be more readable.
 
--   `export`: in the example above, we assigned the job environment to `brm_result` upon completion. Naturally, you can choose any name, e.g., `job::job(fancy_name = {a = 5})`. To return nothing, use an unnamed code chunk (insert results to `globalenv()` and remove everything before return: (`job::job({a = 5; rm(list=ls())})`. Returning nothing is useful when
+-   `job::export()`: Call this function as the last line in your code chunk to control what gets returned. `export("changed")` is default but `export("all")` and `export(NULL)` can be useful too. See `?export` for more info and examples.
+
+-   Returned result: In the example above, we assigned the job environment to `brm_result` upon completion. Naturally, you can choose any name, e.g., `job::job(fancy_name = {a = 5})`. To return nothing, use an unnamed code chunk (insert results to `globalenv()` and remove everything before return: (`job::job({a = 5; rm(list=ls())})`. Returning nothing is useful when
 
     1.  your main result is a text output or a file on the disk, or
 
