@@ -6,7 +6,7 @@
 #' @export
 #' @details
 #' This is a wrapper around `rstudioapi::jobRunScript`. To control what gets
-#' returned, see `job::export()`. By default, all objects that *changed* during
+#' returned, see \code{\link[job]{export}}. By default, all objects that *changed* during
 #' the job are returned, i.e., `job::export("changed")`.
 #'
 #'  - **Returning large objects:**`jobRunScript` is very
@@ -36,7 +36,7 @@
 #'   code chunk is used. If `...` unnamed, code is shown.
 #' @return Invisibly returns the job id on which you can call other `rstudioapi::job*`
 #'   functions, e.g., `rstudioapi::rstudioapi::jobRemove(job_id)`.
-#' @seealso `export()`, \code{\link[rstudioapi]{jobRunScript}}
+#' @seealso  \code{\link[job]{export}}, \code{\link[rstudioapi]{jobRunScript}}
 #' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
 #' @encoding UTF-8
 #' @examples
@@ -95,6 +95,8 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ####################
   # UNFOLD ARGUMENTS #
   ####################
+  # The ellipsis combined with the option for unnamed arguments renders
+  # this a bit convoluted
   func_arg_names = c("import", "packages", "opts", "title")  # named arguments to this function
   args = match.call()[-1]  # args excluding function name
   if (length(args) == 0)
@@ -130,11 +132,9 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   # CODE AND RETURN-NAME #
   ########################
   # To R code
-  code_str = paste0(as.character(substitute(code)), collapse = "\n")
-  if (substr(code_str, 1, 1) != "{")
+  if (code[[1]] != quote(`{`))
     stop("invalid code input. Did you remember to put the code in {curly brackets}?")
-  code_str = substr(code_str, 3, nchar(code_str))
-
+  code_str = paste0(code[-1], collapse = "\n")
 
 
   #########
@@ -251,7 +251,9 @@ options(warn = -1)")
 
 
 
-
+#' @aliases job_empty
+#' @export
+#' @describeIn job Defaults to an empty session
 job_empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
   job(..., import = import, packages = packages, opts = opts, title = title)
 }
