@@ -5,15 +5,14 @@
 #' @aliases job
 #' @export
 #' @details
-#' This is a wrapper around `rstudioapi::jobRunScript`. Some tips:
+#' This is a wrapper around `rstudioapi::jobRunScript`. To control what gets
+#' returned, see `job::export()`. By default, all objects that *changed* during
+#' the job are returned, i.e., `job::export("changed")`.
 #'
-#'  - **Large objects:**`jobRunScript` is very
+#'  - **Returning large objects:**`jobRunScript` is very
 #' slow at importing and exporting large objects. For exporting back into
 #' `globalenv()`, it may be faster to `saveRDS()` results within the job and
 #' `readRDS()` them in your environment.
-#'
-#'  - **Deletes import-names:** Upon completion, all variables with names in `import`
-#' are deleted to speed up return. Avoid assigning variable names that are imported.
 #'
 #' @param ... A named or unnamed code block enclosed in curly brackets, `{}`.
 #'   Unnamed code blocks will assign job variables directly to `globalenv()`
@@ -22,22 +21,22 @@
 #'
 #'   Named code blocks will assign the that name in `globalenv()`.
 #' @param import Which objects to import into the job.
+#'  * `"all"`: Import all objects.
 #'  * `"auto"` (default): Detect which objects are used in the code and import
 #'    those.
-#'  * `"all"`: Import all objects.
 #'  * `c(foo, bar, ...)`: A vector of un-quoted variables to import into the job.
 #'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
 #'   all loaded packages in the calling environment. You can achieve the same
 #'   effect by writing `library(my_package)` in the code block.
+#' @param opts List of options to overwrite in the job. Defaults to `options()`,
+#'   i.e., copy all options to the job. `NULL` uses defaults.
 #' @param title The job title. You can write e.g., `"Cross-Validation: {code}"` to
 #'   show some code in the title. If `title = NULL` (default), the name of the
 #'   code chunk is used. If `...` unnamed, code is shown.
-#' @param opts List of options to overwrite in the job. Defaults to `options()`,
-#'   i.e., copy all options to the job. `NULL` uses defaults.
 #' @return Invisibly returns the job id on which you can call other `rstudioapi::job*`
 #'   functions, e.g., `rstudioapi::rstudioapi::jobRemove(job_id)`.
-#' @seealso \code{\link[rstudioapi]{jobRunScript}}
+#' @seealso `export()`, \code{\link[rstudioapi]{jobRunScript}}
 #' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
 #' @encoding UTF-8
 #' @examples
@@ -73,7 +72,7 @@
 #'     print(summary(some_cars))
 #'     # saveRDS(some_cars, "job_result.rds")
 #'
-#'     rm(list = ls())  # remove everything
+#'     job::export("none")  # return nothing
 #'   })
 #'
 #'
@@ -195,8 +194,10 @@ file.remove('", import_file, "')
 # FINISH #
 ##########
 # Fall back on default export
-if (is.null(options('job.returned')[[1]]))
+if (is.null(options('job.exported')[[1]]))
   job::export('changed')
+if (exists('.__js__'))
+  rm(.__js__)
 
 message(Sys.time(), ': Job finished.')")
 
