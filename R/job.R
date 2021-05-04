@@ -90,26 +90,45 @@
 #'   print(result2$names)
 #' }
 job = function(..., import = "all", packages = .packages(), opts = options(), title = NULL) {
-  if (rstudioapi::isAvailable() == FALSE)
-    stop("job::job() must be called from within RStudio.")
+  check_available()
 
-  ########################
-  # CODE AND RETURN-NAME #
-  ########################
-  args = match.call()[-1]  # args, not function name
-  result_varname = names(args)[names(args) %in% c("import", "packages", "export", "title", "opts") == FALSE]
+  ####################
+  # UNFOLD ARGUMENTS #
+  ####################
+  func_arg_names = c("import", "packages", "opts", "title")  # named arguments to this function
+  args = match.call()[-1]  # args excluding function name
   if (length(args) == 0)
     stop("Must have exactly one code block.")
-  if (length(result_varname) > 1)
-    stop("Only one code block allowed. Did you misspell an argument?")
+
+  # Unpack return varname and code
+  result_varname = names(args)[names(args) %in% func_arg_names == FALSE]
+  result_varname = result_varname[1]  # Use the first from here if there were multiple
 
   if (is.null(result_varname) || result_varname == "") {
     result_varname = "R_GlobalEnv"  # signals to rstudiapi::jobRunScript() that it should return everything
+    names(args)[1] = "R_GlobalEnv"
     code = args[[1]]
   } else {
     code = args[[which(names(args) == result_varname)]]
   }
 
+  # Assign values to unnamed arguments (name = "") by matching their positional order to args order
+  n_unnamed = sum(names(args) == "")
+  if (n_unnamed > 0) {
+    func_arg_names_pruned = func_arg_names[func_arg_names %in% names(args) == FALSE]
+    args_unnamed = args[names(args) == ""]
+    for (i in seq_len(n_unnamed)) {
+      # Evaluate some; then assign (overwriting previous values)
+      if (func_arg_names_pruned[i] != "import")
+        args_unnamed[i][[1]] = eval(args_unnamed[i][[1]])
+      assign(func_arg_names_pruned[i], args_unnamed[i][[1]])
+    }
+  }
+
+
+  ########################
+  # CODE AND RETURN-NAME #
+  ########################
   # To R code
   code_str = paste0(as.character(substitute(code)), collapse = "\n")
   if (substr(code_str, 1, 1) != "{")
@@ -148,7 +167,7 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ##########
   call_frame = parent.frame()
   import_file = save_env(
-    import_varnames = as.character(substitute(import)),
+    vars = as.character(substitute(import)),
     env = call_frame,
     code_str = code_str
   )
@@ -228,4 +247,11 @@ options(warn = -1)")
 
   # Return nothing
   invisible(job_id)
+}
+
+
+
+
+job_empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
+  job(..., import = import, packages = packages, opts = opts, title = title)
 }

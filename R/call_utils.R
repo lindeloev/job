@@ -39,26 +39,29 @@ deep_list = function(object) {
 
 
 
-# Saves import_varnames in env to a tempfile
+# Saves vars in env to a tempfile
 # Returns the tempfile path
-save_env = function(import_varnames, env, code_str) {
+# - vars: character vector
+# - env: calling environment
+# - code_str: the code chunk in job::job()
+save_env = function(vars, env, code_str) {
   # Identify which objects in env to save
-  if (length(import_varnames) == 0) {
+  if (length(vars) == 0) {
     # stay NULL
-  } else if (length(import_varnames) == 1 && import_varnames == "auto") {
+  } else if (length(vars) == 1 && vars == "auto") {
     ls_varnames = ls(envir = env, all.names = TRUE)
-    import_varnames = ls_varnames[ls_varnames %in% all.names(parse(text = code_str))]
-  } else if (length(import_varnames) == 1 && import_varnames == "all") {
-    import_varnames = ls(envir = env, all.names = TRUE)
-  } else if (import_varnames[1] == "c") {
-    import_varnames = import_varnames[-1]
+    vars = ls_varnames[ls_varnames %in% all.names(parse(text = code_str))]
+  } else if (length(vars) == 1 && vars == "all") {
+    vars = ls(envir = env, all.names = TRUE)
+  } else if (vars[1] == "c") {
+    vars = vars[-1]
   } else {
     stop("`import` must be one of 'all', 'auto', NULL, or a c(vector, of, variables).")
   }
 
   # Warn about large file sizes, i.e., slow import
   tryCatch({
-    obj_bytes = sapply(import_varnames, function(x) utils::object.size(deep_list(get(x, envir = env))))
+    obj_bytes = sapply(vars, function(x) utils::object.size(deep_list(get(x, envir = env))))
     import_bytes = sum(as.numeric(obj_bytes))
     if (import_bytes > 200 * 10^6)  # Message if large
       message("Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `import = 'auto' or `import = c(fewer, smaller, vars)`` to import relevant variables only.")
@@ -67,13 +70,14 @@ save_env = function(import_varnames, env, code_str) {
 
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())
-  suppressWarnings(save(list = import_varnames, file = import_file, envir = env))
+  suppressWarnings(save(list = vars, file = import_file, envir = env))
 
   import_file
 }
 
 
 # Saves options() and working directory
+# - opts: named list of options or NULL
 save_settings = function(opts) {
   # Preprocess opts
   if (is.null(opts)) {
