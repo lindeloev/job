@@ -14,6 +14,7 @@ First release submitted to CRAN.
  * RStudio-specific compiler options caused error on Macs (#7 and #10)
  * Error if executed from RMarkdown Notebooks. (#4)
  * The warning about large imports now counts environments and R6 too.
+ * The addins can now handle apostrophes in the job title.
 
 
 ## Other changes
