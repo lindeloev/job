@@ -59,14 +59,14 @@ save_env = function(vars, env, code_str) {
     stop("`import` must be one of 'all', 'auto', NULL, or a c(vector, of, variables).")
   }
 
-  # Warn about large file sizes, i.e., slow import
-  tryCatch({
-    obj_bytes = sapply(vars, function(x) utils::object.size(deep_list(get(x, envir = env))))
-    import_bytes = sum(as.numeric(obj_bytes))
-    if (import_bytes > 200 * 10^6)  # Message if large
-      message("Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `import = 'auto' or `import = c(fewer, smaller, vars)`` to import relevant variables only.")
-
-  }, error = function(e) message("Could not evaluate size of import due to infinite recursion Continuing..."))
+  # # Warn about large file sizes, i.e., slow import
+  # tryCatch({
+  #   obj_bytes = sapply(vars, function(x) utils::object.size(deep_list(get(x, envir = env))))
+  #   import_bytes = sum(as.numeric(obj_bytes))
+  #   if (import_bytes > 200 * 10^6)  # Message if large
+  #     message("Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6). Consider using `import = 'auto' or `import = c(fewer, smaller, vars)`` to import relevant variables only.")
+  #
+  # }, error = function(e) message("Could not evaluate size of import due to infinite recursion Continuing..."))
 
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())
