@@ -4,7 +4,10 @@ jobaddin_run = function(jobargs = list()) {
     rstudioapi::showDialog("Error", "Error: No code was selected.")
   } else {
     jobtitle = gsub("\n", "; ", substr(selection, 1, 80))
-    jobcode = parse(text = paste0("{ ", selection, "}"))[[1]]
+    jobcode = parse(text = paste0(
+    "{
+      ", selection, "
+    }"))[[1]]
     do.call(job::job, c(list(jobcode, title = jobtitle), jobargs), envir = globalenv())
   }
 }
