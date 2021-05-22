@@ -3,3 +3,4 @@
 S3method(print,jobcode)
 export(export)
 export(job)
+export(job_empty)

@@ -62,6 +62,7 @@ save_env = function(vars, env, code_str) {
   }
 
   # # Warn about large file sizes, i.e., slow import
+  print("save_env: Computing environment size")
   tryCatch({
     #obj_bytes = sapply(vars, function(x) utils::object.size(deep_list(get(x, envir = env))))  # Fails on Macs with cstack overflow
     obj_bytes = sapply(vars, function(x) utils::object.size(get(x, envir = env)))
@@ -76,6 +77,7 @@ save_env = function(vars, env, code_str) {
   }, error = function(e) message("Could not evaluate size of import due to infinite recursion Continuing..."))
 
   # Save and return
+  print("save_env: Saving environment")
   import_file = gsub("\\\\", "/", tempfile())
   suppressWarnings(save(list = vars, file = import_file, envir = env))
 
@@ -103,13 +105,14 @@ save_settings = function(opts) {
 
   opts$is.job = TRUE
 
-  # Save and return
-  jobsettings__ = list(
+  # Save jobsettings (js) and return
+  print("save_opts: Saving")
+  .__js__ = list(
     opts = opts,
     wd = getwd()
   )
   settings_file = gsub("\\\\", "/", tempfile())
-  suppressWarnings(saveRDS(jobsettings__, settings_file))  # Ignore warning that some package may not be available when loading
+  suppressWarnings(saveRDS(.__js__, settings_file))  # Ignore warning that some package may not be available when loading
 
   settings_file
 }
