@@ -62,7 +62,6 @@ save_env = function(vars, env, code_str) {
   }
 
   # # Warn about large file sizes, i.e., slow import
-  print("save_env: Computing environment size")
   tryCatch({
     #obj_bytes = sapply(vars, function(x) utils::object.size(deep_list(get(x, envir = env))))  # Fails on Macs with cstack overflow
     obj_bytes = sapply(vars, function(x) utils::object.size(get(x, envir = env)))
@@ -77,7 +76,6 @@ save_env = function(vars, env, code_str) {
   }, error = function(e) message("Could not evaluate size of import due to infinite recursion Continuing..."))
 
   # Save and return
-  print("save_env: Saving environment")
   import_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
   suppressWarnings(save(list = vars, file = import_file, envir = env))
 
@@ -95,18 +93,13 @@ save_settings = function(opts) {
   } else if (is.list(opts) == FALSE) {
     stop("`opts` must be a list (e.g., `options()`) or NULL.")
   } else {
-    # Options set by RStudio
-    opts$buildtools.check = NULL
-    opts$buildtools.with = NULL
-
-    # Options set by RMarkdown notebooks
-    opts$error = NULL
+    # Remove RStudio-specific functions from options
+    opts = rapply(opts, opts_without_rstudio, classes = "function", how = "replace")
   }
 
   opts$is.job = TRUE
 
   # Save jobsettings (js) and return
-  print("save_opts: Saving")
   .__js__ = list(
     opts = opts,
     wd = getwd()
