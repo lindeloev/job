@@ -126,10 +126,10 @@ if (rstudioapi::isAvailable()) {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       b_copy = b
-      helpers = list(i_am = "different")  # change value of imported
+      q = list(i_am = "different")  # change value of imported
       attached_rstudioapi = exists("isAvailable")
       opts = options()
-    }, import = c(b, helpers), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
+    }, import = c(b, q), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
 
     # Check result
     helpers$wait_for_job("with_args2")

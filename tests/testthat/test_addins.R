@@ -1,10 +1,6 @@
 # Currently has to be run manually
 if (rstudioapi::isAvailable() & FALSE) {
   library(testthat)
-  # Prepare
-  rm(list = ls(all.names = TRUE))
-  a = 5
-
   # Simulate user behavior in console
   launch_addin = function(code, func) {
     rstudioapi::sendToConsole(code, execute = FALSE, focus = TRUE)  # paste to console
@@ -12,6 +8,10 @@ if (rstudioapi::isAvailable() & FALSE) {
     func()  # Run addin func
     selectionSet("")  # blank when done
   }
+
+  # Set env
+  rm(list = ls(all.names = TRUE))
+  a = 5
 
   # Test jobaddin_selection()
   launch_addin("qqq = a * 3; sss = c(1,3,5)", job:::jobaddin_selection)
