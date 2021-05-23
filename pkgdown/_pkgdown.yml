@@ -1,0 +1,39 @@
+template:
+  params:
+    bootswatch: flatly  # Theme
+    ganalytics: UA-1026978-3  # Google Analytics
+    docsearch:
+      api_key: 702ab134d40a7310606c29f341fc5014
+      index_name: lindeloev_job
+  opengraph:
+    #image:
+    #    src: https://github.com/lindeloev/mcp/raw/docs/man/figures/logo.png  # For Twitter card
+    twitter:
+        creator: "@jonaslindeloev"
+        card: summary
+
+
+# Writes sitemap etc.
+url: https://lindeloev.github.io/job
+
+authors:
+  Jonas Kristoffer Lindeløv:
+    href: http://lindeloev.net
+
+
+navbar:
+  left:
+    - text: Use cases
+      menu:
+      - text: Testing code
+        href: articles/testing.html
+    - text: Tips
+      menu:
+      - text: Error robustness
+        href: articles/error.html
+    - text: News
+      href: news/index.html
+    - icon: fa-twitter
+      href: https://twitter.com/jonaslindeloev
+    - icon: fa-github
+      href: https://github.com/lindeloev/job

@@ -1,0 +1,54 @@
+---
+title: "Debug code using controlled environments"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Running `job`s in clean sessions is a great to test code without having to launch new RStudios.
+
+
+# Empty session
+Here's an embarrassing error I commit way too often: Say I want to write a function that computes the Mean Squared Error (MSE) of a numerical vector. First, I try whether it works in the console:
+
+```{r}
+tmp = rnorm(1000, sd = 2)
+mean((tmp - mean(tmp))^2)
+```
+
+Yes, it works! Then I copy the code to a function and try it out:
+
+```{r}
+mse = function(x) {
+  mean((tmp - mean(tmp))^2)
+}
+
+mse(rnorm(1000, sd = 1))
+```
+Huh!? The MSE should be around 1, not 4. Now, let's try and select the code and run it using the addin "Run selection as job in empty session". Or do the same in code:
+
+```{r, eval = FALSE}
+job::job_empty({
+  mse = function(x) {
+    mean((tmp - mean(tmp))^2)
+  }
+
+  mse(rnorm(1000, sd = 1))
+})
+```
+
+In the job, you'll see the error message:
+
+```{r}
+# Error in mean((tmp - mean(tmp))^2) : object 'tmp' not found 
+```
+
+This is an overly simple where you probably caught the error immediately (right?). It becomes less trivial as you test more complicated code involving more variables, nested calls, etc.
+
+
+# With selected imports
+Continuing the example above, you can 

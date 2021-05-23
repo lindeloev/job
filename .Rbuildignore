@@ -3,3 +3,7 @@
 ^\.github$
 ^TO DO\.md$
 ^cran-comments\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^vignettes/articles$
