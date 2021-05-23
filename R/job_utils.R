@@ -29,6 +29,8 @@ hash_env = function(env) {
 #'  * `c(var1, var2, ...)`: Return these variable names.
 #'  * `NULL` or `"none"`: Return nothing. This is particularly useful for unnamed code chunks.
 #' @return `NULL` invisibly.
+#' @encoding UTF-8
+#' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
 #' @examples
 #' if (rstudioapi::isAvailable()) {
 #'   a = 55

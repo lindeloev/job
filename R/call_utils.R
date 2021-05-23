@@ -78,7 +78,7 @@ save_env = function(vars, env, code_str) {
 
   # Save and return
   print("save_env: Saving environment")
-  import_file = gsub("\\\\", "/", tempfile())
+  import_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
   suppressWarnings(save(list = vars, file = import_file, envir = env))
 
   import_file
@@ -111,7 +111,7 @@ save_settings = function(opts) {
     opts = opts,
     wd = getwd()
   )
-  settings_file = gsub("\\\\", "/", tempfile())
+  settings_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
   suppressWarnings(saveRDS(.__js__, settings_file))  # Ignore warning that some package may not be available when loading
 
   settings_file
