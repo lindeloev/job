@@ -11,7 +11,7 @@ check_available = function() {
 
 
 # If `opt` is a function containing .Call("rs_ or ".rs.", replace it with a warning.
-opt_without_rstudio = function(opt, env) {
+opt_without_rstudio = function(opt) {
   func_code = paste0(utils::capture.output(opt), collapse = "\n")  # to one character string
 
   contains_rstudio_c = grep('.Call("rs_', func_code, fixed = TRUE)
