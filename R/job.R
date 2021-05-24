@@ -194,7 +194,7 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 ##############
 ", ifelse(length(packages) == 0,
   yes = "message(Sys.time(), ': Job started.', appendLF = FALSE)",
-  no = paste0("message('\n', Sys.time(), ': Job started. Attaching ", paste0(nondefault_packages, collapse = ", "), "...', appendLF = FALSE)\n", packages_str)
+  no = paste0("message(Sys.time(), ': Job started. Attaching ", paste0(nondefault_packages, collapse = ", "), "...', appendLF = FALSE)\n", packages_str)
 ), "
 # Load settings
 .__js__ = readRDS('", opts_file, "')  # js = jobsettings

@@ -57,7 +57,7 @@ save_settings = function(opts) {
     stop("`opts` must be a list (e.g., `options()`) or NULL.")
   } else {
     # Remove RStudio-specific functions from options
-    opts = rapply(opts, opts_without_rstudio, classes = "function", how = "replace")
+    opts = opts_without_rstudio(opts)
   }
 
   opts$is.job = TRUE

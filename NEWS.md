@@ -8,7 +8,7 @@ First release submitted to CRAN.
  * Import only objects that are referenced in the code using `import = "auto"`. The default `import = "all"` replaces `import = ls()`.
  * The job title now includes a code snippet for unnamed chunks instead of defaulting to `"(untitled)"`.
  * `job::job()` now takes unnamed arguments too, e.g., `job::job({<code>}, NULL, c("rstudioapi"))`. (#25)
- * Added `job::job_empty()` which is short for `job::job({<code>}, import = NULL, packages = NULL, opts = NULL)`.
+ * Added `job::job_empty()` which is short for `job::job({<code>}, import = NULL, packages = NULL, opts = NULL)` (#23)
  * `job::job()` shows more informative messages all around to reduce state ambiguity when launching jobs.
 
 
