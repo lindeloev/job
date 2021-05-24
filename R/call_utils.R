@@ -32,22 +32,15 @@ save_env = function(vars, env, code_str) {
     stop("`import` must be one of 'all', 'auto', NULL, or a c(vector, of, variables).")
   }
 
-  # Warn about large file sizes, i.e., slow import
-  tryCatch({
-    #obj_bytes = sapply(vars, function(x) utils::object.size(deep_list(get(x, envir = env))))  # Fails on Macs with cstack overflow
-    obj_bytes = sapply(vars, function(x) utils::object.size(get(x, envir = env)))
-    import_bytes = sum(as.numeric(obj_bytes))
-    message("Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job (excluding environments/R6)...", appendLF = FALSE)
-    # if (import_bytes > 200 * 10^6 & custom_vars == "all") {  # Message if large
-    #   #message("Copying ", round(import_bytes / 10^6, 1), "MB to the RStudio job. Consider using `import = 'auto' or `import = c(fewer, smaller, vars)`` to import relevant variables only.")
-    #   message("Consider using `import = 'auto' or `import = c(fewer, smaller, vars)`` to import relevant variables only.", appendLF = FALSE)
-    # }
-  }, error = function(e) message("Could not evaluate the size of import. Continuing..."))
+  # Show import size
+  obj_bytes = sapply(vars, function(x) utils::object.size(get(x, envir = env)))
+  import_mb = sum(as.numeric(obj_bytes)) / 10^6
+  message("Copying ", round(import_mb, 1), "MB to the RStudio job (excluding environments/R6)...", appendLF = FALSE)
 
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
   suppressWarnings(save(list = vars, file = import_file, envir = env))
-  message("\rJob launched.", rep(" ", 70))
+  message("\rJob launched.", rep(" ", 70))  # Replaces import size message
 
   import_file
 }
