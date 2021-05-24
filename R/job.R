@@ -15,11 +15,11 @@
 #' `readRDS()` them in your environment.
 #'
 #' @param ... A named or unnamed code block enclosed in curly brackets, `{}`.
-#'   Unnamed code blocks will assign job variables directly to `globalenv()`
-#'   upon completion. This means that if you add `rm(list = ls())` to as the
-#'   last line of code, nothing is returned.
-#'
 #'   Named code blocks will assign the that name in `globalenv()`.
+#'   Unnamed code blocks will assign job variables directly to `globalenv()`
+#'   upon completion. Control what gets returned using \code{\link[job]{export}} within
+#'   the code block.
+#'
 #' @param import Which objects to import into the job.
 #'  * `"all"`: Import all objects.
 #'  * `"auto"` (default): Detect which objects are used in the code and import
@@ -27,16 +27,17 @@
 #'  * `c(foo, bar, ...)`: A vector of un-quoted variables to import into the job.
 #'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
-#'   all loaded packages in the calling environment. You can achieve the same
-#'   effect by writing `library(my_package)` in the code block.
+#'   all loaded packages in the calling environment. `NULL` loads only default
+#'   packages. You can combine `packages = NULL` with writing `library(my_package)`
+#'   in the code block.
 #' @param opts List of options to overwrite in the job. Defaults to `options()`,
 #'   i.e., copy all options to the job. `NULL` uses defaults.
 #' @param title The job title. You can write e.g., `"Cross-Validation: {code}"` to
-#'   show some code in the title. If `title = NULL` (default), the name of the
-#'   code chunk is used. If `...` unnamed, code is shown.
+#'   include a code snippet in the title. If `title = NULL` (default), the name of the
+#'   code chunk is used. If `...` is unnamed, the code is shown.
 #' @return Invisibly returns the job id on which you can call other `rstudioapi::job*`
 #'   functions, e.g., `rstudioapi::rstudioapi::jobRemove(job_id)`.
-#' @seealso  \code{\link[job]{export}}, \code{\link[rstudioapi]{jobRunScript}}
+#' @seealso \code{\link[job]{export}}, \code{\link[rstudioapi]{jobRunScript}}
 #' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
 #' @encoding UTF-8
 #' @examples
@@ -265,8 +266,7 @@ class(.call) = c('jobcode', 'character')")
 
 #' @aliases empty
 #' @export
-#' @describeIn job `job::job()` but with arguments default to an "empty" job
-#'   environment
+#' @describeIn job `job::job()` but with NULL defaults, i.e., an "empty" job.
 empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
   # List of named arguments
   import = substitute(import)
