@@ -34,11 +34,11 @@ if (rstudioapi::isAvailable()) {
   a = 55
   b = 77
   d = 88
-  job::job({n = 11; a = 55; export("all")})  # a, b, d, n
-  job::job({n = 11; a = 11; export("changed")})  # a
-  job::job({n = 11; a = 11; export("new")})  # n
-  job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
-  job::job({n = 11; a = 55; export("none")})  # nothing
+  job::job({n = 11; a = 55; job::export("all")})  # export a, b, d, n
+  job::job({n = 11; a = 11; job::export("changed")})  # export a, n
+  job::job({n = 11; a = 11; job::export("new")})  # export n
+  job::job({n = 11; a = 55; job::export(c(a, d, b))})  # export a, d, b
+  job::job({n = 11; a = 55; job::export("none")})  # export nothing
 }
 }
 \author{

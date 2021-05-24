@@ -264,6 +264,27 @@ if (rstudioapi::isAvailable()) {
     rm(ex_some, envir = globalenv())
   })
 
+  test_that("Default + export('new')", {
+    # Set env
+    a = 123
+
+    # Launch job
+    job::job(ex_new = {
+      a = 444
+      q = 555
+      print("output!")
+      job::export("new")
+    })
+
+    # Check results
+    helpers$wait_for_job("ex_new")
+    expect_identical(ex_new$q, 555)
+    expect_identical(names(ex_new), c(".call", "q"))
+
+    # Cleanup
+    rm(ex_new, envir = globalenv())
+  })
+
 
 
 
