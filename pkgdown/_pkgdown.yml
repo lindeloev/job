@@ -30,7 +30,7 @@ navbar:
     - text: Tips
       menu:
       - text: Error robustness
-        href: error.html
+        href: robust.html
     - text: News
       href: news/index.html
     - icon: fa-twitter

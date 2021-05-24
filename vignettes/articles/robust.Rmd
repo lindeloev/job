@@ -1,0 +1,18 @@
+---
+title: "Lose less work to errors"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+A user reported running a 14-hour job but an error on the very last line terminated the job nothing was saved/returned. Here's a few tricks to ameliorate such situations:
+
+## Wrap code in `try()` to return in case of errors
+TO DO
+
+## Save intermediate results
+TO DO
