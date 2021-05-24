@@ -26,11 +26,11 @@ navbar:
     - text: Use cases
       menu:
       - text: Testing code
-        href: articles/testing.html
+        href: testing.html
     - text: Tips
       menu:
       - text: Error robustness
-        href: articles/error.html
+        href: error.html
     - text: News
       href: news/index.html
     - icon: fa-twitter

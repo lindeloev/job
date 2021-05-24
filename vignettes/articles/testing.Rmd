@@ -13,14 +13,14 @@ Running `job`s in clean sessions is a great to test code without having to launc
 
 
 # Empty session
-Here's an embarrassing error I commit way too often: Say I want to write a function that computes the Mean Squared Error (MSE) of a numerical vector. First, I try whether it works in the console:
+Here's an embarrassing error I commit too often: Say I want to write a function that computes the Mean Squared Error (MSE) of a numerical vector. First, I fiddle around with it in the console, ending up with:
 
 ```{r}
 tmp = rnorm(1000, sd = 2)
 mean((tmp - mean(tmp))^2)
 ```
 
-Yes, it works! Then I copy the code to a function and try it out:
+It works! Then I wrap the code in a function and try it out:
 
 ```{r}
 mse = function(x) {
@@ -29,7 +29,8 @@ mse = function(x) {
 
 mse(rnorm(1000, sd = 1))
 ```
-Huh!? The MSE should be around 1, not 4. Now, let's try and select the code and run it using the addin "Run selection as job in empty session". Or do the same in code:
+
+Huh!? It runs but the MSE should be around 1 here, not 4. Time for debugging! Let's select the code and run it using the addin "Run selection as job in empty session". Or do the same in code by calling `job::job_empty()`:
 
 ```{r, eval = FALSE}
 job::job_empty({
@@ -47,8 +48,26 @@ In the job, you'll see the error message:
 # Error in mean((tmp - mean(tmp))^2) : object 'tmp' not found 
 ```
 
-This is an overly simple where you probably caught the error immediately (right?). It becomes less trivial as you test more complicated code involving more variables, nested calls, etc.
+Aha, by running the code in a separate session, we learned that it only *seemed* to work because I had the `tmp` variable lingering in my environment. You probably caught this immediately in this overly simple example (right?). It becomes less trivial with code involving more variables, nested calls, etc.
 
 
-# With selected imports
-Continuing the example above, you can 
+# testthat unit tests
+If you just write a simple `testthat` script, it has access to your current environment. The proper fix is to re-write your tests using `testthat::test_that()` but a lazy solution is to simply use `job::job_empty()`:
+
+```{r, eval = FALSE}
+job::job_empty(devtools::test())
+```
+
+This also frees up your console in the meantime.
+
+
+
+# Selected import
+Continuing the example above, you can, of course, `import` selectively too. Starting from `job::job_empty()` rather than `job::job()` is convenient here:
+
+```{r, eval = FALSE}
+job::job_empty({
+  mse(rnorm(1000, sd = 1))
+}, import = c(mse))
+```
+
