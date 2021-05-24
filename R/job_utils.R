@@ -3,7 +3,7 @@ hash_env = function(env) {
   varnames = ls(envir = env, all.names = TRUE)
   orig_warn = options("warn")
   options(warn = -1)
-  hashes = sapply(varnames, function(x) digest::digest(get(x, envir = env)))
+  hashes = lapply(varnames, function(x) digest::digest(get(x, envir = env)))
   options(orig_warn)
   names(hashes) = varnames
 
@@ -36,11 +36,11 @@ hash_env = function(env) {
 #'   a = 55
 #'   b = 77
 #'   d = 88
-#'   job::job({n = 11; a = 55; export("all")})  # a, b, d, n
-#'   job::job({n = 11; a = 11; export("changed")})  # a
-#'   job::job({n = 11; a = 11; export("new")})  # n
-#'   job::job({n = 11; a = 55; export(c(a, d, b))})  # a, d, b
-#'   job::job({n = 11; a = 55; export("none")})  # nothing
+#'   job::job({n = 11; a = 55; job::export("all")})  # export a, b, d, n
+#'   job::job({n = 11; a = 11; job::export("changed")})  # export a, n
+#'   job::job({n = 11; a = 11; job::export("new")})  # export n
+#'   job::job({n = 11; a = 55; job::export(c(a, d, b))})  # export a, d, b
+#'   job::job({n = 11; a = 55; job::export("none")})  # export nothing
 #' }
 export = function(value = "changed") {
   # Do nothing if this is not a job
@@ -52,6 +52,7 @@ export = function(value = "changed") {
   call_env = parent.frame()
   env_varnames = ls(envir = call_env, all.names = TRUE)
   init_hashes = get(".__js__", envir = call_env)$init_hashes
+  init_hashes$.__js__ = NULL  # Ignore this
   value = substitute(value)
 
   # Remove c(selected, via, vector)
@@ -82,8 +83,8 @@ export = function(value = "changed") {
 
   # Remove those with imported varnames
   } else if (value == "new") {
-    new_vars = env_varnames[env_varnames %in% names(.__js__$init_hashes)]
-    rm(list = new_vars, envir = call_env)
+    imported_vars = env_varnames[env_varnames %in% names(init_hashes)]
+    rm(list = imported_vars, envir = call_env)
 
   # Don't remove anything
   } else if (value == "all") {

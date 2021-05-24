@@ -1,7 +1,7 @@
 ^job\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
-^TO DO\.md$
+^TODO\.md$
 ^cran-comments\.md$
 ^_pkgdown\.yml$
 ^docs$
