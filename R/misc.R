@@ -12,7 +12,7 @@ check_available = function() {
 
 # If `opt` is a function containing .Call("rs_ or ".rs.", replace it with a warning.
 opt_without_rstudio = function(opt, env) {
-  func_code = paste0(capture.output(opt), collapse = "\n")  # to one character string
+  func_code = paste0(utils::capture.output(opt), collapse = "\n")  # to one character string
 
   contains_rstudio_c = grep('.Call("rs_', func_code, fixed = TRUE)
   contains_rstudio_r = grep('.rs.', func_code, fixed = TRUE)
@@ -29,4 +29,12 @@ opt_without_rstudio = function(opt, env) {
 # They won't work in child sessions and caused a multitude of bugs.
 opts_without_rstudio = function(opts) {
   rapply(opts, opt_without_rstudio, classes = "function", how = "replace")
+}
+
+
+# Returns the size of some vars an environment
+env_size_mb = function(vars, env, digits = 1) {
+  vars_bytes = sapply(vars, function(x) utils::object.size(get(x, envir = env)))
+  total_bytes = sum(as.numeric(vars_bytes))
+  round(total_bytes / 10^6, digits)
 }

@@ -33,9 +33,8 @@ save_env = function(vars, env, code_str) {
   }
 
   # Show import size
-  obj_bytes = sapply(vars, function(x) utils::object.size(get(x, envir = env)))
-  import_mb = sum(as.numeric(obj_bytes)) / 10^6
-  message("Copying ", round(import_mb, 1), "MB to the RStudio job (excluding environments/R6)...", appendLF = FALSE)
+  import_mb = env_size_mb(vars, env)
+  message("Copying ", import_mb, "MB to the RStudio job (excluding environments/R6)...", appendLF = FALSE)
 
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
