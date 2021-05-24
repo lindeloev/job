@@ -8,13 +8,13 @@ First release submitted to CRAN.
  * Import only objects that are referenced in the code using `import = "auto"`. The default `import = "all"` replaces `import = ls()`.
  * The job title now includes a code snippet for unnamed chunks instead of defaulting to `"(untitled)"`.
  * `job::job()` now takes unnamed arguments too, e.g., `job::job({<code>}, NULL, c("rstudioapi"))`. (#25)
+ * Added `job::job_empty()` which is short for `job::job({<code>}, import = NULL, packages = NULL, opts = NULL)`.
+ * `job::job()` shows more informative messages all around to reduce state ambiguity when launching jobs.
 
 
 ### Bug fixes
 
- * RStudio-specific compiler options caused error on Macs (#7 and #10)
- * Error if executed from RMarkdown Notebooks. (#4)
- * The warning about large imports now counts environments and R6 too (#20)
+ * RStudio-specific `options` caused errors - mostly on macs (#4, #7, #10, #27)
  * The addins can now handle apostrophes in the job title.
 
 

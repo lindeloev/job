@@ -2,7 +2,7 @@ if (rstudioapi::isAvailable()) {
   # Remove everything
   rm(list = ls(all.names = TRUE))
   rm(list = ls(all.names = TRUE, envir = globalenv()), envir = globalenv())
-  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only=TRUE, unload=TRUE))
+  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only = TRUE, unload = TRUE))
 
   # Explicit libraries for manual testing
   library(rstudioapi)
@@ -59,6 +59,7 @@ if (rstudioapi::isAvailable()) {
       b = list(a = a, goat = "peep")  # imported, but new value; return
       attached_rstudioapi = exists("isAvailable")
       opts = options()
+      print("output!")
     })
 
     # Check result
@@ -94,6 +95,7 @@ if (rstudioapi::isAvailable()) {
       q = list(i_am = "different")  # change value of imported
       attached_rstudioapi = exists("isAvailable")
       opts = options()
+      print("output!")
     }, import = c(b, q), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
 
     # Check result
@@ -129,6 +131,7 @@ if (rstudioapi::isAvailable()) {
       q = list(i_am = "different")  # change value of imported
       attached_rstudioapi = exists("isAvailable")
       opts = options()
+      print("output!")
     }, import = c(b, q), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
 
     # Check result
@@ -159,6 +162,7 @@ if (rstudioapi::isAvailable()) {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       opts = options()
+      print("output!")
     }, import = NULL, packages = NULL, opts = NULL)
 
     # Check results
@@ -182,6 +186,7 @@ if (rstudioapi::isAvailable()) {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       opts = options()
+      print("output!")
     })
 
     # Check results
@@ -206,6 +211,7 @@ if (rstudioapi::isAvailable()) {
     # Launch job
     job::job(ex_all = {
       q = 555
+      print("output!")
       job::export("all")
     })
 
@@ -225,6 +231,7 @@ if (rstudioapi::isAvailable()) {
     # Launch job
     job::job(ex_none = {
       q = 555
+      print("output!")
       job::export(NULL)
     })
 
@@ -245,6 +252,7 @@ if (rstudioapi::isAvailable()) {
     job::job(ex_some = {
       q = 555
       stuff = "don't return me"
+      print("output!")
       job::export(c(a, q))
     })
 
@@ -275,6 +283,7 @@ if (rstudioapi::isAvailable()) {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       opts = options()
+      print("output!")
     }, c(a), c("rstudioapi"), list(job.newopt = 59))
 
     # Check results
@@ -299,6 +308,7 @@ if (rstudioapi::isAvailable()) {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       opts = options()
+      print("output!")
     }, c(a), packages = c("rstudioapi"), list(job.newopt = 59))
 
     # Check results
@@ -321,6 +331,7 @@ if (rstudioapi::isAvailable()) {
       a = 10  # Try assigning new value
       newvar1 = 1
       newvar5 = 5 * 3
+      print("output!")
     }, packages = NULL)  # for speed
 
     helpers$wait_for_job("newvar1")

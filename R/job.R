@@ -193,8 +193,8 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 # INITIALIZE #
 ##############
 ", ifelse(length(packages) == 0,
-  yes = "message(Sys.time(), ': Job started.')",
-  no = paste0("message(Sys.time(), ': Job started. Attaching ", paste0(nondefault_packages, collapse = ", "), "...')\n", packages_str)
+  yes = "message(Sys.time(), ': Job started.', appendLF = FALSE)",
+  no = paste0("message('\n', Sys.time(), ': Job started. Attaching ", paste0(nondefault_packages, collapse = ", "), "...', appendLF = FALSE)\n", packages_str)
 ), "
 # Load settings
 .__js__ = readRDS('", opts_file, "')  # js = jobsettings
@@ -204,7 +204,7 @@ file.remove('", opts_file, "')
 
 # Load objects and compute hash
 ", ifelse(length(import) > 0,
-  yes = paste0("message(Sys.time(), ': Importing job environment...')\nload('", import_file, "', envir = sys.frame(sys.nframe()))  # Current frame"),
+  yes = paste0("message(' Done.\n', Sys.time(), ': Importing job environment...', appendLF = FALSE)\nload('", import_file, "', envir = sys.frame(sys.nframe()))  # Current frame"),
   no = ""
 ), "
 file.remove('", import_file, "')
@@ -213,9 +213,9 @@ file.remove('", import_file, "')
 
 
 # Run code
-message(Sys.time(), ': Executing job code...')
+message(' Done.\n', Sys.time(), ': Executing job code...')
 message('==============\n')
-Sys.sleep(0.1)
+Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
 ", code_str, "
 
 
@@ -230,7 +230,7 @@ if (exists('.__js__'))
   rm(.__js__)
 
 message('\n==============')
-message(Sys.time(), ': Job finished. Exporting results to main session...')
+message(Sys.time(), ': Done. Exporting results to main session...')
 options(warn = -1)")
 
 
