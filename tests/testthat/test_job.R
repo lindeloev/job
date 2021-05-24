@@ -115,16 +115,16 @@ if (rstudioapi::isAvailable()) {
 
 
   ##############################
-  # TEST job_empty() WITH ARGS #
+  # TEST empty() WITH ARGS #
   ##############################
-  test_that("Set arguments in job::job_empty()", {
+  test_that("Set arguments in job::empty()", {
     # Set env
     a = 123
     b = list(a = a, goat = "baah")
     q = "some value"
 
     # Launch job
-    returned = job::job_empty(with_args2 = {
+    returned = job::empty(with_args2 = {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       b_copy = b
@@ -176,13 +176,13 @@ if (rstudioapi::isAvailable()) {
     rm(empty1, envir = globalenv())
   })
 
-  test_that("Empty job via job::job_empty()", {
+  test_that("Empty job via job::empty()", {
     # Set env
     a = 123
     b = list(a = a, goat = "baah")
 
     # Launch job
-    job::job_empty(empty2 = {
+    job::empty(empty2 = {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
       opts = options()

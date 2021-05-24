@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{job}
 \alias{job}
-\alias{job_empty}
+\alias{empty}
 \title{Run Code as an RStudio Job}
 \usage{
 job(
@@ -14,7 +14,7 @@ job(
   title = NULL
 )
 
-job_empty(..., import = NULL, packages = NULL, opts = NULL, title = NULL)
+empty(..., import = NULL, packages = NULL, opts = NULL, title = NULL)
 }
 \arguments{
 \item{...}{A named or unnamed code block enclosed in curly brackets, \code{{}}.
@@ -64,7 +64,7 @@ slow at importing and exporting large objects. For exporting back into
 }
 \section{Functions}{
 \itemize{
-\item \code{job_empty}: \code{job::job()} but with arguments default to an "empty" job
+\item \code{empty}: \code{job::job()} but with arguments default to an "empty" job
 environment
 }}
 

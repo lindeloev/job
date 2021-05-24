@@ -230,7 +230,7 @@ if (exists('.__js__'))
   rm(.__js__)
 
 message('\n==============')
-message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(), sys.frame(sys.nframe())), 'MB to main session...')
+message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(), sys.frame(sys.nframe())), 'MB to the main session...')
 options(warn = -1)")
 
 
@@ -263,11 +263,11 @@ class(.call) = c('jobcode', 'character')")
 }
 
 
-#' @aliases job_empty
+#' @aliases empty
 #' @export
 #' @describeIn job `job::job()` but with arguments default to an "empty" job
 #'   environment
-job_empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
+empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
   # List of named arguments
   import = substitute(import)
   args_list = as.list(environment())

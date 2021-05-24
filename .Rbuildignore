@@ -1,5 +1,6 @@
 ^job\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
-^TO DO\.md$
+^TODO\.md$
 ^cran-comments\.md$
+^docs$
