@@ -69,7 +69,7 @@ if (rstudioapi::isAvailable()) {
     expect_identical(default$a_copy, a)
     expect_identical(default$b_copy, b)
     expect_true(default$attached_rstudioapi)
-    expect_identical(names(default), c(".call", "b_copy", "pkgs", "b", "opts", "a_copy", "vars", "attached_rstudioapi"))
+    expect_identical(names(default), c("b_copy", "pkgs", "b", ".jobcode", "opts", "a_copy", "vars", "attached_rstudioapi"))
     expect_true(is.null(default$opts$job.mainsession) == FALSE & default$opts$device == options("device"))
 
     # Cleanup
@@ -105,7 +105,7 @@ if (rstudioapi::isAvailable()) {
     expect_identical(with_args1$pkgs, c("job", helpers$pkgs))
     expect_identical(with_args1$b_copy, b)
     expect_true(with_args1$attached_rstudioapi == FALSE)
-    expect_identical(names(with_args1), c(".call", "b_copy", "pkgs", "opts", "vars", "q", "attached_rstudioapi"))
+    expect_identical(names(with_args1), c("b_copy", "pkgs", ".jobcode", "opts", "vars", "q", "attached_rstudioapi"))
     expect_true(is.null(with_args1$opts$job.mainsession) == TRUE & with_args1$opts$job.newopt == 59)
 
     # Cleanup
@@ -141,7 +141,7 @@ if (rstudioapi::isAvailable()) {
     expect_identical(with_args2$pkgs, c("job", helpers$pkgs))
     expect_identical(with_args2$b_copy, b)
     expect_true(with_args2$attached_rstudioapi == FALSE)
-    expect_identical(names(with_args2), c(".call", "b_copy", "pkgs", "opts", "vars", "q", "attached_rstudioapi"))
+    expect_identical(names(with_args2), c("b_copy", "pkgs", ".jobcode", "opts", "vars", "q", "attached_rstudioapi"))
     expect_true(is.null(with_args2$opts$job.mainsession) == TRUE & with_args2$opts$job.newopt == 59)
 
     # Cleanup
@@ -169,7 +169,7 @@ if (rstudioapi::isAvailable()) {
     helpers$wait_for_job("empty1")
     expect_identical(empty1$vars, ".__js__")
     expect_identical(empty1$pkgs, helpers$pkgs)
-    expect_identical(names(empty1), c(".call", "pkgs", "opts", "vars"))
+    expect_identical(names(empty1), c("pkgs", ".jobcode", "opts", "vars"))
     expect_true(is.null(empty1$opts$job.mainsession) == TRUE)
 
     # Cleanup
@@ -193,7 +193,7 @@ if (rstudioapi::isAvailable()) {
     helpers$wait_for_job("empty2")
     expect_identical(empty2$vars, ".__js__")
     expect_identical(empty2$pkgs, helpers$pkgs)
-    expect_identical(names(empty2), c(".call", "pkgs", "opts", "vars"))
+    expect_identical(names(empty2), c("pkgs", ".jobcode", "opts", "vars"))
     expect_true(is.null(empty2$opts$job.mainsession) == TRUE)
 
     # Cleanup
@@ -209,39 +209,41 @@ if (rstudioapi::isAvailable()) {
     a = 123
 
     # Launch job
-    job::job(ex_all = {
+    job::job(export_all = {
       q = 555
       print("output!")
       job::export("all")
     })
 
     # Check results
-    helpers$wait_for_job("ex_all")
-    expect_identical(ex_all$q, 555)
-    expect_identical(names(ex_all), c(".call", "a", "q"))
+    helpers$wait_for_job("export_all")
+    expect_identical(export_all$q, 555)
+    expect_identical(names(export_all), c("a", ".jobcode", "q"))
 
     # Cleanup
-    rm(ex_all, envir = globalenv())
+    rm(export_all, envir = globalenv())
   })
+
 
   test_that("Default + export(NULL)", {
     # Set env
     a = 123
 
     # Launch job
-    job::job(ex_none = {
+    job::job(export_none = {
       q = 555
       print("output!")
       job::export(NULL)
     })
 
     # Check results
-    helpers$wait_for_job("ex_none")
-    expect_identical(names(ex_none), ".call")
+    helpers$wait_for_job("export_none")
+    expect_identical(names(export_none), ".jobcode")
 
     # Cleanup
-    rm(ex_none, envir = globalenv())
+    rm(export_none, envir = globalenv())
   })
+
 
   test_that("Default + export(c(some, vars))", {
     # Set env
@@ -249,7 +251,7 @@ if (rstudioapi::isAvailable()) {
     b = list(a = a, goat = "baah")
 
     # Launch job
-    job::job(ex_some = {
+    job::job(export_some = {
       q = 555
       stuff = "don't return me"
       print("output!")
@@ -257,19 +259,20 @@ if (rstudioapi::isAvailable()) {
     })
 
     # Check results
-    helpers$wait_for_job("ex_some")
-    expect_identical(names(ex_some), c(".call", "a", "q"))
+    helpers$wait_for_job("export_some")
+    expect_identical(names(export_some), c("a", ".jobcode", "q"))
 
     # Cleanup
-    rm(ex_some, envir = globalenv())
+    rm(export_some, envir = globalenv())
   })
+
 
   test_that("Default + export('new')", {
     # Set env
     a = 123
 
     # Launch job
-    job::job(ex_new = {
+    job::job(export_new = {
       a = 444
       q = 555
       print("output!")
@@ -277,15 +280,13 @@ if (rstudioapi::isAvailable()) {
     })
 
     # Check results
-    helpers$wait_for_job("ex_new")
-    expect_identical(ex_new$q, 555)
-    expect_identical(names(ex_new), c(".call", "q"))
+    helpers$wait_for_job("export_new")
+    expect_identical(export_new$q, 555)
+    expect_identical(names(export_new), c(".jobcode", "q"))
 
     # Cleanup
-    rm(ex_new, envir = globalenv())
+    rm(export_new, envir = globalenv())
   })
-
-
 
 
 
@@ -299,7 +300,7 @@ if (rstudioapi::isAvailable()) {
     b = list(a = a, goat = "baah")
 
     # Launch job
-    job::job(ex_unnamed = {
+    job::job(args_unnamed = {
       a = 123
       vars = ls(all.names = TRUE)
       pkgs = .packages()
@@ -308,14 +309,14 @@ if (rstudioapi::isAvailable()) {
     }, c(a), c("rstudioapi"), list(job.newopt = 59))
 
     # Check results
-    helpers$wait_for_job("ex_unnamed")
-    expect_identical(ex_unnamed$vars, c(".__js__", "a"))
-    expect_identical(ex_unnamed$pkgs, c("rstudioapi", helpers$pkgs))
-    expect_null(ex_unnamed$opts$job.mainsession)
-    expect_identical(ex_unnamed$opts$job.newopt, 59)
+    helpers$wait_for_job("args_unnamed")
+    expect_identical(args_unnamed$vars, c(".__js__", "a"))
+    expect_identical(args_unnamed$pkgs, c("rstudioapi", helpers$pkgs))
+    expect_null(args_unnamed$opts$job.mainsession)
+    expect_identical(args_unnamed$opts$job.newopt, 59)
 
     # Cleanup
-    rm(ex_unnamed, envir = globalenv())
+    rm(args_unnamed, envir = globalenv())
   })
 
   test_that("Some args are unnamed", {
@@ -324,7 +325,7 @@ if (rstudioapi::isAvailable()) {
     b = list(a = a, goat = "baah")
 
     # Launch job
-    job::job(ex_onenamed = {
+    job::job(args_onenamed = {
       a = 123
       vars = ls(all.names = TRUE)
       pkgs = .packages()
@@ -333,14 +334,14 @@ if (rstudioapi::isAvailable()) {
     }, c(a), packages = c("rstudioapi"), list(job.newopt = 59))
 
     # Check results
-    helpers$wait_for_job("ex_onenamed")
-    expect_identical(ex_onenamed$vars, c(".__js__", "a"))
-    expect_identical(ex_onenamed$pkgs, c("rstudioapi", helpers$pkgs))
-    expect_null(ex_onenamed$opts$job.mainsession)
-    expect_identical(ex_onenamed$opts$job.newopt, 59)
+    helpers$wait_for_job("args_onenamed")
+    expect_identical(args_onenamed$vars, c(".__js__", "a"))
+    expect_identical(args_onenamed$pkgs, c("rstudioapi", helpers$pkgs))
+    expect_null(args_onenamed$opts$job.mainsession)
+    expect_identical(args_onenamed$opts$job.newopt, 59)
 
     # Cleanup
-    rm(ex_onenamed, envir = globalenv())
+    rm(args_onenamed, envir = globalenv())
   })
 
 

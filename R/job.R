@@ -241,13 +241,13 @@ options(warn = -1)")
     output, "
 
 # Save code to environment for future reference
-.call = paste0(\"
+.jobcode = paste0(\"
 # Job started: ", Sys.time(), "
 
 ", gsub("\"", "\\\\\"", code_str), "
 
 # Job completed: \", Sys.time())
-class(.call) = c('jobcode', 'character')")
+class(.jobcode) = c('jobcode', 'character')")
   }
 
 
