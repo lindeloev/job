@@ -289,6 +289,33 @@ if (rstudioapi::isAvailable()) {
   })
 
 
+  test_that("Default + export('changed', file = 'myfile.RData')", {
+    # Set env
+    a = 123
+
+    # Launch job
+    job::job(export_file = {
+      a = 123
+      q = 555
+      print("output!")
+      job::export(file = "mydata.RData")
+    })
+
+    # Check results
+    helpers$wait_for_job("export_file")
+    expect_identical(names(export_file), c(".jobcode"))
+
+    export_env = new.env()
+    load("mydata.RData", envir = export_env)
+    expect_identical(names(export_env), c("q"))
+    expect_identical(export_env$q, 555)
+
+    # Cleanup
+    rm(export_file, envir = globalenv())
+    file.remove("mydata.RData")
+  })
+
+
 
   ##########################
   # TEST UNNAMED ARGUMENTS #
