@@ -43,6 +43,12 @@ hash_env = function(env) {
 #'   job::job({n = 11; a = 11; job::export("new")})  # export n
 #'   job::job({n = 11; a = 55; job::export(c(a, d, b))})  # export a, d, b
 #'   job::job({n = 11; a = 55; job::export("none")})  # export nothing
+#'
+#'   # To file
+#'   job::job({n = 11; a = 11; job::export("changed", file = "jobresult.RData")})  # save a, n
+#'   jobresult = new.env()  # import to this env instead of global
+#'   load("jobresult.RData", envir = jobresult)
+#'   print(jobresult$n)
 #' }
 export = function(value = "changed", file = NULL) {
   # Do nothing if this is not a job

@@ -5,6 +5,7 @@ First release submitted to CRAN.
 
  * RStudio addins (#6)! Read more in the README.
  * Control what objects are returned using the `job::export()` function in the code chunk. The default is `job::export("changed")` which returns all variables that were defined or changed during the job. v0.1 only returned new variable names (now `job::export("new")`). Read more in the README. (#15)
+ * Use `job::export("changed", file = "my_jobresult.RData")` to save to a file rather than returning to the main RStudio session.
  * Use `import = "auto"` to import all objects that are "mentioned" in the code. The default `import = "all"` replaces `import = ls()`.
  * The job title now includes a code snippet for unnamed chunks instead of defaulting to `"(untitled)"`.
  * `job::job()` now takes unnamed arguments too, e.g., `job::job({<code>}, NULL, c("rstudioapi"))`. (#25)
