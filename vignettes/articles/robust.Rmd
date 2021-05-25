@@ -1,5 +1,5 @@
 ---
-title: "Lose less work to errors"
+title: "Lose less work to errors in RStudio Jobs"
 ---
 
 ```{r, include = FALSE}
@@ -45,3 +45,5 @@ job::job({
     result = anova(fit_cyl, fit_wtt)
 })
 ```
+
+You can read more about exporting to files in the article on [controlling exports using `job::export()`](../articles/export.html).

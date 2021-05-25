@@ -1,5 +1,5 @@
 ---
-title: "Using job::export()"
+title: "Using job::export() to control exports from RStudio Jobs"
 ---
 
 ```{r, include = FALSE}
@@ -9,13 +9,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-Use `job::export()` to control what is returned from a job. The function documentation has a Here are a few examples:
+Use `job::export()` to control what is returned from a job. It should be called as the last command in the job. The documentation for `job::export()` includes code examples and may be useful to read first. If you don't call `job::export()` explicitly in your code chunk, it defaults to `job::export("changed", file = NULL)`. In this article, we'll discuss situations where it definitely makes sense to deviate from this default.
 
+Also check out the related [article on controlling imports to a job](../articles/import.html).
 
+## Ignore temporary objects
 
+Use `export(c(main, results))` to keep the export small and uncluttered. This is useful if you have many or large intermediate objects. For example, here we do some data preprocessing, but only return the final dataset and the model fit:
+
+```{r, eval=FALSE}
+job::job({
+  # Select some data
+  rows = 1:5
+  cols = c("mpg", "cyl", "hp")
+  df = mtcars[rows, cols]
+  
+  # Fit and export
+  fit = lm(mpg ~ ., df)
+  export(c(df, fit))
+})
+```
+
+## When the main result is not an object
+
+Sometimes, a text output is the most interesting, e.g., when your job contains something like `print(summary(fit))`. In these cases, just call `job::export("none")` on the last line of the code chunk to prevent the job from returning intermediate objects to the main session (or a file).
 
 ## Export to file
-If you just want to output to a file, I recommend using `saveRDS()` for single objects or `export(..., file = "filename.RData")` for multiple objects. You can use relative paths for the filename because the job runs in the same working directory as your RStudio session. Example:
+
+If you just want to output to a file, I recommend using `saveRDS()` for single objects or `export(..., file = "filename.RData")` for multiple objects. You can use relative paths for the file name because the job runs in the same working directory as your RStudio session. Example:
 
 ```{r, eval=FALSE}
 job::job({
@@ -25,6 +46,7 @@ job::job({
   job::export("changed", file = "my_environment.RData")
 })
 ```
+
 When you use the `job::export(..., file)` argument, it implicitly calls `job::export("none")` after saving, i.e., returns nothing to the main session. To load the objects into your main session (or another job), simply:
 
 ```{r, eval=FALSE}
@@ -42,24 +64,9 @@ load("my_environment.RData", envir = job_result)
 print(job_result$b)  # "I am bee"
 ```
 
-
 ```{r, eval=FALSE, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 file.remove("a_object.rds")
 file.remove("my_environment.RData")
 ```
 
-
 You can also use `save()` and `save.image(envir = sys.frame(sys.nframe()))` inside the code chunk. The latter will include two functions called `emitProgress()` and `sourceWithProgress()` are set by RStudio.
-
-
-## Export specific objects
-TO DO
-
-
-## Export new objects (new names)
-TO DO
-
-
-## Export everything including imports
-TO DO
-

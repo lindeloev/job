@@ -6,8 +6,6 @@ template:
       api_key: 702ab134d40a7310606c29f341fc5014
       index_name: lindeloev_job
   opengraph:
-    #image:
-    #    src: https://github.com/lindeloev/mcp/raw/docs/man/figures/logo.png  # For Twitter card
     twitter:
         creator: "@jonaslindeloev"
         card: summary
@@ -21,27 +19,42 @@ authors:
     href: http://lindeloev.net
 
 
+# Structure of the reference page
+reference:
+  - title: From main session
+    desc: Call these from the main session
+    contents:
+      - job
+      - empty
+  - title: From the job
+    desc: Call these from from within the job
+    contents:
+      - export
+
+
 navbar:
   left:
-    - text: Worked examples
-    - menu:
-      - text: Controlling import
-        href: articles/articles/import.html
-      - text: Controlling export
-        href: articles/articles/export.html
-    - text: Use cases
-      menu:
-      - text: Testing code
-        href: articles/articles/testing.html
-    - text: Tips
-      menu:
-      - text: Error robustness
-        href: articles/articles/robust.html
-      - text: Memory and Speed
-        href: articles/aticles/memoryspeed.html
-    - text: News
-      href: news/index.html
-    - icon: fa-twitter
-      href: https://twitter.com/jonaslindeloev
-    - icon: fa-github
-      href: https://github.com/lindeloev/job
+  - text: Worked examples
+    menu:
+    - text: Controlling import
+      href: articles/articles/import.html
+    - text: Controlling export
+      href: articles/articles/export.html
+  - text: Use cases
+    menu:
+    - text: Testing code
+      href: articles/articles/testing.html
+    - text: Rendering large plots
+      href: articles/articles/plot.html
+    - text: Other routine tasks
+      href: articles/articles/routines.html
+  - text: Tips
+    menu:
+    - text: Error robustness
+      href: articles/articles/robust.html
+  - text: News
+    href: news/index.html
+  - icon: fa-twitter
+    href: https://twitter.com/jonaslindeloev
+  - icon: fa-github
+    href: https://github.com/lindeloev/job

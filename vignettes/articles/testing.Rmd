@@ -1,5 +1,5 @@
 ---
-title: "Debug code using empty R sessions"
+title: "Debug Code Using Empty RStudio Jobs"
 ---
 
 ```{r, include = FALSE}

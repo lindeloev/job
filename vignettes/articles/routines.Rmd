@@ -1,0 +1,36 @@
+---
+title: "Offload Routine Tasks to RStudio Jobs"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+I tend to engage in procrastination if my console is busy for more than 10 seconds. Using `job()` keeps me in the flow. Here are some commands I regularly `job`, either via code or via the addins.
+
+
+## Heavy inferential tasks
+
+ * Everything involving MCMC in Bayesian Inference: `brms`, `mcp`, `blavaan`.
+ * Cross-validation and hyperparameter tuning in machine learning, e.g., in `tidymodels` or `mlr3`.
+
+
+## Build output
+
+Using empty jobs (`job::empty()` or "empty" addin) makes a lot of sense for these:
+
+ * `update.packages(ask = FALSE)`
+ * `devtools::build()`
+ * `pkgdown::build_site(preview = FALSE)`
+ * `knitr::knit()`
+
+
+## Text output
+
+Wrap these in `job::job({print(<command>)})` to print the text inside the job. Now you can, in good conscience, clean your console because you know that the important output is saved in a job.
+
+ * `devtools::test()` (see more in [testing code](../articles/testing.html))
+ * `brms::loo_compare(model1, model2)`
