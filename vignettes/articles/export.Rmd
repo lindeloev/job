@@ -9,7 +9,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-Use `job::export()` to control what is returned from a job. Here are a few examples:
+Use `job::export()` to control what is returned from a job. The function documentation has a Here are a few examples:
+
+
 
 
 ## Export to file
@@ -17,9 +19,9 @@ If you just want to output to a file, I recommend using `saveRDS()` for single o
 
 ```{r, eval=FALSE}
 job::job({
-  a = 1
+  a = "I am ae"
   saveRDS(a, "a_object.rds")  # Save single objects
-  b = 2
+  b = "I am bee"
   job::export("changed", file = "my_environment.RData")
 })
 ```
@@ -28,14 +30,18 @@ When you use the `job::export(..., file)` argument, it implicitly calls `job::ex
 ```{r, eval=FALSE}
 # Load single object
 a = readRDS("a_object.rds")
+print(a)  # "I am ae"
 
 # Load into global 
 load("my_environment.RData")
+print(b)  # "I am bee"
 
 # Load into environment
 job_result = new.env()
 load("my_environment.RData", envir = job_result)
+print(job_result$b)  # "I am bee"
 ```
+
 
 ```{r, eval=FALSE, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 file.remove("a_object.rds")
@@ -43,7 +49,7 @@ file.remove("my_environment.RData")
 ```
 
 
-You can also use `save()` and `save.image(envir = sys.frame(sys.nframe()))`. The latter will include two functions called `emitProgress()` and `sourceWithProgress()` which were set by RStudio.
+You can also use `save()` and `save.image(envir = sys.frame(sys.nframe()))` inside the code chunk. The latter will include two functions called `emitProgress()` and `sourceWithProgress()` are set by RStudio.
 
 
 ## Export specific objects

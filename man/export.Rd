@@ -5,7 +5,7 @@
 \alias{export}
 \title{What to return from a job}
 \usage{
-export(value = "changed")
+export(value = "changed", file = NULL)
 }
 \arguments{
 \item{value}{What to return. One of:
@@ -16,6 +16,9 @@ export(value = "changed")
 \item \code{c(var1, var2, ...)}: Return these variable names.
 \item \code{NULL} or \code{"none"}: Return nothing. This is particularly useful for unnamed code chunks.
 }}
+
+\item{file}{Name of \code{.RData} file to export to. If not \code{NULL}, nothing will be returned
+to the main session (corresponding to \code{export("none")}).}
 }
 \value{
 \code{NULL} invisibly.
