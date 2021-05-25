@@ -18,8 +18,9 @@ opt_without_rstudio = function(opt) {
   contains_rstudio_r = grep('.rs.', func_code, fixed = TRUE)
 
   if (length(contains_rstudio_c) != 0 | length(contains_rstudio_r) != 0) {
-    opt = function(...) warning("job::job() removed this option-function because it contained RStudio-specific code.")
-    environment(opt) = globalenv()
+    #opt = function(...) warning("job::job() removed this option-function because it contained RStudio-specific code.")
+    #environment(opt) = globalenv()
+    opt = NULL
   }
 
   opt

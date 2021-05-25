@@ -1,4 +1,4 @@
-#' Nice print .call
+#' Nice print .jobcode
 #'
 #' @aliases print.jobcode
 #' @export

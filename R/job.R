@@ -231,7 +231,14 @@ if (exists('.__js__'))
   rm(.__js__)
 
 message('\n==============')
-message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(), sys.frame(sys.nframe())), 'MB to the main session...')
+export_objects = ls(all.names = TRUE)
+if (length(export_objects) == 0) {
+message()
+  message(Sys.time(), ': Done.')
+} else {
+  message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(), sys.frame(sys.nframe())), 'MB to the main session...')
+}
+rm(export_objects)
 options(warn = -1)")
 
 
@@ -241,13 +248,13 @@ options(warn = -1)")
     output, "
 
 # Save code to environment for future reference
-.call = paste0(\"
+.jobcode = paste0(\"
 # Job started: ", Sys.time(), "
 
 ", gsub("\"", "\\\\\"", code_str), "
 
 # Job completed: \", Sys.time())
-class(.call) = c('jobcode', 'character')")
+class(.jobcode) = c('jobcode', 'character')")
   }
 
 
