@@ -1,7 +1,7 @@
 # Currently has to be run manually
 if (rstudioapi::isAvailable() & FALSE) {
+  # Set env
   library(testthat)
-  # Prepare
   rm(list = ls(all.names = TRUE))
   a = 5
 

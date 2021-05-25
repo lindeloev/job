@@ -3,6 +3,7 @@
 \encoding{UTF-8}
 \name{job}
 \alias{job}
+\alias{empty}
 \title{Run Code as an RStudio Job}
 \usage{
 job(
@@ -12,14 +13,15 @@ job(
   opts = options(),
   title = NULL
 )
+
+empty(..., import = NULL, packages = NULL, opts = NULL, title = NULL)
 }
 \arguments{
 \item{...}{A named or unnamed code block enclosed in curly brackets, \code{{}}.
+Named code blocks will assign the that name in \code{globalenv()}.
 Unnamed code blocks will assign job variables directly to \code{globalenv()}
-upon completion. This means that if you add \code{rm(list = ls())} to as the
-last line of code, nothing is returned.
-
-Named code blocks will assign the that name in \code{globalenv()}.}
+upon completion. Control what gets returned using \code{\link[job]{export}} within
+the code block.}
 
 \item{import}{Which objects to import into the job.
 \itemize{
@@ -31,15 +33,16 @@ those.
 }}
 
 \item{packages}{Character vector of packages to load in the job. Defaults to
-all loaded packages in the calling environment. You can achieve the same
-effect by writing \code{library(my_package)} in the code block.}
+all loaded packages in the calling environment. \code{NULL} loads only default
+packages. You can combine \code{packages = NULL} with writing \code{library(my_package)}
+in the code block.}
 
 \item{opts}{List of options to overwrite in the job. Defaults to \code{options()},
 i.e., copy all options to the job. \code{NULL} uses defaults.}
 
 \item{title}{The job title. You can write e.g., \code{"Cross-Validation: {code}"} to
-show some code in the title. If \code{title = NULL} (default), the name of the
-code chunk is used. If \code{...} unnamed, code is shown.}
+include a code snippet in the title. If \code{title = NULL} (default), the name of the
+code chunk is used. If \code{...} is unnamed, the code is shown.}
 }
 \value{
 Invisibly returns the job id on which you can call other \verb{rstudioapi::job*}
@@ -59,6 +62,11 @@ slow at importing and exporting large objects. For exporting back into
 \code{readRDS()} them in your environment.
 }
 }
+\section{Functions}{
+\itemize{
+\item \code{empty}: \code{job::job()} but with NULL defaults, i.e., an "empty" job.
+}}
+
 \examples{
 if (rstudioapi::isAvailable()) {
   # Unnamed code chunks returns to globalenv()

@@ -15,11 +15,11 @@
 #' `readRDS()` them in your environment.
 #'
 #' @param ... A named or unnamed code block enclosed in curly brackets, `{}`.
-#'   Unnamed code blocks will assign job variables directly to `globalenv()`
-#'   upon completion. This means that if you add `rm(list = ls())` to as the
-#'   last line of code, nothing is returned.
-#'
 #'   Named code blocks will assign the that name in `globalenv()`.
+#'   Unnamed code blocks will assign job variables directly to `globalenv()`
+#'   upon completion. Control what gets returned using \code{\link[job]{export}} within
+#'   the code block.
+#'
 #' @param import Which objects to import into the job.
 #'  * `"all"`: Import all objects.
 #'  * `"auto"` (default): Detect which objects are used in the code and import
@@ -27,16 +27,17 @@
 #'  * `c(foo, bar, ...)`: A vector of un-quoted variables to import into the job.
 #'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
-#'   all loaded packages in the calling environment. You can achieve the same
-#'   effect by writing `library(my_package)` in the code block.
+#'   all loaded packages in the calling environment. `NULL` loads only default
+#'   packages. You can combine `packages = NULL` with writing `library(my_package)`
+#'   in the code block.
 #' @param opts List of options to overwrite in the job. Defaults to `options()`,
 #'   i.e., copy all options to the job. `NULL` uses defaults.
 #' @param title The job title. You can write e.g., `"Cross-Validation: {code}"` to
-#'   show some code in the title. If `title = NULL` (default), the name of the
-#'   code chunk is used. If `...` unnamed, code is shown.
+#'   include a code snippet in the title. If `title = NULL` (default), the name of the
+#'   code chunk is used. If `...` is unnamed, the code is shown.
 #' @return Invisibly returns the job id on which you can call other `rstudioapi::job*`
 #'   functions, e.g., `rstudioapi::rstudioapi::jobRemove(job_id)`.
-#' @seealso  \code{\link[job]{export}}, \code{\link[rstudioapi]{jobRunScript}}
+#' @seealso \code{\link[job]{export}}, \code{\link[rstudioapi]{jobRunScript}}
 #' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
 #' @encoding UTF-8
 #' @examples
@@ -156,10 +157,14 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ############
   # List currently attached Then write "library(x)" code
   if (is.character(packages) || length(packages) == 0) {
-    packages_str = paste0("library(", packages, ")", collapse = "\n")
+    packages_str = paste0("suppressMessages(library(", packages, ", warn.conflicts = FALSE))", collapse = "\n")
   } else {
     stop("`packages` must be a character vector or length 0.")
   }
+
+  # For job message:
+  default_packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base")
+  nondefault_packages = packages[packages %in% default_packages == FALSE]
 
 
   ##########
@@ -176,7 +181,7 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ############
   # SETTINGS #
   ############
-  settings_file = save_settings(opts)
+  opts_file = save_settings(opts)
 
 
 
@@ -188,23 +193,30 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 ##############
 # INITIALIZE #
 ##############
-message(Sys.time(), ': Job started.')
-", packages_str, "
-
+", ifelse(length(packages) == 0,
+  yes = "message(Sys.time(), ': Job started.', appendLF = FALSE)",
+  no = paste0("message(Sys.time(), ': Job started. Attaching ", paste0(nondefault_packages, collapse = ", "), "...', appendLF = FALSE)\n", packages_str)
+), "
 # Load settings
-.__js__ = readRDS('", settings_file, "')  # js = jobsettings
+.__js__ = readRDS('", opts_file, "')  # js = jobsettings
 setwd(.__js__$wd)
 options(.__js__$opts)
-file.remove('", settings_file, "')
+file.remove('", opts_file, "')
 
 # Load objects and compute hash
-load('", import_file, "', envir = sys.frame(sys.nframe()))
+", ifelse(length(import) > 0,
+  yes = paste0("message(' Done.\n', Sys.time(), ': Importing job environment...', appendLF = FALSE)\nload('", import_file, "', envir = sys.frame(sys.nframe()))  # Current frame"),
+  no = ""
+), "
 file.remove('", import_file, "')
 .__js__$init_hashes = job:::hash_env(sys.frame(sys.nframe()))
 
 
 
 # Run code
+message(' Done.\n', Sys.time(), ': Executing job code...')
+message('==============\n')
+Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
 ", code_str, "
 
 
@@ -218,9 +230,12 @@ if (is.null(options('job.exported')[[1]]))
 if (exists('.__js__'))
   rm(.__js__)
 
-message(Sys.time(), ': Job finished.')")
+message('\n==============')
+message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(), sys.frame(sys.nframe())), 'MB to the main session...')
+options(warn = -1)")
 
 
+  # Add return_env$.call unless exporting directly to globa
   if (result_varname != "R_GlobalEnv") {
     output = paste0(
     output, "
@@ -232,8 +247,7 @@ message(Sys.time(), ': Job finished.')")
 ", gsub("\"", "\\\\\"", code_str), "
 
 # Job completed: \", Sys.time())
-class(.call) = c('jobcode', 'character')
-options(warn = -1)")
+class(.call) = c('jobcode', 'character')")
   }
 
 
@@ -250,3 +264,22 @@ options(warn = -1)")
 }
 
 
+#' @aliases empty
+#' @export
+#' @describeIn job `job::job()` but with NULL defaults, i.e., an "empty" job.
+empty = function(..., import = NULL, packages = NULL, opts = NULL, title = NULL) {
+  # List of named arguments
+  import = substitute(import)
+  args_list = as.list(environment())
+
+  # Add the job code and name
+  jobargs = match.call()
+  if (is.null(names(jobargs))) {
+    args_list = c(list(jobargs[[2]]), args_list)  # code as first argument
+  } else {
+    args_list[[names(jobargs)[2]]] = jobargs[[2]]  # code as named argument
+  }
+
+  # Call job with these args in parent environment
+  do.call(job, args_list, envir = parent.frame())
+}
