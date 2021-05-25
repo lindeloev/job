@@ -9,10 +9,39 @@ knitr::opts_chunk$set(
 )
 ```
 
-A user reported running a 14-hour job but an error on the very last line terminated the job nothing was saved/returned. Here's a few tricks to ameliorate such situations:
+A user reported running a 14-hour job but an error on the very last line terminated the job and nothing was saved/returned. Here's a few tricks to ameliorate such situations:
 
-## Wrap code in `try()` to return in case of errors
-TO DO
+## Wrap code in `try()`
+`job::job()` returns everything that's left in the job session upon successful completion. So we just need to make the script run to the end and that's where `try()` comes in handy. Say we want to do model comparisons between two models. The following code returns everything before the erroring line:
 
-## Save intermediate results
-TO DO
+```{r, eval = FALSE}
+job::job({
+  try({
+    # Fit models
+    fit_cyl = lm(mpg ~ cyl, mtcars)
+    fit_wt = lm(mpg ~ wt, mtcars)
+    
+    # Compare - with spelling mistake. Oops.
+    result = anova(fit_cyl, fit_wtt)
+  })
+})
+```
+Note that your job will be listed as "Success" in the RStudio jobs pane because it encountered no hard errors.
+
+
+## Save to file(s)
+You can also save intermediate results to a file which can be loaded from the main session. Modifying the example above:
+
+```{r, eval = FALSE}
+job::job({
+    # Fit models
+    fit_cyl = lm(mpg ~ cyl, mtcars)
+    saveRDS(fit_cyl, "fit_cyl.rds")  # Ensure no data loss
+    
+    fit_wt = lm(mpg ~ wt, mtcars)
+    saveRDS(fit_wt, "fit_wt.rds")  # Ensure no data loss
+    
+    # Compare - with spelling mistake. Oops.
+    result = anova(fit_cyl, fit_wtt)
+})
+```

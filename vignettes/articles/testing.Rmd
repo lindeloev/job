@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 Running `job`s in clean sessions is a great to test code in isolation without having to launch new RStudio applications.
 
 
-# Case: forgot to rename a variable
+## Case: forgot to rename a variable
 Here's an embarrassing error I commit too often: Say I want to write a function that computes the Mean Squared Error (MSE) of a numerical vector. First, I fiddle around with it in the console, ending up with:
 
 ```{r}
@@ -33,7 +33,7 @@ mse(rnorm(1000, sd = 1))
 Huh!? It runs but the MSE should be around 1 here, not 4. 
 
 
-# Solution: fast debugging with job::empty()
+## Solution: fast debugging with job::empty()
 You can select the code and click the addin "Run selection as job in empty session". Or you can do the exact same action using code via `job::empty()`:
 
 ```{r, eval = FALSE}
@@ -55,7 +55,7 @@ In the job, you'll see the error message:
 Aha, by running the code in a separate session, we learned that it only *seemed* to work because I had the `tmp` variable lingering in my environment. Errors like this become less trivial as the code (and your environment) grows more complex.
 
 
-# Selective import
+## Selective import
 In the example above, you can, of course, `import` selectively too. These two jobs are identical, but I prefer the first.
 
 ```{r, eval = FALSE}
@@ -72,7 +72,7 @@ job::job({
 
 
 
-# testthat unit tests
+## testthat unit tests
 `testthat` unit tests have access to your current environment so it is prone to the kind of errors introduced above. `job::empty()` to the rescue:
 
 ```{r, eval = FALSE}

@@ -23,14 +23,22 @@ authors:
 
 navbar:
   left:
+    - text: Worked examples
+    - menu:
+      - text: Controlling import
+        href: articles/articles/import.html
+      - text: Controlling export
+        href: articles/articles/export.html
     - text: Use cases
       menu:
       - text: Testing code
-        href: testing.html
+        href: articles/articles/testing.html
     - text: Tips
       menu:
       - text: Error robustness
-        href: robust.html
+        href: articles/articles/robust.html
+      - text: Memory and Speed
+        href: articles/aticles/memoryspeed.html
     - text: News
       href: news/index.html
     - icon: fa-twitter

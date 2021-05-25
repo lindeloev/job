@@ -1,0 +1,59 @@
+---
+title: "Using job::export()"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Use `job::export()` to control what is returned from a job. Here are a few examples:
+
+
+## Export to file
+If you just want to output to a file, I recommend using `saveRDS()` for single objects or `export(..., file = "filename.RData")` for multiple objects. You can use relative paths for the filename because the job runs in the same working directory as your RStudio session. Example:
+
+```{r, eval=FALSE}
+job::job({
+  a = 1
+  saveRDS(a, "a_object.rds")  # Save single objects
+  b = 2
+  job::export("changed", file = "my_environment.RData")
+})
+```
+When you use the `job::export(..., file)` argument, it implicitly calls `job::export("none")` after saving, i.e., returns nothing to the main session. To load the objects into your main session (or another job), simply:
+
+```{r, eval=FALSE}
+# Load single object
+a = readRDS("a_object.rds")
+
+# Load into global 
+load("my_environment.RData")
+
+# Load into environment
+job_result = new.env()
+load("my_environment.RData", envir = job_result)
+```
+
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+file.remove("a_object.rds")
+file.remove("my_environment.RData")
+```
+
+
+You can also use `save()` and `save.image(envir = sys.frame(sys.nframe()))`. The latter will include two functions called `emitProgress()` and `sourceWithProgress()` which were set by RStudio.
+
+
+## Export specific objects
+TO DO
+
+
+## Export new objects (new names)
+TO DO
+
+
+## Export everything including imports
+TO DO
+

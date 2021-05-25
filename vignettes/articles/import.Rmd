@@ -1,0 +1,12 @@
+---
+title: "Controlling import"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This article demonstrates how to use the `import` argument. 
