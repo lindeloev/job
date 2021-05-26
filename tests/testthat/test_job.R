@@ -2,7 +2,8 @@ if (rstudioapi::isAvailable()) {
   # Remove everything
   rm(list = ls(all.names = TRUE))
   rm(list = ls(all.names = TRUE, envir = globalenv()), envir = globalenv())
-  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only = TRUE, unload = TRUE))
+  if (length(sessionInfo()$otherPkgs) > 0)
+    invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only = TRUE, unload = TRUE))
 
   # Explicit libraries for manual testing
   library(rstudioapi)
@@ -18,26 +19,9 @@ if (rstudioapi::isAvailable()) {
         Sys.sleep(0.5)
       }
     },
-    cleanup = function() {
-      suppressWarnings(rm(list = c("a", "b", "default", "with_args1", "with_args2", "returned",  "empty1", "empty2", "attached_start"), envir = parent.frame()))
-    },
-    equal_sets = function(x, y) {
-      all(x %in% y) & all(y %in% x)
-    },
-    import = c(".__js__", ".Random.seed"),
-    pkgs = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base"),
-    test_addin = function(code, func) {
-      rstudioapi::selectionSet(code);
-      rstudioapi:::setSelectionRanges(rstudioapi::document_range(c(0, 0), c(10000, 10000)));
-      func()
-    }
+    pkgs = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base")
   )
 
-  # For good measure
-  helpers$cleanup()
-
-  #a = 123
-  #b = list(a = a, goat = "baah")
   options(job.mainsession = TRUE)  # Test whether this is imported to job sessions
 
 
@@ -398,8 +382,8 @@ if (rstudioapi::isAvailable()) {
   ############
   # CLEAN UP #
   ############
-  helpers$cleanup()
-  rm(helpers)
+  rm(list = ls(all.names = TRUE))
+  rm(list = ls(all.names = TRUE, envir = globalenv()))
 } else {
   expect_error(job::job({a = 1}), pattern = "You must run this from the RStudio main session.")
 }
