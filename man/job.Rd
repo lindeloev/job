@@ -28,7 +28,7 @@ the code block.}
 \item \code{"all"}: Import all objects.
 \item \code{"auto"} (default): Detect which objects are used in the code and import
 those.
-\item \code{c(foo, bar, ...)}: A vector of un-quoted variables to import into the job.
+\item \code{c(foo, bar, ...)}: A vector of unquoted variables to import into the job.
 \item \code{NULL}: import nothing.
 }}
 
@@ -49,7 +49,9 @@ Invisibly returns the job id on which you can call other \verb{rstudioapi::job*}
 functions, e.g., \verb{rstudioapi::rstudioapi::jobRemove(job_id)}.
 }
 \description{
-See examples for an introduction. See details for some warnings.
+See examples for an introduction. See \href{https://lindeloev.github.io/job/}{the job website} for more examples.
+See details for some warnings.
+Note that \code{job::empty()}is identical to \code{job::job()} but all arguments default to \code{NULL}.
 }
 \details{
 This is a wrapper around \code{rstudioapi::jobRunScript}. To control what gets

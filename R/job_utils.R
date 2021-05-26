@@ -28,6 +28,8 @@ hash_env = function(env) {
 #'  * `"new"`: Return only new variable names.
 #'  * `c(var1, var2, ...)`: Return these variable names.
 #'  * `NULL` or `"none"`: Return nothing. This is particularly useful for unnamed code chunks.
+#' @param file Name of `.RData` file to export to. If not `NULL`, nothing will be returned
+#'   to the main session (corresponding to `export("none")`).
 #' @return `NULL` invisibly.
 #' @encoding UTF-8
 #' @author Jonas Kristoffer Lindeløv, \email{jonas@@lindeloev.dk}
@@ -41,8 +43,14 @@ hash_env = function(env) {
 #'   job::job({n = 11; a = 11; job::export("new")})  # export n
 #'   job::job({n = 11; a = 55; job::export(c(a, d, b))})  # export a, d, b
 #'   job::job({n = 11; a = 55; job::export("none")})  # export nothing
+#'
+#'   # To file
+#'   job::job({n = 11; a = 11; job::export("changed", file = "jobresult.RData")})  # save a, n
+#'   jobresult = new.env()  # import to this env instead of global
+#'   load("jobresult.RData", envir = jobresult)
+#'   print(jobresult$n)
 #' }
-export = function(value = "changed") {
+export = function(value = "changed", file = NULL) {
   # Do nothing if this is not a job
   if (is.null(options("is.job")[[1]]))
     return(invisible(NULL))
@@ -90,6 +98,16 @@ export = function(value = "changed") {
   } else if (value == "all") {
   } else {
     stop("Invalid `value` argument.")
+  }
+
+  # Optionally export to file (and delete all)
+  if (is.character(file)) {
+    objects_to_save = ls(envir = call_env, all.names = TRUE)
+    objects_to_save = objects_to_save[objects_to_save != ".__js__"]
+    save(list = objects_to_save, envir = call_env, file = file)
+    rm(list = objects_to_save, envir = call_env)
+  } else if (is.null(file) == FALSE) {
+    warning("`file` must be a character or NULL. Ignoring...")
   }
 
   options("job.exported" = TRUE)

@@ -1,4 +1,4 @@
-#' Nice print .call
+#' Nice print .jobcode
 #'
 #' @aliases print.jobcode
 #' @export
@@ -16,8 +16,6 @@ print.jobcode = function(x, ...) {
 # - env: calling environment
 # - code_str: the code chunk in job::job()
 save_env = function(vars, env, code_str) {
-  custom_vars = vars
-
   # Identify which objects in env to save
   if (length(vars) == 0) {
     # stay NULL

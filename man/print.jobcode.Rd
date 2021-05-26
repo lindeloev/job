@@ -2,7 +2,7 @@
 % Please edit documentation in R/call_utils.R
 \name{print.jobcode}
 \alias{print.jobcode}
-\title{Nice print .call}
+\title{Nice print .jobcode}
 \usage{
 \method{print}{jobcode}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Currently unused}
 }
 \description{
-Nice print .call
+Nice print .jobcode
 }
