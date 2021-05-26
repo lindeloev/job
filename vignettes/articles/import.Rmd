@@ -1,12 +1,145 @@
 ---
-title: "Controlling import"
+title: "Controlling import to RStudio Jobs"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+By default, `job::job()` imports *everything* into the job by default while `job::empty()` imports *nothing* into the job by default. In some cases, you can achieve significant speed gains by setting import explicitly somewhere in between these two extremes. You can tweak the following:
+
+ * Variables. Control this using the `import` argument.
+ * Packages. Control this using the `packages` argument.
+ * Options. Control this using the `opts` argument.
+
+I'll discuss a few cases where it's meaningful to toggle these below. You can also check out the related [article on using `job::export()` to control exports from a job](../articles/export.html).
+
+
+## Import specific objects
+If you work in an environment with several large objects, importing will be slowed down and memory duplicated. So you want to avoid that if it's not necessary for your job.
+
+```{r, eval = FALSE}
+# Put stuff in the global environment
+big_df = data.frame(x = rnorm(1e7), y = rpois(1e7, 3))  # 10 mio. rows
+small_df = mtcars[1:10, ]
+model = mpg ~ hp * cyl
+
+# Import only selected variables
+job::job({
+  print(ls())  # What was imported?
+  fit = lm(model, small_df)
+}, import = c(small_df, model))
+```
+In the case above, you could also be lazy and use `import = "auto"`:
+
+```{r, eval = FALSE}
+job::job({
+  print(ls())  # What was imported?
+  fit = lm(model, small_df)
+}, import = "auto")
 ```
 
-This article demonstrates how to use the `import` argument. 
+The reason `import = "auto"` is not the default is that it will fail to import objects not explicitly mentioned in the code chunk. Continuing the example above, this imports the function but not `mode` and `small_df`:
+
+```{r, eval = FALSE}
+stateful_function = function() {
+  lm(model, small_df)
+}
+
+job::job({
+  print(ls())  # What was imported?
+  fit = stateful_function()
+}, import = "auto")
+```
+Fails with
+```{r}
+# Error in stats::model.frame(formula = model, data = small_df, drop.unused.levels = TRUE) : 
+#   object 'model' not found
+```
+
+
+
+
+## Load specific packages
+I can think of two scenarios where you want to control `packages`.
+
+1. When your job doesn't need particular slow-to-load packages. In the example below, we use `brms` first but won't use it inside the job.
+2. When you only need a package inside the job. In the example below, we use `job::job()` to do a slow `ggplot2` render. `ggplot2` won't be loaded in the main session. (See [Render plots in RStudio jobs](../articles/plots.html) for more details.)
+
+```{r, eval = FALSE}
+# brms stuff
+library(brms)
+fit = brm(mpg ~ hp * cyl, mtcars)
+
+# Unrelated job
+big_df = data.frame(x = rnorm(1e6), y = rpois(1e6, 3))
+job::job({
+  library(ggplot2)
+  gg = ggplot(big_df, aes(x = x, y = y)) + 
+    geom_point(alpha = 0.01, size = 0.1)
+  ggsave("my_points.png", plot = gg)
+}, packages = NULL)
+```
+```{r, echo = FALSE, warning=FALSE, error=FALSE}
+file.remove("my_points.png")
+```
+
+
+## Set job-specific options
+Say you're doing parallel computation via the `future` package. You want to use `mc.cores = 6` in your main session but only `mc.cores = 2` in your job. First, let's run the main session:
+
+```{r}
+library(future)
+options(mc.cores = 6)
+plan(multisession)
+my_great_function = function(x) x %in% c("A", "b", "C", "d")
+main_result = future.apply::future_sapply(LETTERS[1:6], my_great_function)
+print(main_result)
+```
+
+Continuing the same session, we launch a job on two cores:
+```{r, eval = FALSE}
+job::job({
+  print(options("mc.cores"))  # Verify that this option was imported
+  options(mc.cores = 2)  # Overwrite existing setting
+  job_result = future.apply::future_sapply(LETTERS[1:5], my_great_function)
+})
+```
+`job_result` and `main_result` should be identical, but the former was computed on six cores while the latter was computed on two. You could also call `job::job()` with `job::job(..., opts = NULL)`, just to make sure. This starts the job with default settings.
+
+
+## Run multiple jobs with identical settings
+Say you want to launch multiple jobs in identical environments. Rather than setting `options()` and `library()` within each job, you can set the `job::job()` arguments programmatically. You will need to `quote()` the code chunk.
+
+```{r, eval=FALSE}
+# Set up environment
+small_df = mtcars[1:20, ]
+model = mpg ~ hp * cyl
+irrelevant_var = 55
+
+# Common arguments to job::job
+jobargs = list(
+  import = c("small_df", "model"),
+  opts = list(mc.cores = 3, warn = -1),
+  packages = c("dplyr", "lubridate")
+)
+
+# Launch the first job
+job1_code = quote({
+  df = small_df %>% filter(wt < 4)
+  fit = lm(model, df)
+  
+  # Check imports
+  print(ls())  # "irrelevant_var" was not imported
+  print(as.Date("2021-05-23") %>% round_date("month"))  # lubridate was attached
+  print(options("mc.cores"))  # Option was set
+  warning("You won't see me because warn = -1")
+})
+job1_args = c(jobargs, list(job1 = job1_code))
+do.call(job::job, args = job1_args)
+
+# Launch the second job
+job2_code = quote({
+  df = small_df %>% filter(wt > 2, cyl != 4)
+  fit = lm(model, small_df)
+})
+do.call(job, args = c(jobargs, list(job2 = job2_code)))
+```
+
+When the jobs complete, you can inspect `job1$fit` and `job2$fit`.
