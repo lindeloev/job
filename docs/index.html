@@ -129,9 +129,9 @@
 <p><img src="https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png"></p>
 <ul>
 <li>
-<em>“Run selection as job”</em> imports everything from your environment, so it feels like home. It returns all variables that have been created or changed value during the job.</li>
+<em>“Run selection as job”</em> calls <code><a href="reference/job.html">job::job()</a></code>. It imports everything from your environment, so it feels like home. It returns all new or changed variables job.</li>
 <li>
-<em>“Run selection as job in empty session”</em> imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned.</li>
+<em>“Run selection as job in empty session”</em> calls <code><a href="reference/job.html">job::empty()</a></code>. It imports nothing from your environment, so the code can run in clean isolation. All variables are returned.</li>
 </ul>
 </div>
 <div id="typical-usage" class="section level2">
@@ -152,10 +152,13 @@
 
 <span class="co"># Send long-running code to a job</span>
 <span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span>brm_result <span class="op">=</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
   <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/brm.html">brm</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">data</span><span class="op">)</span>
   <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/add_criterion.html">add_criterion</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"loo"</span><span class="op">)</span>
+  
   <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Show a summary in the job</span>
   <span class="va">the_test</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/hypothesis.brmsfit.html">hypothesis</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"hp &gt; 0"</span><span class="op">)</span>
+  <span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/export.html">export</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">the_test</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Only return these</span>
 <span class="op">}</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"I'm free now! Thank you.
@@ -172,35 +175,26 @@
 <div id="finer-control" class="section level2">
 <h2 class="hasAnchor">
 <a href="#finer-control" class="anchor"></a>Finer control</h2>
-<p>RStudio jobs spin up a new session, i.e., a new environment. By default, <code><a href="reference/job.html">job::job()</a></code> will make this environment identical to your current one. But you can fine control this:</p>
+<p>See the <a href="https://lindeloev.github.io/job/reference/job.html">documentation</a> how you can fine-control the job environment and what results are returned. The <a href="https://lindeloev.github.io/job/">job::job() website</a> has worked examples, where finer control is beneficial, including:</p>
 <ul>
-<li><p><code>import</code>: By default, everything is imported to the job (<code>import = "all")</code>. Use <code>import = "auto"</code> to only imports objects that are mentioned in the code chunk. Do specific imports with <code><a href="reference/job.html">job::job({}, import = c(model, data))</a></code>. Import nothing using <code>import = NULL</code>.</p></li>
-<li><p><code>packages</code>: By default, all attached packages are attached in the job. Control this using <code><a href="reference/job.html">job::job({}, packages = c("brms"))</a></code> or set <code>packages = NULL</code> to load nothing. If <code>brms</code> is not loaded in your current session, adding <code><a href="https://github.com/paul-buerkner/brms">library("brms")</a></code> to the job code may be more readable.</p></li>
-<li><p><code>options</code>: By default, all options are overwritten/inserted to the job. Control this using, e.g., <code>job::job({}, opts = list(mc.cores = 2)</code> or set <code>opts = NULL</code> to use default options. If you want to set job-specific options, adding <code><a href="https://rdrr.io/r/base/options.html">options(mc.cores = 2)</a></code> to the job code may be more readable.</p></li>
-<li><p><code><a href="reference/export.html">job::export()</a></code>: Call this function as the last line in your code chunk to control what gets returned. <code><a href="reference/export.html">export("changed")</a></code> is default but <code><a href="reference/export.html">export("all")</a></code> and <code><a href="reference/export.html">export(NULL)</a></code> can be useful too. See <code><a href="reference/export.html">?export</a></code> for more info and examples.</p></li>
 <li>
-<p>Returned result: In the example above, we assigned the job environment to <code>brm_result</code> upon completion. Naturally, you can choose any name, e.g., <code><a href="reference/job.html">job::job(fancy_name = {a = 5})</a></code>. To return nothing, use an unnamed code chunk (insert results to <code><a href="https://rdrr.io/r/base/environment.html">globalenv()</a></code> and remove everything before return: (<code><a href="reference/job.html">job::job({a = 5; rm(list=ls())})</a></code>. Returning nothing is useful when</p>
-<ol>
-<li><p>your main result is a text output or a file on the disk, or</p></li>
-<li><p>when the return is a very large object. The underlying <code><a href="https://rdrr.io/pkg/rstudioapi/man/jobRunScript.html">rstudioapi::jobRunScript()</a></code> is slow in the back-transfer so it’s usually faster to <code><a href="https://rdrr.io/r/base/readRDS.html">saveRDS(obj, filename)</a></code> them in the job and <code><a href="https://rdrr.io/r/base/readRDS.html">readRDS(filename)</a></code> into your current session.</p></li>
-</ol>
-</li>
+<a href="https://lindeloev.github.io/job/articles/articles/import.html">Controlling import</a> of variables, packages, and options.</li>
+<li>
+<a href="https://lindeloev.github.io/job/articles/articles/export.html">Controlling export</a> using the <code><a href="reference/export.html">job::export()</a></code> function.</li>
+<li>Using <code><a href="reference/job.html">job::job()</a></code> to <a href="https://lindeloev.github.io/job/articles/articles/testing.html">test code chunks in an isolated environment</a>.</li>
+<li>Using <code><a href="reference/job.html">job::job()</a></code> to <a href="https://lindeloev.github.io/job/articles/articles/plot.html">render large plots</a>.</li>
 </ul>
 </div>
-<div id="some-use-cases" class="section level2">
+<div id="use-cases" class="section level2">
 <h2 class="hasAnchor">
-<a href="#some-use-cases" class="anchor"></a>Some use cases</h2>
-<ul>
-<li>Model training, cross validation, or hyperparameter tuning: train multiple models simultaneously, each in their own job. If one fails, the others continue.</li>
-<li>Heavy I/O tasks, like processing large files. Save the results to disk and return nothing.</li>
-<li>Run unit tests and other code in an empty environment. By default, <code><a href="https://devtools.r-lib.org//reference/test.html">devtools::test()</a></code> runs in the current environment, including manually defined variables (e.g., from the last test-run) and attached packages. Call <code><a href="reference/job.html">job::job({devtools::test()}, import = NULL, packages = NULL, opts = NULL)</a></code> to run the test in complete isolation.</li>
-<li>Upgrading packages</li>
-</ul>
+<a href="#use-cases" class="anchor"></a>Use cases</h2>
+<p>The primary use case for <code><a href="reference/job.html">job::job()</a></code> are heavy statistical and numerical functions, including MCMC sampling, cross-validation, etc.</p>
+<p>But sometimes our flow is disturbed by semi-slow routine tasks too. Try running <code><a href="https://devtools.r-lib.org//reference/test.html">devtools::test()</a></code>, <code><a href="https://rdrr.io/pkg/knitr/man/knit.html">knitr::knit()</a></code>, <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code>, or <code>upgrade.packages()</code> as a job and see whether that’s an improvement. Here’s <a href="https://lindeloev.github.io/job/articles/articles/routines.html">a list of semi-slow functions</a> that I regularly run as jobs.</p>
 </div>
 <div id="see-also" class="section level2">
 <h2 class="hasAnchor">
 <a href="#see-also" class="anchor"></a>See also</h2>
-<p><code><a href="reference/job.html">job::job()</a></code> is aimed at easing interactive development within RStudio. For larger problems, production code, and solutions that work outside of RStudio, check out:</p>
+<p><code><a href="reference/job.html">job::job()</a></code> is aimed at easing interactive development within RStudio. For tasks that don’t benefit from running in the Jobs pane of RStudio, check out:</p>
 <ul>
 <li><p>The <a href="https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html"><code>future</code> package</a>’s <code>%&lt;-</code> operator combined with <code>plan(multisession)</code>.</p></li>
 <li><p>The <a href="https://callr.r-lib.org/"><code>callr</code> package</a> is a general tool to run code in new R sessions.</p></li>
