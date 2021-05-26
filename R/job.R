@@ -1,7 +1,8 @@
 #' Run Code as an RStudio Job
 #'
-#' See examples for an introduction. See details for some warnings. `job::empty()`
-#' is identical to `job::job()` but all arguments default to `NULL`.
+#' See examples for an introduction. See [the job website](https://lindeloev.github.io/job/) for more examples.
+#' See details for some warnings.
+#' Note that `job::empty()`is identical to `job::job()` but all arguments default to `NULL`.
 #'
 #' @aliases job
 #' @export
