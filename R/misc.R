@@ -12,10 +12,14 @@ check_available = function() {
 
 # If `opt` is a function containing .Call("rs_ or ".rs.", replace it with a warning.
 opt_without_rstudio = function(opt) {
-  func_code = paste0(utils::capture.output(opt), collapse = "\n")  # to one character string
+  if (class(opt) == "function") {
+    opt_code = paste0(utils::capture.output(opt), collapse = "\n")  # to one character string
+  } else if (class(opt) == "call") {
+    opt_code = as.character(opt)
+  }
 
-  contains_rstudio_c = grep('.Call("rs_', func_code, fixed = TRUE)
-  contains_rstudio_r = grep('.rs.', func_code, fixed = TRUE)
+  contains_rstudio_c = grep('.Call("rs_', opt_code, fixed = TRUE)
+  contains_rstudio_r = grep('.rs.', opt_code, fixed = TRUE)
 
   if (length(contains_rstudio_c) != 0 | length(contains_rstudio_r) != 0) {
     opt = function(...) warning("job::job() removed this option-function because it contained RStudio-specific code.")
@@ -29,7 +33,7 @@ opt_without_rstudio = function(opt) {
 # Recursively removes functions that contain rstudio-specific functions.
 # They won't work in child sessions and caused a multitude of bugs.
 opts_without_rstudio = function(opts) {
-  rapply(opts, opt_without_rstudio, classes = "function", how = "replace")
+  rapply(opts, opt_without_rstudio, classes = c("function", "call"), how = "replace")
 }
 
 
