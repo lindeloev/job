@@ -48,7 +48,9 @@
   
 
 <meta property="og:title" content="Run Code as an RStudio Job — job" />
-<meta property="og:description" content="See examples for an introduction. See details for some warnings." />
+<meta property="og:description" content="See examples for an introduction. See the job website for more examples.
+See details for some warnings.
+Note that job::empty()is identical to job::job() but all arguments default to NULL." />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@jonaslindeloev" />
 <meta name="twitter:site" content="@jonaslindeloev" />
@@ -93,7 +95,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">job</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3</span>
       </span>
     </div>
 
@@ -172,7 +174,9 @@
     </div>
 
     <div class="ref-description">
-    <p>See examples for an introduction. See details for some warnings.</p>
+    <p>See examples for an introduction. See <a href='https://lindeloev.github.io/job/'>the job website</a> for more examples.
+See details for some warnings.
+Note that <code>job::empty()</code>is identical to <code>job::job()</code> but all arguments default to <code>NULL</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>job</span><span class='op'>(</span>
@@ -202,7 +206,7 @@ the code block.</p></td>
 <li><p><code>"all"</code>: Import all objects.</p></li>
 <li><p><code>"auto"</code> (default): Detect which objects are used in the code and import
 those.</p></li>
-<li><p><code><a href='https://rdrr.io/r/base/c.html'>c(foo, bar, ...)</a></code>: A vector of un-quoted variables to import into the job.</p></li>
+<li><p><code><a href='https://rdrr.io/r/base/c.html'>c(foo, bar, ...)</a></code>: A vector of unquoted variables to import into the job.</p></li>
 <li><p><code>NULL</code>: import nothing.</p></li>
 </ul></td>
     </tr>

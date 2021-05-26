@@ -92,7 +92,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">job</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3</span>
       </span>
     </div>
 
@@ -169,24 +169,34 @@
       
     </div>
 
-    <div id="job-02" class="section level1">
-<h1 class="page-header" data-toc-text="0.2">
-<a href="#job-02" class="anchor"></a>job 0.2</h1>
+    <div id="job-03" class="section level1">
+<h1 class="page-header" data-toc-text="0.3">
+<a href="#job-03" class="anchor"></a>job 0.3</h1>
 <p>First release submitted to CRAN.</p>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features:</h3>
 <ul>
-<li>RStudio addins (#6)! Read more in the README.</li>
 <li>Control what objects are returned using the <code><a href="../reference/export.html">job::export()</a></code> function in the code chunk. The default is <code><a href="../reference/export.html">job::export("changed")</a></code> which returns all variables that were defined or changed during the job. v0.1 only returned new variable names (now <code><a href="../reference/export.html">job::export("new")</a></code>). Read more in the README. (#15)</li>
 <li>Use <code><a href="../reference/export.html">job::export("changed", file = "my_jobresult.RData")</a></code> to save to a file rather than returning to the main RStudio session.</li>
+<li>
+<code><a href="../reference/job.html">job::job()</a></code> shows more informative messages all around to reduce state ambiguity when launching jobs.</li>
+</ul>
+</div>
+</div>
+    <div id="job-02" class="section level1">
+<h1 class="page-header" data-toc-text="0.2">
+<a href="#job-02" class="anchor"></a>job 0.2</h1>
+<div id="new-features-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features:</h3>
+<ul>
+<li>RStudio addins (#6)! Read more in the README.</li>
 <li>Use <code>import = "auto"</code> to import all objects that are “mentioned” in the code. The default <code>import = "all"</code> replaces <code>import = ls()</code>.</li>
 <li>The job title now includes a code snippet for unnamed chunks instead of defaulting to <code>"(untitled)"</code>.</li>
 <li>
 <code><a href="../reference/job.html">job::job()</a></code> now takes unnamed arguments too, e.g., <code>job::job({&lt;code&gt;}, NULL, c("rstudioapi"))</code>. (#25)</li>
 <li>Added <code><a href="../reference/job.html">job::empty()</a></code> which is short for <code>job::job({&lt;code&gt;}, import = NULL, packages = NULL, opts = NULL)</code> (#23)</li>
-<li>
-<code><a href="../reference/job.html">job::job()</a></code> shows more informative messages all around to reduce state ambiguity when launching jobs.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level3">
