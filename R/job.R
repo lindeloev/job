@@ -1,6 +1,7 @@
 #' Run Code as an RStudio Job
 #'
-#' See examples for an introduction. See details for some warnings.
+#' See examples for an introduction. See details for some warnings. `job::empty()`
+#' is identical to `job::job()` but all arguments default to `NULL`.
 #'
 #' @aliases job
 #' @export
@@ -24,7 +25,7 @@
 #'  * `"all"`: Import all objects.
 #'  * `"auto"` (default): Detect which objects are used in the code and import
 #'    those.
-#'  * `c(foo, bar, ...)`: A vector of un-quoted variables to import into the job.
+#'  * `c(foo, bar, ...)`: A vector of unquoted variables to import into the job.
 #'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
 #'   all loaded packages in the calling environment. `NULL` loads only default
@@ -170,9 +171,11 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ##########
   # IMPORT #
   ##########
+  if (class(import) != "call")
+    import = substitute(import)
   call_frame = parent.frame()
   import_file = save_env(
-    vars = as.character(substitute(import)),
+    vars = as.character(import),
     env = call_frame,
     code_str = code_str
   )
