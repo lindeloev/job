@@ -17,8 +17,8 @@ Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed wit
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png)
 
- * *"Run selection as job"* imports everything from your environment, so it feels like home. It returns all variables that have been created or changed value during the job.
- * *"Run selection as job in empty session"* imports nothing from your environment, so the code can run in clean isolation from the mess of a long-running session. All variables are returned.
+ * *"Run selection as job"* calls `job::job()`. It imports everything from your environment, so it feels like home. It returns all new or changed variables job.
+ * *"Run selection as job in empty session"* calls `job::empty()`. It imports nothing from your environment, so the code can run in clean isolation. All variables are returned.
 
 
 ## Typical usage
@@ -44,10 +44,13 @@ model = mpg ~ hp * wt
 
 # Send long-running code to a job
 job::job(brm_result = {
+  options(mc.cores = 3)
   fit = brm(model, data)
   fit = add_criterion(fit, "loo")
+  
   print(summary(fit))  # Show a summary in the job
   the_test = hypothesis(fit, "hp > 0")
+  job::export(c(fit, the_test))  # Only return these
 })
 
 cat("I'm free now! Thank you.
@@ -68,33 +71,22 @@ Often, the results of the long-running chunks are the most interesting. But they
 
 ## Finer control
 
-RStudio jobs spin up a new session, i.e., a new environment. By default, `job::job()` will make this environment identical to your current one. But you can fine control this:
+See the [documentation](https://lindeloev.github.io/job/reference/job.html) how you can fine-control the job environment and what results are returned. The [job::job() website](https://lindeloev.github.io/job/) has worked examples, where finer control is beneficial, including:
 
--   `import`: By default, everything is imported to the job (`import = "all")`. Use `import = "auto"` to only imports objects that are mentioned in the code chunk. Do specific imports with `job::job({}, import = c(model, data))`. Import nothing using `import = NULL`.
-
--   `packages`: By default, all attached packages are attached in the job. Control this using `job::job({}, packages = c("brms"))` or set `packages = NULL` to load nothing. If `brms` is not loaded in your current session, adding `library("brms")` to the job code may be more readable.
-
--   `options`: By default, all options are overwritten/inserted to the job. Control this using, e.g., `job::job({}, opts = list(mc.cores = 2)` or set `opts = NULL` to use default options. If you want to set job-specific options, adding `options(mc.cores = 2)` to the job code may be more readable.
-
--   `job::export()`: Call this function as the last line in your code chunk to control what gets returned. `export("changed")` is default but `export("all")` and `export(NULL)` can be useful too. See `?export` for more info and examples.
-
--   Returned result: In the example above, we assigned the job environment to `brm_result` upon completion. Naturally, you can choose any name, e.g., `job::job(fancy_name = {a = 5})`. To return nothing, use an unnamed code chunk (insert results to `globalenv()` and remove everything before return: (`job::job({a = 5; rm(list=ls())})`. Returning nothing is useful when
-
-    1.  your main result is a text output or a file on the disk, or
-
-    2.  when the return is a very large object. The underlying `rstudioapi::jobRunScript()` is slow in the back-transfer so it's usually faster to `saveRDS(obj, filename)` them in the job and `readRDS(filename)` into your current session.
+ - [Controlling import](https://lindeloev.github.io/job/articles/articles/import.html) of variables, packages, and options.
+ - [Controlling export](https://lindeloev.github.io/job/articles/articles/export.html) using the `job::export()` function.
+ - Using `job::job()` to [test code chunks in an isolated environment](https://lindeloev.github.io/job/articles/articles/testing.html).
+ - Using `job::job()` to [render large plots](https://lindeloev.github.io/job/articles/articles/plot.html).
 
 
-## Some use cases
+## Use cases
+The primary use case for `job::job()` are heavy statistical and numerical functions, including MCMC sampling, cross-validation, etc. 
 
--   Model training, cross validation, or hyperparameter tuning: train multiple models simultaneously, each in their own job. If one fails, the others continue.
--   Heavy I/O tasks, like processing large files. Save the results to disk and return nothing.
--   Run unit tests and other code in an empty environment. By default, `devtools::test()` runs in the current environment, including manually defined variables (e.g., from the last test-run) and attached packages. Call `job::job({devtools::test()}, import = NULL, packages = NULL, opts = NULL)` to run the test in complete isolation.
--   Upgrading packages
+But sometimes our flow is disturbed by semi-slow routine tasks too. Try running `devtools::test()`, `knitr::knit()`, `pkgdown::build_site()`, or `upgrade.packages()` as a job and see whether that's an improvement. Here's [a list of semi-slow functions](https://lindeloev.github.io/job/articles/articles/routines.html) that I regularly run as jobs.
 
 
 ## See also
-`job::job()` is aimed at easing interactive development within RStudio. For larger problems, production code, and solutions that work outside of RStudio, check out:
+`job::job()` is aimed at easing interactive development within RStudio. For tasks that don't benefit from running in the Jobs pane of RStudio, check out:
 
  * The [`future` package](https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html)'s `%<-` operator combined with `plan(multisession)`.
  
