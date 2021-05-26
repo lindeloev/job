@@ -2,13 +2,6 @@
 title: "Lose less work to errors in RStudio Jobs"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 A user reported running a 14-hour job but an error on the very last line terminated the job and nothing was saved/returned. Here's a few tricks to ameliorate such situations:
 
 ## Wrap code in `try()`

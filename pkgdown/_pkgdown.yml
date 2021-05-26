@@ -24,8 +24,8 @@ reference:
   - title: From main session
     desc: Call these from the main session
     contents:
-      - job
-      - empty
+    - job
+    - empty
   - title: From the job
     desc: Call these from from within the job
     contents:
@@ -34,27 +34,25 @@ reference:
 
 navbar:
   left:
-  - text: Worked examples
+  - text: Usage and cases
     menu:
     - text: Controlling import
       href: articles/articles/import.html
     - text: Controlling export
       href: articles/articles/export.html
-  - text: Use cases
-    menu:
-    - text: Testing code
+    - text: Error robustness
+      href: articles/articles/robust.html
+    - text: "Case: Testing code"
       href: articles/articles/testing.html
-    - text: Rendering large plots
+    - text: "Case: Rendering large plots"
       href: articles/articles/plot.html
     - text: Other routine tasks
       href: articles/articles/routines.html
-  - text: Tips
-    menu:
-    - text: Error robustness
-      href: articles/articles/robust.html
+  - text: Reference
+    href: reference/index.html
   - text: News
     href: news/index.html
-  - icon: fa-twitter
+  - icon: "fab fa-twitter fa-lg"
     href: https://twitter.com/jonaslindeloev
-  - icon: fa-github
+  - icon: "fab fa-github fa-lg"
     href: https://github.com/lindeloev/job

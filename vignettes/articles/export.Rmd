@@ -2,16 +2,9 @@
 title: "Using job::export() to control exports from RStudio Jobs"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+Use `job::export()` to control what is returned from a job. The documentation for `job::export()` includes code examples and may be useful to read first. In this article, we'll discuss situations where it definitely makes sense to deviate from this default. Check out the related [article on controlling imports to a job](../articles/import.html).
 
-Use `job::export()` to control what is returned from a job. It should be called as the last command in the job. The documentation for `job::export()` includes code examples and may be useful to read first. If you don't call `job::export()` explicitly in your code chunk, it defaults to `job::export("changed", file = NULL)`. In this article, we'll discuss situations where it definitely makes sense to deviate from this default.
-
-Also check out the related [article on controlling imports to a job](../articles/import.html).
+`job::export()` should be called as the last command in the job. If it isn't called, `job` defaults to calling `job::export("changed", file = NULL)`.
 
 ## Ignore temporary objects
 
@@ -40,8 +33,8 @@ If you just want to output to a file, I recommend using `saveRDS()` for single o
 
 ```{r, eval=FALSE}
 job::job({
-  a = "I am ae"
-  saveRDS(a, "a_object.rds")  # Save single objects
+  d = "I am dee"
+  saveRDS(d, "d_object.rds")  # Save single objects
   b = "I am bee"
   job::export("changed", file = "my_environment.RData")
 })
@@ -49,10 +42,10 @@ job::job({
 
 When you use the `job::export(..., file)` argument, it implicitly calls `job::export("none")` after saving, i.e., returns nothing to the main session. To load the objects into your main session (or another job), simply:
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Load single object
-a = readRDS("a_object.rds")
-print(a)  # "I am ae"
+d = readRDS("d_object.rds")
+print(d)  # "I am ae"
 
 # Load into global 
 load("my_environment.RData")
@@ -62,11 +55,6 @@ print(b)  # "I am bee"
 job_result = new.env()
 load("my_environment.RData", envir = job_result)
 print(job_result$b)  # "I am bee"
-```
-
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
-file.remove("a_object.rds")
-file.remove("my_environment.RData")
 ```
 
 You can also use `save()` and `save.image(envir = sys.frame(sys.nframe()))` inside the code chunk. The latter will include two functions called `emitProgress()` and `sourceWithProgress()` are set by RStudio.

@@ -2,13 +2,6 @@
 title: "Offload Routine Tasks to RStudio Jobs"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 I tend to engage in procrastination if my console is busy for more than 10 seconds. Using `job()` keeps me in the flow. Here are some commands I regularly `job`, either via code or via the addins.
 
 

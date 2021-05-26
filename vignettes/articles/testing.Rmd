@@ -2,13 +2,6 @@
 title: "Debug Code Using Empty RStudio Jobs"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 Running `job`s in clean sessions is a great to test code in isolation without having to launch new RStudio applications.
 
 

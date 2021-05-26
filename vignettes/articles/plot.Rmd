@@ -13,12 +13,12 @@ df = data.frame(x = seq_len(n), y = rnorm(n))
 `ggplot2` is fast at building the plot "grammar" but rendering can be slow. So let's build the plot in our main session but offload the rendering to a `job::job()`. We need to render it to a file because the job has no viewer.
 
 ```{r, eval = FALSE}
-# Build plot
+# Build plot "grammar"
 library(ggplot2)
 gg = ggplot(df, aes(x = x, y = y)) + 
   geom_point(size = 0.1, alpha = 0.05)
 
-# Render as a job
+# Render in a job
 job::job({
   ggsave("gg_points.png", plot = gg, width = 7, height = 3)
 })
