@@ -44,7 +44,7 @@ model = mpg ~ hp * wt
 
 # Send long-running code to a job
 job::job(brm_result = {
-  options(mc.cores = 3)
+  options(mc.cores = 3)  # Set options inside the job
   fit = brm(model, data)
   fit = add_criterion(fit, "loo")
   
