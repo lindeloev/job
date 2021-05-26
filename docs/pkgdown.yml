@@ -1,0 +1,15 @@
+pandoc: 2.11.4
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  articles/export: export.html
+  articles/import: import.html
+  articles/plot: plot.html
+  articles/robust: robust.html
+  articles/routines: routines.html
+  articles/testing: testing.html
+last_built: 2021-05-26T12:55Z
+urls:
+  reference: https://lindeloev.github.io/job/reference
+  article: https://lindeloev.github.io/job/articles
+

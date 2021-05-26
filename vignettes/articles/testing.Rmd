@@ -7,6 +7,10 @@ Running `job`s in clean sessions is a great to test code in isolation without ha
 
 ## Case: forgot to rename a variable
 Here's an embarrassing error I commit too often: Say I want to write a function that computes the Mean Squared Error (MSE) of a numerical vector. First, I fiddle around with it in the console, ending up with:
+```{r, echo = 42}
+set.seed(42)
+```
+
 
 ```{r}
 tmp = rnorm(1000, sd = 2)

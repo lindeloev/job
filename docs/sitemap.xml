@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://lindeloev.github.io/job/index.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/reference/export.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/reference/job.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/reference/print.jobcode.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/articles/articles/export.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/articles/articles/import.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/articles/articles/plot.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/articles/articles/robust.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/articles/articles/routines.html</loc>
+  </url>
+  <url>
+    <loc>https://lindeloev.github.io/job/articles/articles/testing.html</loc>
+  </url>
+</urlset>
