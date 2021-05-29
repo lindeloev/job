@@ -64,7 +64,7 @@ save_settings = function(opts) {
     opts = opts,
     wd = getwd()
   )
-  settings_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
+  settings_file = gsub("\\\\", "/", tempfile())  # Remove backslashes: Easier to paste() later
   suppressWarnings(saveRDS(.__js__, settings_file))  # Ignore warning that some package may not be available when loading
 
   settings_file

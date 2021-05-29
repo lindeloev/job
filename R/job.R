@@ -64,7 +64,8 @@
 #'   }, title = "Title with code: {code}")
 #'
 #'   # later:
-#'   print(as.list(my_result))
+#'   print(my_result$y)
+#'   print(my_result$sigma)
 #'
 #'
 #'   # Delete everything in the job environment to return nothing.
