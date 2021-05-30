@@ -1,8 +1,8 @@
 # Returns function or call as char. NULL for other objects.
 code2char = function(x) {
-  if (class(x) == "function") {
+  if (any(class(x) == "function")) {
     return(paste0(utils::capture.output(x), collapse = "\n"))  # to one character string
-  } else if (class(x) == "call") {
+  } else if (any(class(x) == "call")) {
     return(as.character(x))
   }
 
