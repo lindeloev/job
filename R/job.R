@@ -155,30 +155,15 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   }
 
 
-  ############
-  # PACKAGES #
-  ############
-  # List currently attached Then write "library(x)" code
-  if (is.character(packages) || length(packages) == 0) {
-    packages_str = paste0("suppressMessages(library(", packages, ", warn.conflicts = FALSE))", collapse = "\n")
-  } else {
-    stop("`packages` must be a character vector or length 0.")
-  }
-
-  # For job message:
-  default_packages = c("stats", "graphics", "grDevices", "utils", "datasets", "methods", "base")
-  nondefault_packages = packages[packages %in% default_packages == FALSE]
-
-
   ##########
   # IMPORT #
   ##########
   if (class(import) != "call")
     import = substitute(import)
-  call_frame = parent.frame()
-  import_file = save_env(
+
+  import_summary = save_env(
     vars = as.character(import),
-    env = call_frame,
+    env = parent.frame(),
     code_str = code_str
   )
 
@@ -186,7 +171,14 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ############
   # SETTINGS #
   ############
-  opts_file = save_settings(opts)
+  .__jobsettings__ = list(
+    packages = get_packages(packages),
+    opts = get_opts(opts),
+    import = import_summary,
+    wd = getwd(),
+    file = gsub("\\\\", "/", tempfile())  # Location of the jobsettings. Remove backslashes: Easier to paste() later
+  )
+  suppressWarnings(saveRDS(.__jobsettings__, .__jobsettings__$file))  # Ignore warning that some package may not be available when loading
 
 
 
@@ -198,27 +190,32 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 ##############
 # INITIALIZE #
 ##############
-", ifelse(length(packages) == 0,
-  yes = "message(Sys.time(), ': Job started.', appendLF = FALSE)",
-  no = paste0("message(Sys.time(), ': Job started. Attaching ", paste0(nondefault_packages, collapse = ", "), "...', appendLF = FALSE)\n", packages_str)
-), "
-# Load settings
-.__js__ = readRDS('", opts_file, "')  # js = jobsettings
-setwd(.__js__$wd)
-options(.__js__$opts)
-file.remove('", opts_file, "')
+# Load jobsettings
+.__jobsettings__ = readRDS('", .__jobsettings__$file, "')  # js = jobsettings
+setwd(.__jobsettings__$wd)
+if (length(.__jobsettings__$packages) > 0) {
+  message(Sys.time(), ' Job started. Attaching packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
+  invisible(lapply(.__jobsettings__$packages, function(x, ...) suppressMessages(library(x, ...)), character.only = TRUE, warn.conflicts = FALSE))
+} else {
+  message(Sys.time(), ' Job started.')
+}
+options(.__jobsettings__$opts)
+file.remove(.__jobsettings__$file)
+
 
 # Load objects and compute hash
-", ifelse(length(import) > 0,
-  yes = paste0("message(' Done.\n', Sys.time(), ': Importing job environment...', appendLF = FALSE)\nload('", import_file, "', envir = sys.frame(sys.nframe()))  # Current frame"),
-  no = ""
-), "
-file.remove('", import_file, "')
-.__js__$init_hashes = job:::hash_env(sys.frame(sys.nframe()))
+if (length(.__jobsettings__$import$vars) > 0) {
+  message(' Done.\n', Sys.time(), ': Importing ', .__jobsettings__$import$mb, 'MB...', appendLF = FALSE)
+  load(.__jobsettings__$import$file, envir = sys.frame(sys.nframe()))  # Current frame
+}
+file.remove(.__jobsettings__$import$file)
+.__jobsettings__$init_hashes = job:::hash_env(sys.frame(sys.nframe()))
 
 
 
-# Run code
+############
+# RUN CODE #
+############
 message(' Done.\n', Sys.time(), ': Executing job code...')
 message('==============\n')
 Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
@@ -232,18 +229,15 @@ Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
 # Fall back on default export
 if (is.null(options('job.exported')[[1]]))
   job::export('changed')
-if (exists('.__js__'))
-  rm(.__js__)
+if (exists('.__jobsettings__'))
+  rm(.__jobsettings__)
 
 message('\n==============')
-export_objects = ls(all.names = TRUE)
-if (length(export_objects) == 0) {
-message()
+if (length(ls(all.names = TRUE)) == 0) {
   message(Sys.time(), ': Done.')
 } else {
-  message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(), sys.frame(sys.nframe())), 'MB to the main session...')
+  message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(all.names = TRUE), sys.frame(sys.nframe())), 'MB: ', paste0(ls(all.names = TRUE), collapse = ', '), '...')
 }
-rm(export_objects)
 options(warn = -1)")
 
 
@@ -270,6 +264,7 @@ class(.jobcode) = c('jobcode', 'character')")
   script_file = tempfile()
   write(output, file = script_file)
   job_id = rstudioapi::jobRunScript(script_file, job_title, importEnv = FALSE, exportEnv = result_varname)
+  message("\rJob launched.", rep(" ", 70))  # Replaces import size message
 
   # Return nothing
   invisible(job_id)

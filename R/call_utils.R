@@ -1,3 +1,5 @@
+# THESE FUNCTIONS SHOULD BE CALLED FROM THE MAIN SESSION
+
 #' Nice print .jobcode
 #'
 #' @aliases print.jobcode
@@ -7,7 +9,6 @@
 print.jobcode = function(x, ...) {
   cat(x)
 }
-
 
 
 # Saves vars in env to a tempfile
@@ -37,35 +38,20 @@ save_env = function(vars, env, code_str) {
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
   suppressWarnings(save(list = vars, file = import_file, envir = env))
-  message("\rJob launched.", rep(" ", 70))  # Replaces import size message
 
-  import_file
+  # Return summary
+  list(
+    file = import_file,
+    mb = import_mb,
+    vars = vars
+  )
 }
 
 
-# Saves options() and working directory to a temporary file.
-# Returns the filename.
-# - opts: named list of options or NULL
-save_settings = function(opts) {
-  # Preprocess opts
-  if (is.null(opts)) {
-    opts = list()
-  } else if (is.list(opts) == FALSE) {
-    stop("`opts` must be a list (e.g., `options()`) or NULL.")
-  } else {
-    # Remove RStudio-specific functions from options
-    opts = opts_without_rstudio(opts)
-  }
+get_packages = function(packages) {
+  if (length(packages) > 0 & is.character(packages) == FALSE)
+    stop("`packages` must be a character vector or length 0.")
 
-  opts$is.job = TRUE
-
-  # Save jobsettings (js) and return
-  .__js__ = list(
-    opts = opts,
-    wd = getwd()
-  )
-  settings_file = gsub("\\\\", "/", tempfile())  # Remove backslashes: Easier to paste() later
-  suppressWarnings(saveRDS(.__js__, settings_file))  # Ignore warning that some package may not be available when loading
-
-  settings_file
+  new_packages = packages[packages %in% options("defaultPackages")[[1]] == FALSE]
+  new_packages
 }

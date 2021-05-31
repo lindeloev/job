@@ -48,7 +48,7 @@ if (rstudioapi::isAvailable()) {
 
     # Check result
     helpers$wait_for_job("default")
-    expect_identical(default$vars, c(".__js__", "a", "b"))
+    expect_identical(default$vars, c(".__jobsettings__", "a", "b"))
     expect_identical(default$pkgs, c("rstudioapi", "testthat", helpers$pkgs))
     expect_identical(default$a_copy, a)
     expect_identical(default$b_copy, b)
@@ -85,7 +85,7 @@ if (rstudioapi::isAvailable()) {
     # Check result
     helpers$wait_for_job("with_args1")
     expect_true(is.character(returned))
-    expect_identical(with_args1$vars, c(".__js__", "b", "q"))
+    expect_identical(with_args1$vars, c(".__jobsettings__", "b", "q"))
     expect_identical(with_args1$pkgs, c("job", helpers$pkgs))
     expect_identical(with_args1$b_copy, b)
     expect_true(with_args1$attached_rstudioapi == FALSE)
@@ -121,7 +121,7 @@ if (rstudioapi::isAvailable()) {
     # Check result
     helpers$wait_for_job("with_args2")
     expect_true(is.character(returned))
-    expect_identical(with_args2$vars, c(".__js__", "b", "q"))
+    expect_identical(with_args2$vars, c(".__jobsettings__", "b", "q"))
     expect_identical(with_args2$pkgs, c("job", helpers$pkgs))
     expect_identical(with_args2$b_copy, b)
     expect_true(with_args2$attached_rstudioapi == FALSE)
@@ -151,7 +151,7 @@ if (rstudioapi::isAvailable()) {
 
     # Check results
     helpers$wait_for_job("empty1")
-    expect_identical(empty1$vars, ".__js__")
+    expect_identical(empty1$vars, ".__jobsettings__")
     expect_identical(empty1$pkgs, helpers$pkgs)
     expect_identical(names(empty1), c("pkgs", ".jobcode", "opts", "vars"))
     expect_true(is.null(empty1$opts$job.mainsession) == TRUE)
@@ -175,7 +175,7 @@ if (rstudioapi::isAvailable()) {
 
     # Check results
     helpers$wait_for_job("empty2")
-    expect_identical(empty2$vars, ".__js__")
+    expect_identical(empty2$vars, ".__jobsettings__")
     expect_identical(empty2$pkgs, helpers$pkgs)
     expect_identical(names(empty2), c("pkgs", ".jobcode", "opts", "vars"))
     expect_true(is.null(empty2$opts$job.mainsession) == TRUE)
@@ -321,7 +321,7 @@ if (rstudioapi::isAvailable()) {
 
     # Check results
     helpers$wait_for_job("args_unnamed")
-    expect_identical(args_unnamed$vars, c(".__js__", "a"))
+    expect_identical(args_unnamed$vars, c(".__jobsettings__", "a"))
     expect_identical(args_unnamed$pkgs, c("rstudioapi", helpers$pkgs))
     expect_null(args_unnamed$opts$job.mainsession)
     expect_identical(args_unnamed$opts$job.newopt, 59)
@@ -346,7 +346,7 @@ if (rstudioapi::isAvailable()) {
 
     # Check results
     helpers$wait_for_job("args_onenamed")
-    expect_identical(args_onenamed$vars, c(".__js__", "a"))
+    expect_identical(args_onenamed$vars, c(".__jobsettings__", "a"))
     expect_identical(args_onenamed$pkgs, c("rstudioapi", helpers$pkgs))
     expect_null(args_onenamed$opts$job.mainsession)
     expect_identical(args_onenamed$opts$job.newopt, 59)
