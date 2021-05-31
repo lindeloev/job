@@ -16,7 +16,7 @@ contains_rstudio_code = function(x) {
     contains_rstudio_c = grep('.Call("rs_', code, fixed = TRUE)
     contains_rstudio_r = grep('.rs.', code, fixed = TRUE)
 
-    is_rstudio_code = length(contains_rstudio_c) != 0 | length(contains_rstudio_r) != 0
+    is_rstudio_code = length(contains_rstudio_c) > 0 | length(contains_rstudio_r) > 0
     return(is_rstudio_code)
   }
 
@@ -38,7 +38,23 @@ opts_without_rstudio = function(opts) {
       opts[[name]] = NULL
 
   }
-  opts$cpp11_preserve_env = NULL  # cpp11 error. See https://github.com/r-lib/cpp11/issues/116
 
+  opts
+}
+
+
+# Remove troubling options
+get_opts = function(opts) {
+  if (is.null(opts)) {
+    opts = list()
+  } else if (is.list(opts) == FALSE) {
+    stop("`opts` must be a list (e.g., `options()`) or NULL.")
+  } else {
+    # Remove RStudio-specific functions from options
+    opts = opts_without_rstudio(opts)
+  }
+
+  opts$is.job = TRUE
+  opts$cpp11_preserve_env = NULL  # cpp11 error. See https://github.com/r-lib/cpp11/issues/116
   opts
 }

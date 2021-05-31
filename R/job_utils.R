@@ -1,3 +1,5 @@
+# THESE FUNCTIONS SHOULD BE CALLED FROM WITHIN THE JOB
+
 # Returns a named vector of hashed variables in the calling environment
 hash_env = function(env) {
   varnames = ls(envir = env, all.names = TRUE)
@@ -55,12 +57,12 @@ export = function(value = "changed", file = NULL) {
   if (is.null(options("is.job")[[1]]))
     return(invisible(NULL))
 
-  if (FALSE) .__js__ = NULL  # make R CMD Check happy
+  if (FALSE) .__jobsettings__ = NULL  # make R CMD Check happy
 
   call_env = parent.frame()
   env_varnames = ls(envir = call_env, all.names = TRUE)
-  init_hashes = get(".__js__", envir = call_env)$init_hashes
-  init_hashes$.__js__ = NULL  # Ignore this
+  init_hashes = get(".__jobsettings__", envir = call_env)$init_hashes
+  init_hashes$.__jobsettings__ = NULL  # Ignore this
   value = substitute(value)
 
   # Remove c(selected, via, vector)
@@ -103,7 +105,7 @@ export = function(value = "changed", file = NULL) {
   # Optionally export to file (and delete all)
   if (is.character(file)) {
     objects_to_save = ls(envir = call_env, all.names = TRUE)
-    objects_to_save = objects_to_save[objects_to_save != ".__js__"]
+    objects_to_save = objects_to_save[objects_to_save != ".__jobsettings__"]
     save(list = objects_to_save, envir = call_env, file = file)
     rm(list = objects_to_save, envir = call_env)
   } else if (is.null(file) == FALSE) {

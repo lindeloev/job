@@ -6,6 +6,8 @@ First release submitted to CRAN.
 * Control what objects are returned using the `job::export()` function in the code chunk. The default is `job::export("changed")` which returns all variables that were defined or changed during the job. v0.1 only returned new variable names (now `job::export("new")`). Read more in the README. (#15)
  * Use `job::export("changed", file = "my_jobresult.RData")` to save to a file rather than returning to the main RStudio session.
  * `job::job()` shows more informative messages all around to reduce state ambiguity when launching jobs.
+ * Much faster import for large environments.
+
 
 
 # job 0.2
