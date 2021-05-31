@@ -21,7 +21,7 @@ Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed wit
  * *"Run selection as job in empty session"* calls `job::empty()`. It imports nothing from your environment, so the code can run in clean isolation. All variables are returned.
 
 
-## Typical usage
+## Simple usage
 
 Write your script as usual. Then wrap parts of it using `job::job({<your code>})` to run that chunk as a job:
 
@@ -35,29 +35,48 @@ job::job({
 When the job completes, it silently saves `foo` and `bar` to your global environment.
 
 
-Another use case: We all love `brms` but compilation and sampling takes time. Let's run it as a job!
+## Intermediate usage
+
+We all love `brms` but compilation and sampling takes time. Let's run it as a job!
 
 ```r
+# Do light processing tasks in the main session
 library(brms)
 data = mtcars[mtcars$hp > 100, ]
 model = mpg ~ hp * wt
 
-# Send long-running code to a job
-job::job(brm_result = {
-  options(mc.cores = 3)
+# Send long-running code to a job. It imports from the main session.
+job::job({
   fit = brm(model, data)
-  fit = add_criterion(fit, "loo")
-  
-  print(summary(fit))  # Show a summary in the job
-  the_test = hypothesis(fit, "hp > 0")
-  job::export(c(fit, the_test))  # Only return these
-})
+}
 
+# Continue working in your console
 cat("I'm free now! Thank you.
     Sincerely, Console.")
 ```
 
-Now you can follow the progress in the jobs pane and your console is free. Because we named the code block `brm_result`, it will return the contents as an `environment()` called `brm_result` (or whatever you called it).`brm_result` behaves much like a `list()`:
+Now you can follow the progress in the jobs pane and your console is free. Extending this example, let's fine-control the job a bit more:
+
+```r
+# Name the code block to return as environment
+job::job(brm_result = {
+  # Job-specific settings
+  options(mc.cores = 3)
+  
+  # Compute stuff
+  fit = brm(model, data)
+  fit = add_criterion(fit, "loo")
+  the_test = hypothesis(fit, "hp > 0")
+  
+  # Print stuff inside the job
+  print(summary(fit))
+  
+  # Control what is returned to the main session
+  job::export(c(fit, the_test))
+}, import = c(data, model))  # Control what is imported into the job
+```
+
+Because we named the code block `brm_result`, it will return the contents as an `environment()` called `brm_result` (or whatever you called it).`brm_result` behaves much like a `list()`:
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
 
@@ -69,7 +88,7 @@ Often, the results of the long-running chunks are the most interesting. But they
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
 
 
-## Finer control
+## Advanced usage
 
 See the [documentation](https://lindeloev.github.io/job/reference/job.html) how you can fine-control the job environment and what results are returned. The [job::job() website](https://lindeloev.github.io/job/) has worked examples, where finer control is beneficial, including:
 
@@ -79,7 +98,7 @@ See the [documentation](https://lindeloev.github.io/job/reference/job.html) how 
  - Using `job::job()` to [render large plots](https://lindeloev.github.io/job/articles/articles/plot.html).
 
 
-## Use cases
+## Use cases: all flow-breakers
 The primary use case for `job::job()` are heavy statistical and numerical functions, including MCMC sampling, cross-validation, etc. 
 
 But sometimes our flow is disturbed by semi-slow routine tasks too. Try running `devtools::test()`, `knitr::knit()`, `pkgdown::build_site()`, or `upgrade.packages()` as a job and see whether that's an improvement. Here's [a list of semi-slow functions](https://lindeloev.github.io/job/articles/articles/routines.html) that I regularly run as jobs.

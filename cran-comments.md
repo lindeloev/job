@@ -2,10 +2,10 @@
 
 ## Notes for the reviewer
 * This package consists of one user-facing function (`job::job()`) and two RStudio addins.
-* This package is RStudio-specific so automated R CMD Checks cannot test the functionality. It does have an extensive `testthat` test suite, which has been run manually in the following environments:
+* This package is RStudio-specific so automated R CMD Checks cannot test the functionality. It does have an extensive `testthat` test suite, which has been run manually in the following RStudio environments:
 
 
-## Manual environments
+## Manual test environments
 * Windows 10, R 3.6.1
 * Windows 10, R 4.0.5
 * Mac OS, R 3.3
@@ -16,9 +16,9 @@ This package is currently used by a few thousand users and the initial bugs have
 
 
 ## Automated test environments
-* windows-latest (on github actions): devel, release, oldrel
+* windows-latest (on github actions): release
 * macOS-latest (on github actions): release
-* ubuntu-20.04 (on github actions): release
+* ubuntu-20.04 (on github actions): oldrel, release, devel
 * r-hub
 
 
