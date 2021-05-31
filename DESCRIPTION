@@ -1,16 +1,15 @@
 Package: job
 Title: Run Code as an RStudio Job - Free Your Console
-Version: 0.3
+Version: 0.3.0
 Authors@R: 
     person(given = "Jonas Kristoffer",
            family = "Lindeløv",
            role = c("aut", "cre"),
            email = "jonas@lindeloev.dk",
            comment = c(ORCID = "0000-0003-4565-0595"))
-Description: Call `job::job({<code here>})` to run R code as an RStudio job and keep your console free in the meantime. This is useful for testing long-running chunks of code, to organize results using the Jobs GUI, or to test code in a clean environment. Two RStudio Addins can be used to run selected code as a job.
+Description: Call `job::job({<code here>})` to run R code as an RStudio job and keep your console free in the meantime. This allows for a productive workflow while testing (multiple) long-running chunks of code. It can also be used to organize results using the RStudio Jobs GUI or to test code in a clean environment. Two RStudio Addins can be used to run selected code as a job.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Language: en-US

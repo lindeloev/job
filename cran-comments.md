@@ -1,7 +1,6 @@
-# job 0.3
+# job 0.3.0
 
 ## Notes for the reviewer
-* This package consists of one user-facing function (`job::job()`) and two RStudio addins.
 * This package is RStudio-specific so automated R CMD Checks cannot test the functionality. It does have an extensive `testthat` test suite, which has been run manually in the following RStudio environments:
 
 
@@ -12,7 +11,7 @@
 * Mac OS, R 4.0.5
 * Ubuntu 20.04, R 4.0.5
 
-This package is currently used by a few thousand users and the initial bugs have been fixed.
+This package is currently used by at least a few hundred users and the initial bugs have been fixed.
 
 
 ## Automated test environments
@@ -28,9 +27,10 @@ There were no ERRORs, WARNINGs
 There was 1 NOTE:
 
  * Possibly mis-spelled words in DESCRIPTION:
-   Addins (10:269)
+     Addins (10:269)
+     RStudio (2:23, 10:65, 10:261)
    
-   This is the term used by RStudio: https://rstudio.github.io/rstudioaddins/
+   These are the very terms used by RStudio: https://rstudio.github.io/rstudioaddins/
 
 
 ## Downstream dependencies
