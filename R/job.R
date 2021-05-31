@@ -178,7 +178,7 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
     wd = getwd(),
     file = gsub("\\\\", "/", tempfile())  # Location of the jobsettings. Remove backslashes: Easier to paste() later
   )
-  suppressWarnings(saveRDS(.__jobsettings__, .__jobsettings__$file))  # Ignore warning that some package may not be available when loading
+  suppressWarnings(saveRDS(.__jobsettings__, .__jobsettings__$file, compress = FALSE))  # Ignore warning that some package may not be available when loading
 
 
 
@@ -194,10 +194,10 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 .__jobsettings__ = readRDS('", .__jobsettings__$file, "')  # js = jobsettings
 setwd(.__jobsettings__$wd)
 if (length(.__jobsettings__$packages) > 0) {
-  message(Sys.time(), ' Job started. Attaching packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
+  message(Sys.time(), ': Job started. Attaching packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
   invisible(lapply(.__jobsettings__$packages, function(x, ...) suppressMessages(library(x, ...)), character.only = TRUE, warn.conflicts = FALSE))
 } else {
-  message(Sys.time(), ' Job started.')
+  message(Sys.time(), ': Job started...', appendLF = FALSE)
 }
 options(.__jobsettings__$opts)
 file.remove(.__jobsettings__$file)

@@ -37,7 +37,7 @@ save_env = function(vars, env, code_str) {
 
   # Save and return
   import_file = gsub("\\\\", "/", tempfile())  # Windows only: Easier to paste() later
-  suppressWarnings(save(list = vars, file = import_file, envir = env))
+  suppressWarnings(save(list = vars, file = import_file, envir = env, compress = FALSE))
 
   # Return summary
   list(
