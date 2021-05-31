@@ -48,6 +48,8 @@ save_env = function(vars, env, code_str) {
 }
 
 
+# - packages: character vector
+# - returns: character vector except default packages
 get_packages = function(packages) {
   if (length(packages) > 0 & is.character(packages) == FALSE)
     stop("`packages` must be a character vector or length 0.")

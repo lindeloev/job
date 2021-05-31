@@ -38,13 +38,12 @@ opts_without_rstudio = function(opts) {
       opts[[name]] = NULL
 
   }
-  opts$cpp11_preserve_env = NULL  # cpp11 error. See https://github.com/r-lib/cpp11/issues/116
 
   opts
 }
 
 
-# Clean options
+# Remove troubling options
 get_opts = function(opts) {
   if (is.null(opts)) {
     opts = list()
@@ -56,5 +55,6 @@ get_opts = function(opts) {
   }
 
   opts$is.job = TRUE
+  opts$cpp11_preserve_env = NULL  # cpp11 error. See https://github.com/r-lib/cpp11/issues/116
   opts
 }
