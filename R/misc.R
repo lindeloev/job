@@ -15,3 +15,13 @@ env_size_mb = function(vars, env, digits = 1) {
   total_bytes = sum(as.numeric(vars_bytes))
   round(total_bytes / 10^6, digits)
 }
+
+
+release_questions = function() {
+  c(
+    "Did you run all the README demos?",
+    "Did you run all pkgdown code?",
+    "Did you run README in MacOS VM?",
+    "Did you run README in Ubuntu VM?"
+  )
+}

@@ -1,4 +1,4 @@
-# job 0.3
+# job 0.3.0
 First release submitted to CRAN.
 
 ### New features:
@@ -10,7 +10,7 @@ First release submitted to CRAN.
 
 
 
-# job 0.2
+# job 0.2.0
 
 ### New features:
 
@@ -36,5 +36,5 @@ First release submitted to CRAN.
 
 
 
-# job 0.1
+# job 0.1.0
 Beta release.
