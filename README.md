@@ -107,6 +107,6 @@ But sometimes our flow is disturbed by semi-slow routine tasks too. Try running 
 ## See also
 `job::job()` is aimed at easing interactive development within RStudio. For tasks that don't benefit from running in the Jobs pane of RStudio, check out:
 
- * The [`future` package](https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html)'s `%<-` operator combined with `plan(multisession)`.
+ * The [`future` package](https://future.futureverse.org)'s `%<-%` operator combined with `plan(multisession)`.
  
  * The [`callr` package](https://callr.r-lib.org/) is a general tool to run code in new R sessions.
