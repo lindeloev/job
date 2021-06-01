@@ -1,3 +1,9 @@
+# Resubmission
+This is a resubmission. For this version, I have:
+
+ * Changed the README.md link that triggered a NOTE. The original link was https and valid, though, but no problem.
+
+
 # job 0.3.0
 
 ## Notes for the reviewer
