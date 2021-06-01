@@ -54,6 +54,6 @@ get_packages = function(packages) {
   if (length(packages) > 0 & is.character(packages) == FALSE)
     stop("`packages` must be a character vector or length 0.")
 
-  new_packages = packages[packages %in% options("defaultPackages")[[1]] == FALSE]
+  new_packages = packages[packages %in% c("base", options("defaultPackages")[[1]]) == FALSE]
   new_packages
 }
