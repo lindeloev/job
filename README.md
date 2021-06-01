@@ -34,28 +34,33 @@ job::job({
 
 When the job completes, it silently saves `foo` and `bar` to your global environment.
 
-
-## Intermediate usage
-
-We all love `brms` but compilation and sampling takes time. Let's run it as a job!
+Here is a more typical use case: `brms` is great, but you often restrict yourself to fit as few models as possible fewer models because compilation and sampling takes time. Let's run it as a job!
 
 ```r
 # Do light processing tasks in the main session
 library(brms)
 data = mtcars[mtcars$hp > 100, ]
-model = mpg ~ hp * wt
+model1 = mpg ~ hp * wt
+model2 = mpg ~ hp + wt
 
-# Send long-running code to a job. It imports from the main session.
+# Send long-running code to job(s).
 job::job({
-  fit = brm(model, data)
-}
+  fit1 = brm(model1, data)
+})
+job::job({
+  fit2 = brm(model2, data)
+})
 
 # Continue working in your console
 cat("I'm free now! Thank you.
     Sincerely, Console.")
 ```
 
-Now you can follow the progress in the jobs pane and your console is free. Extending this example, let's fine-control the job a bit more:
+Now you can follow the progress in the jobs pane and your console is free in the meantime.
+
+
+## Tweak your job(s)
+Extending the `brms`-example above, let's fine-control the first job a bit more:
 
 ```r
 # Name the code block to return as environment
@@ -64,7 +69,7 @@ job::job(brm_result = {
   options(mc.cores = 3)
   
   # Compute stuff
-  fit = brm(model, data)
+  fit = brm(model1, data)
   fit = add_criterion(fit, "loo")
   the_test = hypothesis(fit, "hp > 0")
   
@@ -73,7 +78,7 @@ job::job(brm_result = {
   
   # Control what is returned to the main session
   job::export(c(fit, the_test))
-}, import = c(data, model))  # Control what is imported into the job
+}, import = c(data, model1))  # Control what is imported into the job
 ```
 
 Because we named the code block `brm_result`, it will return the contents as an `environment()` called `brm_result` (or whatever you called it).`brm_result` behaves much like a `list()`:
@@ -88,7 +93,7 @@ Often, the results of the long-running chunks are the most interesting. But they
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
 
 
-## Advanced usage
+## Docs and recommendations
 
 See the [documentation](https://lindeloev.github.io/job/reference/job.html) how you can fine-control the job environment and what results are returned. The [job::job() website](https://lindeloev.github.io/job/) has worked examples, where finer control is beneficial, including:
 
