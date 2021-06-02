@@ -11,6 +11,9 @@
 
 \item{...}{Currently unused}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Nice print .jobcode
 }

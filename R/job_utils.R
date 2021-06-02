@@ -3,10 +3,7 @@
 # Returns a named vector of hashed variables in the calling environment
 hash_env = function(env) {
   varnames = ls(envir = env, all.names = TRUE)
-  orig_warn = options("warn")
-  options(warn = -1)
-  hashes = lapply(varnames, function(x) digest::digest(get(x, envir = env)))
-  options(orig_warn)
+  hashes = lapply(varnames, function(x) suppressWarnings(digest::digest(get(x, envir = env))))
   names(hashes) = varnames
 
   hashes

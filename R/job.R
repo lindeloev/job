@@ -227,7 +227,7 @@ Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
 # FINISH #
 ##########
 # Fall back on default export
-if (is.null(options('job.exported')[[1]]))
+if (is.null(getOption('job.exported')))
   job::export('changed')
 if (exists('.__jobsettings__'))
   rm(.__jobsettings__)

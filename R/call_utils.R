@@ -6,6 +6,7 @@
 #' @export
 #' @param x Text to print
 #' @param ... Currently unused
+#' @return No return value, called for side effects.
 print.jobcode = function(x, ...) {
   cat(x)
 }
@@ -54,6 +55,6 @@ get_packages = function(packages) {
   if (length(packages) > 0 & is.character(packages) == FALSE)
     stop("`packages` must be a character vector or length 0.")
 
-  new_packages = packages[packages %in% c("base", options("defaultPackages")[[1]]) == FALSE]
+  new_packages = packages[packages %in% c("base", getOption("defaultPackages")) == FALSE]
   new_packages
 }

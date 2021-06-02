@@ -21,8 +21,7 @@ Two [RStudio Addins](https://rstudio.github.io/rstudioaddins/) are installed wit
  * *"Run selection as job in empty session"* calls `job::empty()`. It imports nothing from your environment, so the code can run in clean isolation. All variables are returned.
 
 
-## Simple usage
-
+## Minimal example
 Write your script as usual. Then wrap parts of it using `job::job({<your code>})` to run that chunk as a job:
 
 ```r
@@ -34,10 +33,12 @@ job::job({
 
 When the job completes, it silently saves `foo` and `bar` to your global environment.
 
-Here is a more typical use case: `brms` is great, but you often restrict yourself to fit as few models as possible fewer models because compilation and sampling takes time. Let's run it as a job!
+
+## Typical usage
+`brms` is great, but you often restrict yourself to fit as few models as possible fewer models because compilation and sampling takes time. Let's run it as a job!
 
 ```r
-# Do light processing tasks in the main session
+# Do light processing in the main session
 library(brms)
 data = mtcars[mtcars$hp > 100, ]
 model1 = mpg ~ hp * wt
