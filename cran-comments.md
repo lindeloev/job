@@ -1,3 +1,20 @@
+# Resubmission 2
+This is a resubmission. For this version, I have:
+
+ * Removed the quotes in the DESCRIPTION text.
+ * Removed call to `options(warn = -1)`.
+ * Added \value to `print.jobcode()`.
+
+I appreciate why one would generally ban calls to `rm(list = ls()`. 
+But these lines are only found in `export()` which can only run within RStudio 
+jobs (if `rstudioapi::isAvailable() == TRUE & getOption("is.job", FALSE) == TRUE`).
+`job` can never remove anything from the user's global workspace or filespace.
+`rm()` is the only way to control what is returned from the job since the underlying 
+`rstudioapi::runJobScript()` returns the full job environment upon completion.
+
+
+
+
 # Resubmission
 This is a resubmission. For this version, I have:
 
