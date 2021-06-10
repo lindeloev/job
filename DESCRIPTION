@@ -1,6 +1,9 @@
 Package: job
 Title: Run Code as an RStudio Job - Free Your Console
 Version: 0.3.0
+Date: 2021-06-04
+URL: https://lindeloev.github.io/job/
+BugReports: https://github.com/lindeloev/job/issues
 Authors@R: 
     person(given = "Jonas Kristoffer",
            family = "Lindeløv",

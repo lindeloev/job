@@ -6,9 +6,10 @@
 
 Use `job::job()` to run chunks of R code in an [RStudio](https://www.rstudio.com/) job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.
 
-Install:
+Install from CRAN (stable) or GitHub (development):
 
 ```r
+install.packages("job")
 remotes::install_github("lindeloev/job")
 ```
 
