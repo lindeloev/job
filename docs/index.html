@@ -15,7 +15,8 @@
 <link href="docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Run Code as an RStudio Job - Free Your Console">
-<meta property="og:description" content="Call `job::job({&lt;code here&gt;})` to run R code as an RStudio job and keep your console free in the meantime. This allows for a productive workflow while testing (multiple) long-running chunks of code. It can also be used to organize results using the RStudio Jobs GUI or to test code in a clean environment. Two RStudio Addins can be used to run selected code as a job.">
+<meta property="og:description" content="Call job::job({&lt;code here&gt;}) to run R code as an RStudio job and keep your console free in the meantime. This allows for a productive workflow while testing (multiple) long-running chunks of code. It can also be used to organize results using the RStudio Jobs GUI or to test code in a clean environment. Two RStudio Addins can be used to run selected code as a job.">
+<meta property="og:image" content="https://github.com/lindeloev/job/raw/gh_page/man/figures/joblist.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:creator" content="@jonaslindeloev">
 <meta name="twitter:site" content="@jonaslindeloev">
@@ -95,7 +96,14 @@
   </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/lindeloev/job/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
         <div class="form-group">
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
@@ -119,9 +127,10 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#job-free-your-rstudio-console" class="anchor"></a>job: free your RStudio console</h1></div>
 <p>Use <code><a href="reference/job.html">job::job()</a></code> to run chunks of R code in an <a href="https://www.rstudio.com/">RStudio</a> job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.</p>
-<p>Install:</p>
+<p>Install from CRAN (stable) or GitHub (development):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"lindeloev/job"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"job"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"lindeloev/job"</span><span class="op">)</span></code></pre></div>
 <div id="addins" class="section level2">
 <h2 class="hasAnchor">
 <a href="#addins" class="anchor"></a>Addins</h2>
@@ -134,9 +143,9 @@
 <em>“Run selection as job in empty session”</em> calls <code><a href="reference/job.html">job::empty()</a></code>. It imports nothing from your environment, so the code can run in clean isolation. All variables are returned.</li>
 </ul>
 </div>
-<div id="simple-usage" class="section level2">
+<div id="minimal-example" class="section level2">
 <h2 class="hasAnchor">
-<a href="#simple-usage" class="anchor"></a>Simple usage</h2>
+<a href="#minimal-example" class="anchor"></a>Minimal example</h2>
 <p>Write your script as usual. Then wrap parts of it using <code>job::job({&lt;your code&gt;})</code> to run that chunk as a job:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span>
@@ -144,9 +153,13 @@
   <span class="va">bar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></code></pre></div>
 <p>When the job completes, it silently saves <code>foo</code> and <code>bar</code> to your global environment.</p>
-<p>Here is a more typical use case: <code>brms</code> is great, but you often restrict yourself to fit as few models as possible fewer models because compilation and sampling takes time. Let’s run it as a job!</p>
+</div>
+<div id="typical-usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#typical-usage" class="anchor"></a>Typical usage</h2>
+<p><code>brms</code> is great, but you often restrict yourself to fit as few models as possible fewer models because compilation and sampling takes time. Let’s run it as a job!</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Do light processing tasks in the main session</span>
+<code class="sourceCode R"><span class="co"># Do light processing in the main session</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms">brms</a></span><span class="op">)</span>
 <span class="va">data</span> <span class="op">=</span> <span class="va">mtcars</span><span class="op">[</span><span class="va">mtcars</span><span class="op">$</span><span class="va">hp</span> <span class="op">&gt;</span> <span class="fl">100</span>, <span class="op">]</span>
 <span class="va">model1</span> <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">*</span> <span class="va">wt</span>
@@ -189,15 +202,15 @@
 <p>Because we named the code block <code>brm_result</code>, it will return the contents as an <code><a href="https://rdrr.io/r/base/environment.html">environment()</a></code> called <code>brm_result</code> (or whatever you called it).<code>brm_result</code> behaves much like a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>:</p>
 <p><img src="https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png"></p>
 </div>
-<div id="turn-rstudios-jobs-into-high-level-history" class="section level2">
+<div id="turn-rstudios-jobs-into-a-high-level-history" class="section level2">
 <h2 class="hasAnchor">
-<a href="#turn-rstudios-jobs-into-high-level-history" class="anchor"></a>Turn RStudio’s Jobs into high-level history</h2>
+<a href="#turn-rstudios-jobs-into-a-high-level-history" class="anchor"></a>Turn RStudio’s Jobs into a high-level history</h2>
 <p>Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio’s jobs history can be used as a nice overview. Make sure to print informative results within the job and give your jobs an appropriate <code>title</code>, e.g., (<code>job::job({&lt;code here&gt;}, title = "Unit test: first attempt at feature X")</code>.</p>
 <p><img src="https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png"></p>
 </div>
-<div id="docs-and-recommendations" class="section level2">
+<div id="read-more-on-the-website" class="section level2">
 <h2 class="hasAnchor">
-<a href="#docs-and-recommendations" class="anchor"></a>Docs and recommendations</h2>
+<a href="#read-more-on-the-website" class="anchor"></a>Read more on the website</h2>
 <p>See the <a href="https://lindeloev.github.io/job/reference/job.html">documentation</a> how you can fine-control the job environment and what results are returned. The <a href="https://lindeloev.github.io/job/">job::job() website</a> has worked examples, where finer control is beneficial, including:</p>
 <ul>
 <li>
@@ -228,7 +241,18 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=job">https://​cloud.r-project.org/​package=job</a>
+</li>
+<li>Browse source code at <br><a href="https://github.com/lindeloev/job/">https://​github.com/​lindeloev/​job/​</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/lindeloev/job/issues">https://​github.com/​lindeloev/​job/​issues</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li>
@@ -271,8 +295,8 @@
   docsearch({
     
     
-    apiKey: '702ab134d40a7310606c29f341fc5014',
-    indexName: 'lindeloev_job',
+    apiKey: '9e4fb07ee894d71a41469e34ece6e22c',
+    indexName: 'lindeloev',
     inputSelector: 'input#search-input.form-control',
     transformData: function(hits) {
       return hits.map(function (hit) {

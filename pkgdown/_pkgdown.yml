@@ -3,12 +3,14 @@ template:
     bootswatch: flatly  # Theme
     ganalytics: UA-1026978-3  # Google Analytics
     docsearch:
-      api_key: 702ab134d40a7310606c29f341fc5014
-      index_name: lindeloev_job
+      api_key: 9e4fb07ee894d71a41469e34ece6e22c
+      index_name: lindeloev
   opengraph:
+    image:
+      src: https://github.com/lindeloev/job/raw/gh_page/man/figures/joblist.png
     twitter:
-        creator: "@jonaslindeloev"
-        card: summary
+      creator: "@jonaslindeloev"
+      card: summary
 
 
 # Writes sitemap etc.

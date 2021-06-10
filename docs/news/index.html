@@ -48,6 +48,7 @@
   
 
 <meta property="og:title" content="Changelog" />
+<meta property="og:image" content="https://github.com/lindeloev/job/raw/gh_page/man/figures/joblist.png" />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@jonaslindeloev" />
 <meta name="twitter:site" content="@jonaslindeloev" />
@@ -145,7 +146,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/lindeloev/job/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
       <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
@@ -166,18 +172,19 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      
+      <small>Source: <a href='https://github.com/lindeloev/job/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
     <div id="job-030" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
-<a href="#job-030" class="anchor"></a>job 0.3.0</h1>
+<a href="#job-030" class="anchor"></a>job 0.3.0<small> 2021-06-04 </small>
+</h1>
 <p>First release submitted to CRAN.</p>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features:</h3>
 <ul>
-<li>Control what objects are returned using the <code><a href="../reference/export.html">job::export()</a></code> function in the code chunk. The default is <code><a href="../reference/export.html">job::export("changed")</a></code> which returns all variables that were defined or changed during the job. v0.1 only returned new variable names (now <code><a href="../reference/export.html">job::export("new")</a></code>). Read more in the README. (#15)</li>
+<li>Control what objects are returned using the <code><a href="../reference/export.html">job::export()</a></code> function in the code chunk. The default is <code><a href="../reference/export.html">job::export("changed")</a></code> which returns all variables that were defined or changed during the job. v0.1 only returned new variable names (now <code><a href="../reference/export.html">job::export("new")</a></code>). Read more in the README. (<a href='https://github.com/lindeloev/job/issues/15'>#15</a>)</li>
 <li>Use <code><a href="../reference/export.html">job::export("changed", file = "my_jobresult.RData")</a></code> to save to a file rather than returning to the main RStudio session.</li>
 <li>
 <code><a href="../reference/job.html">job::job()</a></code> shows more informative messages all around to reduce state ambiguity when launching jobs.</li>
@@ -187,24 +194,25 @@
 </div>
     <div id="job-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
-<a href="#job-020" class="anchor"></a>job 0.2.0</h1>
+<a href="#job-020" class="anchor"></a>job 0.2.0<small> Unreleased </small>
+</h1>
 <div id="new-features-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features-1" class="anchor"></a>New features:</h3>
 <ul>
-<li>RStudio addins (#6)! Read more in the README.</li>
+<li>RStudio addins (<a href='https://github.com/lindeloev/job/issues/6'>#6</a>)! Read more in the README.</li>
 <li>Use <code>import = "auto"</code> to import all objects that are “mentioned” in the code. The default <code>import = "all"</code> replaces <code>import = ls()</code>.</li>
 <li>The job title now includes a code snippet for unnamed chunks instead of defaulting to <code>"(untitled)"</code>.</li>
 <li>
-<code><a href="../reference/job.html">job::job()</a></code> now takes unnamed arguments too, e.g., <code>job::job({&lt;code&gt;}, NULL, c("rstudioapi"))</code>. (#25)</li>
-<li>Added <code><a href="../reference/job.html">job::empty()</a></code> which is short for <code>job::job({&lt;code&gt;}, import = NULL, packages = NULL, opts = NULL)</code> (#23)</li>
+<code><a href="../reference/job.html">job::job()</a></code> now takes unnamed arguments too, e.g., <code>job::job({&lt;code&gt;}, NULL, c("rstudioapi"))</code>. (<a href='https://github.com/lindeloev/job/issues/25'>#25</a>)</li>
+<li>Added <code><a href="../reference/job.html">job::empty()</a></code> which is short for <code>job::job({&lt;code&gt;}, import = NULL, packages = NULL, opts = NULL)</code> (<a href='https://github.com/lindeloev/job/issues/23'>#23</a>)</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
 <ul>
-<li>RStudio-specific <code>options</code> caused errors - mostly on macs (#4, #7, #10, #27)</li>
+<li>RStudio-specific <code>options</code> caused errors - mostly on macs (<a href='https://github.com/lindeloev/job/issues/4'>#4</a>, <a href='https://github.com/lindeloev/job/issues/7'>#7</a>, <a href='https://github.com/lindeloev/job/issues/10'>#10</a>, <a href='https://github.com/lindeloev/job/issues/27'>#27</a>)</li>
 <li>The addins can now handle apostrophes in the job title.</li>
 </ul>
 </div>
@@ -212,16 +220,17 @@
 <h2 class="hasAnchor">
 <a href="#other-changes" class="anchor"></a>Other changes</h2>
 <ul>
-<li>Unnamed chunks returns contents to global environment instead of returning nothing. <code>.call</code> is not saved in this case. (#9)</li>
+<li>Unnamed chunks returns contents to global environment instead of returning nothing. <code>.call</code> is not saved in this case. (<a href='https://github.com/lindeloev/job/issues/9'>#9</a>)</li>
 <li>Peak memory usage has been considerably reduced.</li>
 <li>The <code>digest</code> package was added as a dependency to support <code><a href="../reference/export.html">export("changed")</a></code>.</li>
-<li>Transitioned to <code>testthat</code> for unit tests and expanded the test suite considerably. (#26)</li>
+<li>Transitioned to <code>testthat</code> for unit tests and expanded the test suite considerably. (<a href='https://github.com/lindeloev/job/issues/26'>#26</a>)</li>
 </ul>
 </div>
 </div>
     <div id="job-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
-<a href="#job-010" class="anchor"></a>job 0.1.0</h1>
+<a href="#job-010" class="anchor"></a>job 0.1.0<small> Unreleased </small>
+</h1>
 <p>Beta release.</p>
 </div>
   </div>
@@ -253,8 +262,8 @@
   docsearch({
     
     
-    apiKey: '702ab134d40a7310606c29f341fc5014',
-    indexName: 'lindeloev_job',
+    apiKey: '9e4fb07ee894d71a41469e34ece6e22c',
+    indexName: 'lindeloev',
     inputSelector: 'input#search-input.form-control',
     transformData: function(hits) {
       return hits.map(function (hit) {

@@ -88,14 +88,14 @@ Because we named the code block `brm_result`, it will return the contents as an 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png)
 
 
-## Turn RStudio's Jobs into high-level history
+## Turn RStudio's Jobs into a high-level history
 
 Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio's jobs history can be used as a nice overview. Make sure to print informative results within the job and give your jobs an appropriate `title`, e.g., (`job::job({<code here>}, title = "Unit test: first attempt at feature X")`.
 
 ![](https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png)
 
 
-## Docs and recommendations
+## Read more on the website
 
 See the [documentation](https://lindeloev.github.io/job/reference/job.html) how you can fine-control the job environment and what results are returned. The [job::job() website](https://lindeloev.github.io/job/) has worked examples, where finer control is beneficial, including:
 
