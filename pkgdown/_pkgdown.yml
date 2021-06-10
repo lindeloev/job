@@ -10,7 +10,7 @@ template:
       src: https://github.com/lindeloev/job/raw/gh_page/man/figures/joblist.png
     twitter:
       creator: "@jonaslindeloev"
-      card: summary
+      card: summary_large_image
 
 
 # Writes sitemap etc.
