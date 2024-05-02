@@ -56,5 +56,5 @@ get_packages = function(packages) {
     stop("`packages` must be a character vector or length 0.")
 
   new_packages = packages[packages %in% c("base", getOption("defaultPackages")) == FALSE]
-  new_packages
+  rev(new_packages)  # order = load order
 }
