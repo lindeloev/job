@@ -138,7 +138,10 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   # To R code
   if (code[[1]] != quote(`{`))
     stop("invalid code input. Did you remember to put the code in {curly brackets}?")
-  code_str = paste0(code[-1], collapse = "\n")
+
+  deparsed_code = deparse(code)  # Preserves more info than as.character(). E.g., doesn't convert NA_character_ to NA.
+  deparsed_code[2:(length(deparsed_code) - 1)]  # Remove curly brackets
+  code_str = paste0(deparsed_code, collapse = "\n")
 
 
   #########
