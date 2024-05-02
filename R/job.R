@@ -203,6 +203,7 @@ if (length(.__jobsettings__$packages) > 0) {
     .__jobsettings__$packages = .__jobsettings__$packages[!.__jobsettings__$packages %in% packages_not_in_library]
     message('OBS: You need to manually load these uninstalled packages in your job-code: `', paste0(packages_not_in_library, collapse = \"`, `\"), '`.', appendLF = FALSE)
   }
+  rm(packages_not_in_library)
 
   # Load installed packages into the job
   message(Sys.time(), ': Job started. Attaching installed packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
