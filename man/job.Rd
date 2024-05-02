@@ -66,9 +66,9 @@ slow at importing and exporting large objects. For exporting back into
 }
 \section{Functions}{
 \itemize{
-\item \code{empty}: \code{job::job()} but with NULL defaults, i.e., an "empty" job.
-}}
+\item \code{empty()}: \code{job::job()} but with NULL defaults, i.e., an "empty" job.
 
+}}
 \examples{
 if (rstudioapi::isAvailable()) {
   # Unnamed code chunks returns to globalenv()

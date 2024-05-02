@@ -161,7 +161,7 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ##########
   # IMPORT #
   ##########
-  if (class(import) != "call")
+  if (is.call(import) == FALSE)
     import = substitute(import)
 
   import_summary = save_env(
@@ -206,10 +206,10 @@ if (length(.__jobsettings__$packages) > 0) {
   rm(packages_not_in_library)
 
   # Load installed packages into the job
-  message(Sys.time(), ': Job started. Attaching installed packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
+  message(round(Sys.time()), ': Job started. Attaching installed packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
   invisible(lapply(.__jobsettings__$packages, function(x, ...) suppressMessages(library(x, ...)), character.only = TRUE, warn.conflicts = FALSE))
 } else {
-  message(Sys.time(), ': Job started...', appendLF = FALSE)
+  message(round(Sys.time()), ': Job started...', appendLF = FALSE)
 }
 options(.__jobsettings__$opts)
 file.remove(.__jobsettings__$file)
@@ -217,7 +217,7 @@ file.remove(.__jobsettings__$file)
 
 # Load objects and compute hash
 if (length(.__jobsettings__$import$vars) > 0) {
-  message(' Done.\n', Sys.time(), ': Importing ', .__jobsettings__$import$mb, 'MB...', appendLF = FALSE)
+  message(' Done.\n', round(Sys.time()), ': Importing ', .__jobsettings__$import$mb, 'MB...', appendLF = FALSE)
   load(.__jobsettings__$import$file, envir = sys.frame(sys.nframe()))  # Current frame
 }
 file.remove(.__jobsettings__$import$file)
@@ -228,7 +228,7 @@ file.remove(.__jobsettings__$import$file)
 ############
 # RUN CODE #
 ############
-message(' Done.\n', Sys.time(), ': Executing job code...')
+message(' Done.\n', round(Sys.time()), ': Executing job code...')
 message('==============\n')
 Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
 ", code_str, "
@@ -246,9 +246,9 @@ if (exists('.__jobsettings__'))
 
 message('\n==============')
 if (length(ls(all.names = TRUE)) == 0) {
-  message(Sys.time(), ': Done.')
+  message(round(Sys.time()), ': Done.')
 } else {
-  message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(all.names = TRUE), sys.frame(sys.nframe())), 'MB: ', paste0(ls(all.names = TRUE), collapse = ', '), '...')
+  message(round(Sys.time()), ': Done. Exporting ', job:::env_size_mb(ls(all.names = TRUE), sys.frame(sys.nframe())), 'MB: ', paste0(ls(all.names = TRUE), collapse = ', '), '...')
 }
 options(warn = -1)")
 
@@ -260,11 +260,11 @@ options(warn = -1)")
 
 # Save code to environment for future reference
 .jobcode = paste0(\"
-# Job started: ", Sys.time(), "
+# Job started: ", round(Sys.time()), "
 
 ", gsub("\"", "\\\\\"", code_str), "
 
-# Job completed: \", Sys.time())
+# Job completed: \", round(Sys.time()))
 class(.jobcode) = c('jobcode', 'character')")
   }
 
