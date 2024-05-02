@@ -197,7 +197,15 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 .__jobsettings__ = readRDS('", .__jobsettings__$file, "')  # js = jobsettings
 setwd(.__jobsettings__$wd)
 if (length(.__jobsettings__$packages) > 0) {
-  message(Sys.time(), ': Job started. Attaching packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
+  # Informative and gracefuld handling of loaded packages not in library
+  packages_not_in_library = .__jobsettings__$packages[!.__jobsettings__$packages %in% .packages(all.available = TRUE)]
+  if (length(packages_not_in_library) > 0) {
+    .__jobsettings__$packages = .__jobsettings__$packages[!.__jobsettings__$packages %in% packages_not_in_library]
+    message('OBS: You need to manually load these uninstalled packages in your job-code: `', paste0(packages_not_in_library, collapse = \"`, `\"), '`.', appendLF = FALSE)
+  }
+
+  # Load installed packages into the job
+  message(Sys.time(), ': Job started. Attaching installed packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
   invisible(lapply(.__jobsettings__$packages, function(x, ...) suppressMessages(library(x, ...)), character.only = TRUE, warn.conflicts = FALSE))
 } else {
   message(Sys.time(), ': Job started...', appendLF = FALSE)
