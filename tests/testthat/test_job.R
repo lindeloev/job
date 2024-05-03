@@ -37,10 +37,12 @@ if (rstudioapi::isAvailable()) {
     job::job(default = {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
+      searchpaths_job = searchpaths()  # Test that packages are loaded in the correct order
       a_copy = a
       b_copy = b
       a = 123  # same value as imported; do not return
       b = list(a = a, goat = "peep")  # imported, but new value; return
+      na_classed_works = is.character(NA_character_)  # Test that NA_character_ is not converted to NA
       attached_rstudioapi = exists("isAvailable")
       opts = options()
       print("output!")
@@ -49,11 +51,13 @@ if (rstudioapi::isAvailable()) {
     # Check result
     helpers$wait_for_job("default")
     expect_identical(default$vars, c(".__jobsettings__", "a", "b"))
-    expect_identical(default$pkgs, c("rstudioapi", "testthat", helpers$pkgs))
+    expect_identical(default$pkgs, c("testthat", "rstudioapi", helpers$pkgs))
+    expect_identical(default$searchpaths_job, searchpaths()[searchpaths() != "devtools_shims"])
     expect_identical(default$a_copy, a)
     expect_identical(default$b_copy, b)
+    expect_true(default$na_classed_works)
     expect_true(default$attached_rstudioapi)
-    expect_identical(names(default), c("b_copy", "pkgs", "b", ".jobcode", "opts", "a_copy", "vars", "attached_rstudioapi"))
+    expect_identical(names(default), c("b_copy", "pkgs", "b", ".jobcode", "opts", "a_copy", "vars", "searchpaths_job", "attached_rstudioapi", "na_classed_works"))
     expect_true(is.null(default$opts$job.mainsession) == FALSE & default$opts$device == options("device"))
 
     # Cleanup

@@ -1,3 +1,14 @@
+# job 0.3.1
+Bug fix release
+
+### Bug fixes
+
+* Now loads packages in the correct order. Closes https://github.com/lindeloev/job/issues/53.
+* Now accurately represents `NA_character_` etc. in the job. Closes https://github.com/lindeloev/job/issues/51.
+* Now gracefully handles loaded but uninstalled packages. Closes https://github.com/lindeloev/job/issues/48. 
+* Avoid crash on R 4.4 by removing the check for RStudio version >= 1.2 (from April 2019). Thanks Balázs Knakker for detecting and fixing this bug!
+
+
 # job 0.3.0
 First release submitted to CRAN.
 
