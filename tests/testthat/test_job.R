@@ -389,5 +389,5 @@ if (rstudioapi::isAvailable()) {
   rm(list = ls(all.names = TRUE))
   rm(list = ls(all.names = TRUE, envir = globalenv()))
 } else {
-  expect_error(job::job({a = 1}), pattern = "You must run this from the RStudio main session.")
+  expect_error(job::job({a = 1}), "You must run this from the RStudio main session.")
 }
