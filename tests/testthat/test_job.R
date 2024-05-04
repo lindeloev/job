@@ -70,9 +70,9 @@ if (rstudioapi::isAvailable()) {
 
 
 
-  #############
-  # TEST ARGS #
-  #############
+  ######################
+  # TEST UNQUOTED ARGS #
+  ######################
   test_that("Set arguments in job::job()", {
     # Set env
     a = 123
@@ -106,9 +106,9 @@ if (rstudioapi::isAvailable()) {
 
 
 
-  ##############################
-  # TEST empty() WITH ARGS #
-  ##############################
+  #################################
+  # TEST empty() WITH QUOTED ARGS #
+  #################################
   test_that("Set arguments in job::empty()", {
     # Set env
     a = 123
@@ -124,7 +124,7 @@ if (rstudioapi::isAvailable()) {
       attached_rstudioapi = exists("isAvailable")
       opts = options()
       print("output!")
-    }, import = c(b, q), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
+    }, import = c("b", "q"), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
 
     # Check result
     helpers$wait_for_job("with_args2")

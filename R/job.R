@@ -27,6 +27,7 @@
 #'  * `"auto"` (default): Detect which objects are used in the code and import
 #'    those.
 #'  * `c(foo, bar, ...)`: A vector of unquoted variables to import into the job.
+#'  * `c("foo", "bar", ...)`: A vector of quoted variables to import into the job.
 #'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
 #'   all loaded packages in the calling environment. `NULL` loads only default
@@ -161,11 +162,12 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ##########
   # IMPORT #
   ##########
-  if (is.call(import) == FALSE)
-    import = substitute(import)
+  # Handle quoted vars etc.
+  if (is.character(import) == FALSE)
+    import = as.character(substitute(import))[-1]
 
   import_summary = save_env(
-    vars = as.character(import),
+    vars = import,
     env = parent.frame(),
     code_str = code_str
   )
@@ -182,8 +184,6 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
     file = gsub("\\\\", "/", tempfile())  # Location of the jobsettings. Remove backslashes: Easier to paste() later
   )
   suppressWarnings(saveRDS(.__jobsettings__, .__jobsettings__$file, compress = FALSE))  # Ignore warning that some package may not be available when loading
-
-
 
 
   ########################
