@@ -19,7 +19,7 @@ job::job({
   
   # Fit and export
   fit = lm(mpg ~ ., df)
-  export(c(df, fit))
+  job::export(c(df, fit))
 })
 ```
 
