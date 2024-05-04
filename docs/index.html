@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Run Code as an RStudio Job - Free Your Console • job</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -32,6 +32,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -44,14 +46,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">job</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Usage and cases
      
     <span class="caret"></span>
@@ -84,13 +86,13 @@
   <a href="news/index.html">News</a>
 </li>
 <li>
-  <a href="https://twitter.com/jonaslindeloev">
+  <a href="https://twitter.com/jonaslindeloev" class="external-link">
     <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://github.com/lindeloev/job">
+  <a href="https://github.com/lindeloev/job" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -98,7 +100,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/lindeloev/job/">
+  <a href="https://github.com/lindeloev/job/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -123,18 +125,18 @@
   <div class="contents col-md-9">
 
 
-<div id="job-free-your-rstudio-console" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#job-free-your-rstudio-console" class="anchor"></a>job: free your RStudio console</h1></div>
-<p>Use <code><a href="reference/job.html">job::job()</a></code> to run chunks of R code in an <a href="https://www.rstudio.com/">RStudio</a> job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.</p>
+<div class="section level1">
+<div class="page-header"><h1 id="job-free-your-rstudio-console">job: free your RStudio console<a class="anchor" aria-label="anchor" href="#job-free-your-rstudio-console"></a>
+</h1></div>
+<p>Use <code><a href="reference/job.html">job::job()</a></code> to run chunks of R code in an <a href="https://www.rstudio.com/" class="external-link">RStudio</a> job instead of the console. This frees your console while the job(s) go brrrrr in the background. By default, the result is returned to the global environment when the job completes.</p>
 <p>Install from CRAN (stable) or GitHub (development):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"job"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"lindeloev/job"</span><span class="op">)</span></code></pre></div>
-<div id="addins" class="section level2">
-<h2 class="hasAnchor">
-<a href="#addins" class="anchor"></a>Addins</h2>
-<p>Two <a href="https://rstudio.github.io/rstudioaddins/">RStudio Addins</a> are installed with <code>job</code>. Simply select some code code in your editor and click one of the Addins to run it as a job. The results are returned to the global environment once the job completes.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"job"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"lindeloev/job"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="addins">Addins<a class="anchor" aria-label="anchor" href="#addins"></a>
+</h2>
+<p>Two <a href="https://rstudio.github.io/rstudioaddins/" class="external-link">RStudio Addins</a> are installed with <code>job</code>. Simply select some code code in your editor and click one of the Addins to run it as a job. The results are returned to the global environment once the job completes.</p>
 <p><img src="https://raw.githubusercontent.com/lindeloev/job/master/man/figures/addins.png"></p>
 <ul>
 <li>
@@ -143,74 +145,74 @@
 <em>“Run selection as job in empty session”</em> calls <code><a href="reference/job.html">job::empty()</a></code>. It imports nothing from your environment, so the code can run in clean isolation. All variables are returned.</li>
 </ul>
 </div>
-<div id="minimal-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minimal-example" class="anchor"></a>Minimal example</h2>
+<div class="section level2">
+<h2 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
+</h2>
 <p>Write your script as usual. Then wrap parts of it using <code>job::job({&lt;your code&gt;})</code> to run that chunk as a job:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="va">foo</span> <span class="op">=</span> <span class="fl">10</span>
-  <span class="va">bar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">foo</span> <span class="op">=</span> <span class="fl">10</span></span>
+<span>  <span class="va">bar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>When the job completes, it silently saves <code>foo</code> and <code>bar</code> to your global environment.</p>
 </div>
-<div id="typical-usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#typical-usage" class="anchor"></a>Typical usage</h2>
+<div class="section level2">
+<h2 id="typical-usage">Typical usage<a class="anchor" aria-label="anchor" href="#typical-usage"></a>
+</h2>
 <p><code>brms</code> is great, but you often restrict yourself to fit as few models as possible fewer models because compilation and sampling takes time. Let’s run it as a job!</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Do light processing in the main session</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms">brms</a></span><span class="op">)</span>
-<span class="va">data</span> <span class="op">=</span> <span class="va">mtcars</span><span class="op">[</span><span class="va">mtcars</span><span class="op">$</span><span class="va">hp</span> <span class="op">&gt;</span> <span class="fl">100</span>, <span class="op">]</span>
-<span class="va">model1</span> <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">*</span> <span class="va">wt</span>
-<span class="va">model2</span> <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">wt</span>
-
-<span class="co"># Send long-running code to job(s).</span>
-<span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="va">fit1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/brm.html">brm</a></span><span class="op">(</span><span class="va">model1</span>, <span class="va">data</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-<span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="va">fit2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/brm.html">brm</a></span><span class="op">(</span><span class="va">model2</span>, <span class="va">data</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="co"># Continue working in your console</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"I'm free now! Thank you.
-    Sincerely, Console."</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Do light processing in the main session</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-buerkner/brms" class="external-link">brms</a></span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">=</span> <span class="va">mtcars</span><span class="op">[</span><span class="va">mtcars</span><span class="op">$</span><span class="va">hp</span> <span class="op">&gt;</span> <span class="fl">100</span>, <span class="op">]</span></span>
+<span><span class="va">model1</span> <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">*</span> <span class="va">wt</span></span>
+<span><span class="va">model2</span> <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="va">hp</span> <span class="op">+</span> <span class="va">wt</span></span>
+<span></span>
+<span><span class="co"># Send long-running code to job(s).</span></span>
+<span><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">fit1</span> <span class="op">=</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brm</a></span><span class="op">(</span><span class="va">model1</span>, <span class="va">data</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">fit2</span> <span class="op">=</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brm</a></span><span class="op">(</span><span class="va">model2</span>, <span class="va">data</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Continue working in your console</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"I'm free now! Thank you.</span></span>
+<span><span class="st">    Yours truly, Console."</span><span class="op">)</span></span></code></pre></div>
 <p>Now you can follow the progress in the jobs pane and your console is free in the meantime.</p>
 </div>
-<div id="tweak-your-jobs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#tweak-your-jobs" class="anchor"></a>Tweak your job(s)</h2>
+<div class="section level2">
+<h2 id="tweak-your-jobs">Tweak your job(s)<a class="anchor" aria-label="anchor" href="#tweak-your-jobs"></a>
+</h2>
 <p>Extending the <code>brms</code>-example above, let’s fine-control the first job a bit more:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Name the code block to return as environment</span>
-<span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span>brm_result <span class="op">=</span> <span class="op">{</span>
-  <span class="co"># Job-specific settings</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-  
-  <span class="co"># Compute stuff</span>
-  <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/brm.html">brm</a></span><span class="op">(</span><span class="va">model1</span>, <span class="va">data</span><span class="op">)</span>
-  <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/add_criterion.html">add_criterion</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"loo"</span><span class="op">)</span>
-  <span class="va">the_test</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/brms/man/hypothesis.brmsfit.html">hypothesis</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"hp &gt; 0"</span><span class="op">)</span>
-  
-  <span class="co"># Print stuff inside the job</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>
-  
-  <span class="co"># Control what is returned to the main session</span>
-  <span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/export.html">export</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">the_test</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>, import <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model1</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Control what is imported into the job</span></code></pre></div>
-<p>Because we named the code block <code>brm_result</code>, it will return the contents as an <code><a href="https://rdrr.io/r/base/environment.html">environment()</a></code> called <code>brm_result</code> (or whatever you called it).<code>brm_result</code> behaves much like a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code>:</p>
+<code class="sourceCode R"><span><span class="co"># Name the code block to return as environment</span></span>
+<span><span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/job.html">job</a></span><span class="op">(</span>brm_result <span class="op">=</span> <span class="op">{</span></span>
+<span>  <span class="co"># Job-specific settings</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>mc.cores <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Compute stuff</span></span>
+<span>  <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/brm.html" class="external-link">brm</a></span><span class="op">(</span><span class="va">model1</span>, <span class="va">data</span><span class="op">)</span></span>
+<span>  <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/add_criterion.html" class="external-link">add_criterion</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"loo"</span><span class="op">)</span></span>
+<span>  <span class="va">the_test</span> <span class="op">=</span> <span class="fu"><a href="https://paul-buerkner.github.io/brms/reference/hypothesis.brmsfit.html" class="external-link">hypothesis</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"hp &gt; 0"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Print stuff inside the job</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Control what is returned to the main session</span></span>
+<span>  <span class="fu">job</span><span class="fu">::</span><span class="fu"><a href="reference/export.html">export</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">the_test</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span>, import <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model1</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Control what is imported into the job</span></span></code></pre></div>
+<p>Because we named the code block <code>brm_result</code>, it will return the contents as an <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> called <code>brm_result</code> (or whatever you called it).<code>brm_result</code> behaves much like a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code>:</p>
 <p><img src="https://raw.githubusercontent.com/lindeloev/job/master/man/figures/return_environment.png"></p>
 </div>
-<div id="turn-rstudios-jobs-into-a-high-level-history" class="section level2">
-<h2 class="hasAnchor">
-<a href="#turn-rstudios-jobs-into-a-high-level-history" class="anchor"></a>Turn RStudio’s Jobs into a high-level history</h2>
+<div class="section level2">
+<h2 id="turn-rstudios-jobs-into-a-high-level-history">Turn RStudio’s Jobs into a high-level history<a class="anchor" aria-label="anchor" href="#turn-rstudios-jobs-into-a-high-level-history"></a>
+</h2>
 <p>Often, the results of the long-running chunks are the most interesting. But they easily get buried among the other outputs in the console and are eventually lost due to the line limit. RStudio’s jobs history can be used as a nice overview. Make sure to print informative results within the job and give your jobs an appropriate <code>title</code>, e.g., (<code>job::job({&lt;code here&gt;}, title = "Unit test: first attempt at feature X")</code>.</p>
 <p><img src="https://raw.githubusercontent.com/lindeloev/job/master/man/figures/joblist.png"></p>
 </div>
-<div id="read-more-on-the-website" class="section level2">
-<h2 class="hasAnchor">
-<a href="#read-more-on-the-website" class="anchor"></a>Read more on the website</h2>
+<div class="section level2">
+<h2 id="read-more-on-the-website">Read more on the website<a class="anchor" aria-label="anchor" href="#read-more-on-the-website"></a>
+</h2>
 <p>See the <a href="https://lindeloev.github.io/job/reference/job.html">documentation</a> how you can fine-control the job environment and what results are returned. The <a href="https://lindeloev.github.io/job/">job::job() website</a> has worked examples, where finer control is beneficial, including:</p>
 <ul>
 <li>
@@ -221,19 +223,19 @@
 <li>Using <code><a href="reference/job.html">job::job()</a></code> to <a href="https://lindeloev.github.io/job/articles/articles/plot.html">render large plots</a>.</li>
 </ul>
 </div>
-<div id="use-cases-all-flow-breakers" class="section level2">
-<h2 class="hasAnchor">
-<a href="#use-cases-all-flow-breakers" class="anchor"></a>Use cases: all flow-breakers</h2>
+<div class="section level2">
+<h2 id="use-cases-all-flow-breakers">Use cases: all flow-breakers<a class="anchor" aria-label="anchor" href="#use-cases-all-flow-breakers"></a>
+</h2>
 <p>The primary use case for <code><a href="reference/job.html">job::job()</a></code> are heavy statistical and numerical functions, including MCMC sampling, cross-validation, etc.</p>
-<p>But sometimes our flow is disturbed by semi-slow routine tasks too. Try running <code><a href="https://devtools.r-lib.org//reference/test.html">devtools::test()</a></code>, <code><a href="https://rdrr.io/pkg/knitr/man/knit.html">knitr::knit()</a></code>, <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code>, or <code>upgrade.packages()</code> as a job and see whether that’s an improvement. Here’s <a href="https://lindeloev.github.io/job/articles/articles/routines.html">a list of semi-slow functions</a> that I regularly run as jobs.</p>
+<p>But sometimes our flow is disturbed by semi-slow routine tasks too. Try running <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code>, <code><a href="https://rdrr.io/pkg/knitr/man/knit.html" class="external-link">knitr::knit()</a></code>, <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code>, or <code>upgrade.packages()</code> as a job and see whether that’s an improvement. Here’s <a href="https://lindeloev.github.io/job/articles/articles/routines.html">a list of semi-slow functions</a> that I regularly run as jobs.</p>
 </div>
-<div id="see-also" class="section level2">
-<h2 class="hasAnchor">
-<a href="#see-also" class="anchor"></a>See also</h2>
+<div class="section level2">
+<h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
+</h2>
 <p><code><a href="reference/job.html">job::job()</a></code> is aimed at easing interactive development within RStudio. For tasks that don’t benefit from running in the Jobs pane of RStudio, check out:</p>
 <ul>
-<li><p>The <a href="https://future.futureverse.org"><code>future</code> package</a>’s <code>%&lt;-%</code> operator combined with <code>plan(multisession)</code>.</p></li>
-<li><p>The <a href="https://callr.r-lib.org/"><code>callr</code> package</a> is a general tool to run code in new R sessions.</p></li>
+<li><p>The <a href="https://future.futureverse.org" class="external-link"><code>future</code> package</a>’s <code>%&lt;-%</code> operator combined with <code>plan(multisession)</code>.</p></li>
+<li><p>The <a href="https://callr.r-lib.org/" class="external-link"><code>callr</code> package</a> is a general tool to run code in new R sessions.</p></li>
 </ul>
 </div>
 </div>
@@ -242,49 +244,59 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=job">https://​cloud.r-project.org/​package=job</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/lindeloev/job/">https://​github.com/​lindeloev/​job/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/lindeloev/job/issues">https://​github.com/​lindeloev/​job/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>
-<a href="http://lindeloev.net">Jonas Kristoffer Lindeløv</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4565-0595" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="https://cloud.r-project.org/package=job" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/lindeloev/job/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/lindeloev/job/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=job"><img src="https://www.r-pkg.org/badges/version/job" alt="CRAN status"></a></li>
-<li><a href="https://github.com/lindeloev/job/actions"><img src="https://github.com/lindeloev/job/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing job</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>
+<a href="http://lindeloev.net" class="external-link">Jonas Kristoffer Lindeløv</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4565-0595" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=job" class="external-link"><img src="https://www.r-pkg.org/badges/version/job" alt="CRAN status"></a></li>
+<li><a href="https://github.com/lindeloev/job/actions" class="external-link"><img src="https://github.com/lindeloev/job/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://lindeloev.net">Jonas Kristoffer Lindeløv</a>.</p>
+  <p></p>
+<p>Developed by <a href="http://lindeloev.net" class="external-link">Jonas Kristoffer Lindeløv</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

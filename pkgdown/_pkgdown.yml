@@ -28,6 +28,7 @@ reference:
     contents:
     - job
     - empty
+    - print.jobcode
   - title: From the job
     desc: Call these from from within the job
     contents:
