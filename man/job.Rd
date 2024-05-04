@@ -29,6 +29,7 @@ the code block.}
 \item \code{"auto"} (default): Detect which objects are used in the code and import
 those.
 \item \code{c(foo, bar, ...)}: A vector of unquoted variables to import into the job.
+\item \code{c("foo", "bar", ...)}: A vector of quoted variables to import into the job.
 \item \code{NULL}: import nothing.
 }}
 
