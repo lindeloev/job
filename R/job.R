@@ -27,6 +27,7 @@
 #'  * `"auto"` (default): Detect which objects are used in the code and import
 #'    those.
 #'  * `c(foo, bar, ...)`: A vector of unquoted variables to import into the job.
+#'  * `c("foo", "bar", ...)`: A vector of quoted variables to import into the job.
 #'  * `NULL`: import nothing.
 #' @param packages Character vector of packages to load in the job. Defaults to
 #'   all loaded packages in the calling environment. `NULL` loads only default
@@ -138,7 +139,10 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   # To R code
   if (code[[1]] != quote(`{`))
     stop("invalid code input. Did you remember to put the code in {curly brackets}?")
-  code_str = paste0(code[-1], collapse = "\n")
+
+  deparsed_code = deparse(code)  # Preserves more info than as.character(). E.g., doesn't convert NA_character_ to NA.
+  deparsed_code[2:(length(deparsed_code) - 1)]  # Remove curly brackets
+  code_str = paste0(deparsed_code, collapse = "\n")
 
 
   #########
@@ -158,11 +162,12 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   ##########
   # IMPORT #
   ##########
-  if (class(import) != "call")
-    import = substitute(import)
+  # Handle quoted vars etc.
+  if (is.character(import) == FALSE)
+    import = as.character(substitute(import))[-1]
 
   import_summary = save_env(
-    vars = as.character(import),
+    vars = import,
     env = parent.frame(),
     code_str = code_str
   )
@@ -181,8 +186,6 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
   suppressWarnings(saveRDS(.__jobsettings__, .__jobsettings__$file, compress = FALSE))  # Ignore warning that some package may not be available when loading
 
 
-
-
   ########################
   # BUILD R CODE FOR JOB #
   ########################
@@ -194,10 +197,19 @@ job = function(..., import = "all", packages = .packages(), opts = options(), ti
 .__jobsettings__ = readRDS('", .__jobsettings__$file, "')  # js = jobsettings
 setwd(.__jobsettings__$wd)
 if (length(.__jobsettings__$packages) > 0) {
-  message(Sys.time(), ': Job started. Attaching packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
+  # Informative and gracefuld handling of loaded packages not in library
+  packages_not_in_library = .__jobsettings__$packages[!.__jobsettings__$packages %in% .packages(all.available = TRUE)]
+  if (length(packages_not_in_library) > 0) {
+    .__jobsettings__$packages = .__jobsettings__$packages[!.__jobsettings__$packages %in% packages_not_in_library]
+    message('OBS: You need to manually load these uninstalled packages in your job-code: `', paste0(packages_not_in_library, collapse = \"`, `\"), '`.', appendLF = FALSE)
+  }
+  rm(packages_not_in_library)
+
+  # Load installed packages into the job
+  message(round(Sys.time()), ': Job started. Attaching installed packages: ', paste0(.__jobsettings__$packages, collapse = ', '), '...', appendLF = FALSE)
   invisible(lapply(.__jobsettings__$packages, function(x, ...) suppressMessages(library(x, ...)), character.only = TRUE, warn.conflicts = FALSE))
 } else {
-  message(Sys.time(), ': Job started...', appendLF = FALSE)
+  message(round(Sys.time()), ': Job started...', appendLF = FALSE)
 }
 options(.__jobsettings__$opts)
 file.remove(.__jobsettings__$file)
@@ -205,7 +217,7 @@ file.remove(.__jobsettings__$file)
 
 # Load objects and compute hash
 if (length(.__jobsettings__$import$vars) > 0) {
-  message(' Done.\n', Sys.time(), ': Importing ', .__jobsettings__$import$mb, 'MB...', appendLF = FALSE)
+  message(' Done.\n', round(Sys.time()), ': Importing ', .__jobsettings__$import$mb, 'MB...', appendLF = FALSE)
   load(.__jobsettings__$import$file, envir = sys.frame(sys.nframe()))  # Current frame
 }
 file.remove(.__jobsettings__$import$file)
@@ -216,7 +228,7 @@ file.remove(.__jobsettings__$import$file)
 ############
 # RUN CODE #
 ############
-message(' Done.\n', Sys.time(), ': Executing job code...')
+message(' Done.\n', round(Sys.time()), ': Executing job code...')
 message('==============\n')
 Sys.sleep(0.4)  # RStudio job output lags. This avoids unordered outputs.
 ", code_str, "
@@ -234,9 +246,9 @@ if (exists('.__jobsettings__'))
 
 message('\n==============')
 if (length(ls(all.names = TRUE)) == 0) {
-  message(Sys.time(), ': Done.')
+  message(round(Sys.time()), ': Done.')
 } else {
-  message(Sys.time(), ': Done. Exporting ', job:::env_size_mb(ls(all.names = TRUE), sys.frame(sys.nframe())), 'MB: ', paste0(ls(all.names = TRUE), collapse = ', '), '...')
+  message(round(Sys.time()), ': Done. Exporting ', job:::env_size_mb(ls(all.names = TRUE), sys.frame(sys.nframe())), 'MB: ', paste0(ls(all.names = TRUE), collapse = ', '), '...')
 }
 options(warn = -1)")
 
@@ -248,11 +260,11 @@ options(warn = -1)")
 
 # Save code to environment for future reference
 .jobcode = paste0(\"
-# Job started: ", Sys.time(), "
+# Job started: ", round(Sys.time()), "
 
 ", gsub("\"", "\\\\\"", code_str), "
 
-# Job completed: \", Sys.time())
+# Job completed: \", round(Sys.time()))
 class(.jobcode) = c('jobcode', 'character')")
   }
 

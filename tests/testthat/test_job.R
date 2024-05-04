@@ -32,15 +32,20 @@ if (rstudioapi::isAvailable()) {
     # Set env
     a = 123
     b = list(a = a, goat = "baah")
+    inner_func = function(x) x^2
+    outer_func = function(x) sum(inner_func(x))
 
     # Launch job
     job::job(default = {
       vars = ls(all.names = TRUE)
       pkgs = .packages()
+      searchpaths_job = searchpaths()  # Test that packages are loaded in the correct order
       a_copy = a
       b_copy = b
       a = 123  # same value as imported; do not return
       b = list(a = a, goat = "peep")  # imported, but new value; return
+      na_classed_works = is.character(NA_character_)  # Test that NA_character_ is not converted to NA
+      inner_outer = outer_func(c(0, 2, 4))  # Tests https://github.com/lindeloev/job/issues/49
       attached_rstudioapi = exists("isAvailable")
       opts = options()
       print("output!")
@@ -48,12 +53,15 @@ if (rstudioapi::isAvailable()) {
 
     # Check result
     helpers$wait_for_job("default")
-    expect_identical(default$vars, c(".__jobsettings__", "a", "b"))
-    expect_identical(default$pkgs, c("rstudioapi", "testthat", helpers$pkgs))
+    expect_identical(default$vars, c(".__jobsettings__", "a", "b", "inner_func", "outer_func"))
+    expect_identical(default$pkgs, c("testthat", "rstudioapi", helpers$pkgs))
+    expect_identical(default$searchpaths_job, searchpaths()[searchpaths() != "devtools_shims"])
     expect_identical(default$a_copy, a)
     expect_identical(default$b_copy, b)
+    expect_true(default$na_classed_works)
+    expect_true(default$inner_outer == 20)
     expect_true(default$attached_rstudioapi)
-    expect_identical(names(default), c("b_copy", "pkgs", "b", ".jobcode", "opts", "a_copy", "vars", "attached_rstudioapi"))
+    expect_identical(names(default), c("inner_func", "b_copy", "pkgs", "b", ".jobcode", "outer_func", "opts", "a_copy", "vars", "searchpaths_job", "inner_outer", "attached_rstudioapi", "na_classed_works"))
     expect_true(is.null(default$opts$job.mainsession) == FALSE & default$opts$device == options("device"))
 
     # Cleanup
@@ -62,9 +70,9 @@ if (rstudioapi::isAvailable()) {
 
 
 
-  #############
-  # TEST ARGS #
-  #############
+  ######################
+  # TEST UNQUOTED ARGS #
+  ######################
   test_that("Set arguments in job::job()", {
     # Set env
     a = 123
@@ -98,9 +106,9 @@ if (rstudioapi::isAvailable()) {
 
 
 
-  ##############################
-  # TEST empty() WITH ARGS #
-  ##############################
+  #################################
+  # TEST empty() WITH QUOTED ARGS #
+  #################################
   test_that("Set arguments in job::empty()", {
     # Set env
     a = 123
@@ -116,7 +124,7 @@ if (rstudioapi::isAvailable()) {
       attached_rstudioapi = exists("isAvailable")
       opts = options()
       print("output!")
-    }, import = c(b, q), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
+    }, import = c("b", "q"), packages = c("job"), title = "something weird: #/(¤", opts = list(job.newopt = 59))
 
     # Check result
     helpers$wait_for_job("with_args2")
@@ -385,5 +393,5 @@ if (rstudioapi::isAvailable()) {
   rm(list = ls(all.names = TRUE))
   rm(list = ls(all.names = TRUE, envir = globalenv()))
 } else {
-  expect_error(job::job({a = 1}), pattern = "You must run this from the RStudio main session.")
+  expect_error(job::job({a = 1}), "You must run this from the RStudio main session.")
 }

@@ -55,10 +55,10 @@ job::job({
 
 # Continue working in your console
 cat("I'm free now! Thank you.
-    Sincerely, Console.")
+    Yours truly, Console.")
 ```
 
-Now you can follow the progress in the jobs pane and your console is free in the meantime.
+Now you can follow the progress in the jobs pane and your console is free in the meantime. 
 
 
 ## Tweak your job(s)

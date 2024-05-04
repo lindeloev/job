@@ -1,7 +1,7 @@
 Package: job
 Title: Run Code as an RStudio Job - Free Your Console
-Version: 0.3.0
-Date: 2021-06-04
+Version: 0.3.1
+Date: 2024-05-03
 URL: https://lindeloev.github.io/job/
 BugReports: https://github.com/lindeloev/job/issues
 Authors@R: 
@@ -14,7 +14,7 @@ Description: Call job::job({<code here>}) to run R code as an RStudio job and ke
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
 Language: en-US
 Depends: R (>= 3.5.0)
 Imports:

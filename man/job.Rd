@@ -29,6 +29,7 @@ the code block.}
 \item \code{"auto"} (default): Detect which objects are used in the code and import
 those.
 \item \code{c(foo, bar, ...)}: A vector of unquoted variables to import into the job.
+\item \code{c("foo", "bar", ...)}: A vector of quoted variables to import into the job.
 \item \code{NULL}: import nothing.
 }}
 
@@ -66,9 +67,9 @@ slow at importing and exporting large objects. For exporting back into
 }
 \section{Functions}{
 \itemize{
-\item \code{empty}: \code{job::job()} but with NULL defaults, i.e., an "empty" job.
-}}
+\item \code{empty()}: \code{job::job()} but with NULL defaults, i.e., an "empty" job.
 
+}}
 \examples{
 if (rstudioapi::isAvailable()) {
   # Unnamed code chunks returns to globalenv()
