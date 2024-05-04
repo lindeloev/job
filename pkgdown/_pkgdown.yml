@@ -40,17 +40,17 @@ navbar:
   - text: Usage and cases
     menu:
     - text: Controlling import
-      href: articles/articles/import.html
+      href: articles/import.html
     - text: Controlling export
-      href: articles/articles/export.html
+      href: articles/export.html
     - text: Error robustness
-      href: articles/articles/robust.html
+      href: articles/robust.html
     - text: "Case: Testing code"
-      href: articles/articles/testing.html
+      href: articles/testing.html
     - text: "Case: Rendering large plots"
-      href: articles/articles/plot.html
+      href: articles/plot.html
     - text: Other routine tasks
-      href: articles/articles/routines.html
+      href: articles/routines.html
   - text: Reference
     href: reference/index.html
   - text: News
