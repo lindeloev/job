@@ -26,10 +26,10 @@ save_env = function(vars, env, code_str) {
     vars = ls_varnames[ls_varnames %in% all.names(parse(text = code_str))]
   } else if (length(vars) == 1 && vars == "all") {
     vars = ls(envir = env, all.names = TRUE)
-  } else if (vars[1] == "c") {
-    vars = vars[-1]
+  } else if (is.character(vars)) {
+    # Stay character vector
   } else {
-    stop("`import` must be one of 'all', 'auto', NULL, or a c(vector, of, variables).")
+    stop("`import` must be one of 'all', 'auto', NULL, c(unquoted, variables), or c('quoted', 'variables').")
   }
 
   # Show import size
