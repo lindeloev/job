@@ -1,3 +1,22 @@
+# job 0.3.1
+
+## Notes for the reviewer
+ 
+ * This package is RStudio-specific so automated R CMD Checks cannot test the functionality. It does have an extensive `testthat` test suite which has been run manually in the following RStudio environments with no ERRORs or WARNINGs:
+   
+## Manual test environments
+* Windows 10, R 4.3.3 RStudio 2024.04.0
+* Ubuntu 24.04, R 4.3.3 RStudio 2024.04.0
+* Mac OS, R 4.0.5 RStudio 1.4.1106
+
+## Downstream dependencies
+We checked 3 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+
+
+
 # Resubmission 2
 This is a resubmission. For this version, I have:
 
@@ -14,11 +33,11 @@ jobs (if `rstudioapi::isAvailable() == TRUE & getOption("is.job", FALSE) == TRUE
 
 
 
-
 # Resubmission
 This is a resubmission. For this version, I have:
 
  * Changed the README.md link that triggered a NOTE. The original link was https and valid, though, but no problem.
+
 
 
 # job 0.3.0
