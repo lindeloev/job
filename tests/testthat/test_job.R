@@ -55,7 +55,7 @@ if (rstudioapi::isAvailable()) {
     helpers$wait_for_job("default")
     expect_identical(default$vars, c(".__jobsettings__", "a", "b", "inner_func", "outer_func"))
     expect_identical(default$pkgs, c("testthat", "rstudioapi", helpers$pkgs))
-    expect_identical(default$searchpaths_job, searchpaths()[searchpaths() != "devtools_shims"])
+    expect_identical(default$searchpaths_job, searchpaths()[searchpaths() %in% c("devtools_shims", "SciViews:TempEnv") == FALSE])
     expect_identical(default$a_copy, a)
     expect_identical(default$b_copy, b)
     expect_true(default$na_classed_works)
